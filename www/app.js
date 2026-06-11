@@ -108,7 +108,7 @@
     const SUBJECT_ICONS = { mix: "🎯", maths: "📐", francais: "📖", histoire: "🌍", emc: "⚖️", sciences: "🔬" };
     const SUBJECT_DESC = {
       mix: "40 questions · mix",
-      maths: "40 questions · calcul",
+      maths: "40 questions · Thalès & Pythagore",
       francais: "40 questions · grammaire",
       histoire: "40 questions · dates",
       emc: "40 questions · citoyenneté",
@@ -203,11 +203,117 @@
       return sessionMode === "daily" || sessionMode === "ultimate" || sessionMode === "subject";
     }
 
+    const pythagoreanTriples = [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [7, 24, 25], [9, 12, 15], [12, 16, 20]];
+
     const factories = [
       {
         subject: "maths",
-        topic: "Automatismes",
+        topic: "Pythagore",
         weight: 16,
+        make() {
+          const [a, b, c] = choice(pythagoreanTriples);
+          return q("Maths", "Pythagore", `Un triangle rectangle a pour côtés de l'angle droit ${a} cm et ${b} cm. Longueur de l'hypoténuse ?`, `${c} cm`, [`${a + b} cm`, `${c - 1} cm`, `${Math.abs(b - a)} cm`, `${c + 2} cm`], `c² = ${a}² + ${b}² = ${a * a + b * b}, donc c = ${c} cm.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Pythagore",
+        weight: 14,
+        make() {
+          const [a, b, c] = choice(pythagoreanTriples);
+          const known = choice([a, b]);
+          const missing = known === a ? b : a;
+          return q("Maths", "Pythagore", `Dans un triangle rectangle, l'hypoténuse mesure ${c} cm et un côté de l'angle droit mesure ${known} cm. L'autre côté mesure...`, `${missing} cm`, [`${c - known} cm`, `${known + 2} cm`, `${c + known} cm`, `${missing + 1} cm`], `${c}² − ${known}² = ${missing}², donc l'autre côté vaut ${missing} cm.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Pythagore",
+        weight: 12,
+        make() {
+          if (Math.random() > 0.35) {
+            const [a, b, c] = choice(pythagoreanTriples);
+            const sides = shuffle([`${a} cm`, `${b} cm`, `${c} cm`]);
+            return q("Maths", "Pythagore", `Un triangle a pour côtés ${sides[0]}, ${sides[1]} et ${sides[2]}. Est-il rectangle ?`, "Oui", ["Non", "On ne peut pas savoir", "Seulement s'il est isocèle"], `${a}² + ${b}² = ${c}² : la réciproque de Pythagore s'applique.`);
+          }
+          const a = rand(5, 9);
+          const b = rand(6, 10);
+          const c = a + b - rand(1, 3);
+          const sides = shuffle([`${a} cm`, `${b} cm`, `${c} cm`]);
+          return q("Maths", "Pythagore", `Un triangle a pour côtés ${sides[0]}, ${sides[1]} et ${sides[2]}. Est-il rectangle ?`, "Non", ["Oui", "On ne peut pas savoir", "Seulement s'il est isocèle"], `${a}² + ${b}² ≠ ${c}² : ce n'est pas un triangle rectangle.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Pythagore",
+        weight: 10,
+        make() {
+          const wrong = shuffle(["c = a + b", "c² = a × b", "a² = c² + b²"]).slice(0, 3);
+          return q("Maths", "Pythagore", "Dans un triangle rectangle, quelle relation lie les côtés a et b de l'angle droit et l'hypoténuse c ?", "c² = a² + b²", wrong, "Théorème de Pythagore : c² = a² + b², avec c le plus grand côté (face à l'angle droit).");
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Thalès",
+        weight: 14,
+        make() {
+          const k = choice([2, 2.5, 3, 4]);
+          const small = rand(2, 6);
+          const large = Number((small * k).toFixed(1));
+          return q("Maths", "Thalès", `Deux droites parallèles découpent des transversales. Sur l'une, un segment vaut ${small} cm ; sur l'autre, le segment correspondant vaut ${large} cm. Le rapport est...`, String(k), [String(k + 1), String(k / 2), String(small + large), String(large - small)], `Rapport = ${large}/${small} = ${k}.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Thalès",
+        weight: 14,
+        make() {
+          const k = choice([2, 3, 2.5, 4]);
+          const ab = rand(2, 7);
+          const bc = rand(2, 6);
+          const abPrime = Number((ab * k).toFixed(1));
+          const bcPrime = Number((bc * k).toFixed(1));
+          return q("Maths", "Thalès", `(AB) // (A'B'). On sait AB = ${ab} cm, A'B' = ${abPrime} cm et BC = ${bc} cm. Par Thalès, B'C' vaut...`, `${bcPrime} cm`, [`${bc + ab} cm`, `${bcPrime + 1} cm`, `${abPrime} cm`, `${bc / k} cm`], `Rapport ${k} : B'C' = ${bc} × ${k} = ${bcPrime} cm.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Thalès",
+        weight: 10,
+        make() {
+          const k = choice([2, 3, 4]);
+          const small = rand(3, 8);
+          const large = small * k;
+          return q("Maths", "Thalès", `Deux figures semblables (rapport ${k}). Un segment mesure ${large} cm sur la grande figure. Sur la petite, il mesure...`, `${small} cm`, [`${large + small} cm`, `${small + 1} cm`, `${large} cm`, `${large - small} cm`], `Rapport ${k} : longueur petite = ${large} ÷ ${k} = ${small} cm.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Thalès",
+        weight: 8,
+        make() {
+          return q("Maths", "Thalès", "Pour trouver une longueur inconnue avec des droites parallèles coupées par des sécantes, on utilise surtout...", "Le théorème de Thalès", ["Pythagore seul", "La moyenne des longueurs", "Le théorème des milieux uniquement"], "Thalès : dans une configuration de droites parallèles, les segments correspondants sont proportionnels.");
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Trigonométrie",
+        weight: 10,
+        make() {
+          const [a, b, c] = choice(pythagoreanTriples.slice(0, 4));
+          const useCos = Math.random() > 0.5;
+          const ratio = useCos ? `${b}/${c}` : `${a}/${c}`;
+          const label = useCos ? "cosinus" : "sinus";
+          const explain = useCos
+            ? `cos = côté adjacent / hypoténuse = ${b}/${c}.`
+            : `sin = côté opposé / hypoténuse = ${a}/${c}.`;
+          return q("Maths", "Trigonométrie", `Triangle rectangle (${a}, ${b}, ${c}). Le ${label} de l'angle opposé au côté ${a} cm vaut...`, ratio, [`${a}/${c}`, `${b}/${a}`, `${c}/${b}`], explain);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Automatismes",
+        weight: 4,
         make() {
           const n = rand(4, 15);
           return q("Maths", "Automatismes", `Quel est le résultat de ${n}² ?`, String(n * n), [n * 2, n * 10, n * n + n, n * n - 1], `${n}² = ${n} × ${n} = ${n * n}.`);
@@ -216,7 +322,7 @@
       {
         subject: "maths",
         topic: "Pourcentages",
-        weight: 14,
+        weight: 3,
         make() {
           const base = choice([40, 50, 60, 80, 120, 150, 200, 240]);
           const pct = choice([5, 10, 15, 20, 25, 30, 40]);
@@ -227,7 +333,7 @@
       {
         subject: "maths",
         topic: "Fractions",
-        weight: 12,
+        weight: 3,
         make() {
           const den = choice([6, 8, 10, 12, 14, 16, 18]);
           const num = choice([2, 4, 6, 8]);
@@ -239,7 +345,7 @@
       {
         subject: "maths",
         topic: "Fonctions",
-        weight: 12,
+        weight: 3,
         make() {
           const a = rand(2, 6);
           const b = rand(-5, 9);
@@ -252,7 +358,7 @@
       {
         subject: "maths",
         topic: "Probabilités",
-        weight: 11,
+        weight: 3,
         make() {
           const red = rand(2, 8);
           const blue = rand(2, 8);
@@ -263,29 +369,8 @@
       },
       {
         subject: "maths",
-        topic: "Pythagore",
-        weight: 10,
-        make() {
-          const triples = [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [7, 24, 25]];
-          const [a, b, c] = choice(triples);
-          return q("Maths", "Pythagore", `Un triangle rectangle a pour côtés de l'angle droit ${a} cm et ${b} cm. Longueur de l'hypoténuse ?`, `${c} cm`, [`${a + b} cm`, `${c - 1} cm`, `${Math.abs(b - a)} cm`, `${c + 2} cm`], `c² = ${a}² + ${b}² = ${a * a + b * b}, donc c = ${c} cm.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Thalès",
-        weight: 10,
-        make() {
-          const k = choice([2, 2.5, 3, 4]);
-          const small = rand(2, 6);
-          const large = Number((small * k).toFixed(1));
-          return q("Maths", "Thalès", `Deux droites parallèles découpent des transversales. Sur l'une, un segment vaut ${small} cm ; sur l'autre, le segment correspondant vaut ${large} cm. Le rapport est...`, String(k), [String(k + 1), String(k / 2), String(small + large), String(large - small)], `Rapport = ${large}/${small} = ${k}. Thalès revient souvent aux annales.`);
-        }
-      },
-      {
-        subject: "maths",
         topic: "Statistiques",
-        weight: 9,
+        weight: 3,
         make() {
           const a = rand(4, 12);
           const b = rand(8, 16);
@@ -297,7 +382,7 @@
       {
         subject: "maths",
         topic: "Puissances",
-        weight: 9,
+        weight: 3,
         make() {
           const base = choice([2, 3, 5]);
           const exp = choice([2, 3, 4]);
