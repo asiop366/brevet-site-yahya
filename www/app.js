@@ -23,6 +23,7 @@
 
     const DAILY_QUESTION_COUNT = 45;
     const ULTIMATE_QUESTION_COUNT = 100;
+    const SUBJECT_QUESTION_COUNT = 40;
     const ALL_SUBJECTS = ["maths", "francais", "histoire", "emc", "sciences"];
 
     const plan = [
@@ -42,11 +43,16 @@
       ["22 juin 1940", "Armistice franco-allemand et installation du régime de Vichy."],
       ["6 juin 1944", "Débarquement allié en Normandie."],
       ["8 mai 1945", "Capitulation de l'Allemagne nazie en Europe."],
+      ["11 novembre 1918", "Armistice mettant fin à la Première Guerre mondiale."],
       ["1947", "Doctrine Truman, plan Marshall et début de la Guerre froide."],
       ["1948-1949", "Blocus de Berlin."],
+      ["1958", "Promulgation de la Constitution de la Ve République."],
       ["1961", "Construction du mur de Berlin."],
       ["1962", "Crise des missiles de Cuba et indépendance de l'Algérie."],
-      ["9 novembre 1989", "Chute du mur de Berlin."]
+      ["9 novembre 1989", "Chute du mur de Berlin."],
+      ["1789", "Prise de la Bastille, symbole de la Révolution française."],
+      ["1914-1918", "Dates de la Première Guerre mondiale."],
+      ["1939-1945", "Dates de la Seconde Guerre mondiale en Europe."]
     ];
 
     const geoFacts = [
@@ -101,12 +107,12 @@
 
     const SUBJECT_ICONS = { mix: "🎯", maths: "📐", francais: "📖", histoire: "🌍", emc: "⚖️", sciences: "🔬" };
     const SUBJECT_DESC = {
-      mix: "Toutes matières",
-      maths: "Auto & calcul",
-      francais: "Grammaire & lecture",
-      histoire: "Repères & géo",
-      emc: "Citoyenneté",
-      sciences: "SVT & Physique 2026"
+      mix: "40 questions · mix",
+      maths: "40 questions · calcul",
+      francais: "40 questions · grammaire",
+      histoire: "40 questions · dates",
+      emc: "40 questions · citoyenneté",
+      sciences: "40 questions · SVT & PC"
     };
 
     const state = loadState();
@@ -176,6 +182,25 @@
 
     function gcd(a, b) {
       return b === 0 ? Math.abs(a) : gcd(b, a % b);
+    }
+
+    function parseYear(dateStr) {
+      const match = String(dateStr).match(/\d{4}/);
+      return match ? Number(match[0]) : 9999;
+    }
+
+    function pickWeightedFactory(pool) {
+      const total = pool.reduce((sum, factory) => sum + factory.weight, 0);
+      let pick = Math.random() * total;
+      for (const factory of pool) {
+        pick -= factory.weight;
+        if (pick <= 0) return factory;
+      }
+      return pool[pool.length - 1];
+    }
+
+    function isQueuedMode() {
+      return sessionMode === "daily" || sessionMode === "ultimate" || sessionMode === "subject";
     }
 
     const factories = [
@@ -310,7 +335,7 @@
       {
         subject: "histoire",
         topic: "Repères",
-        weight: 11,
+        weight: 18,
         make() {
           const [date, meaning] = choice(historyFacts);
           const wrong = shuffle(historyFacts.filter(f => f[0] !== date).map(f => f[0])).slice(0, 3);
@@ -319,8 +344,42 @@
       },
       {
         subject: "histoire",
-        topic: "Géographie",
+        topic: "Repères",
+        weight: 16,
+        make() {
+          const [date, meaning] = choice(historyFacts);
+          const wrong = shuffle(historyFacts.filter(f => f[1] !== meaning).map(f => f[1])).slice(0, 3);
+          return q("Histoire-Géo", "Repères", `À quoi correspond la date ${date} ?`, meaning, wrong, `${date} : ${meaning}`);
+        }
+      },
+      {
+        subject: "histoire",
+        topic: "Chronologie",
         weight: 10,
+        make() {
+          const sample = shuffle(historyFacts).slice(0, 4);
+          const sorted = [...sample].sort((a, b) => parseYear(a[0]) - parseYear(b[0]));
+          const oldest = sorted[0][0];
+          const wrong = sample.filter(f => f[0] !== oldest).map(f => f[0]);
+          return q("Histoire-Géo", "Repères", "Parmi ces dates, laquelle est la plus ancienne ?", oldest, wrong, `${oldest} est la date la plus ancienne de la proposition.`);
+        }
+      },
+      {
+        subject: "histoire",
+        topic: "Chronologie",
+        weight: 8,
+        make() {
+          const sample = shuffle(historyFacts).slice(0, 4);
+          const sorted = [...sample].sort((a, b) => parseYear(b[0]) - parseYear(a[0]));
+          const newest = sorted[0][0];
+          const wrong = sample.filter(f => f[0] !== newest).map(f => f[0]);
+          return q("Histoire-Géo", "Repères", "Parmi ces dates, laquelle est la plus récente ?", newest, wrong, `${newest} est la date la plus récente de la proposition.`);
+        }
+      },
+      {
+        subject: "histoire",
+        topic: "Géographie",
+        weight: 5,
         make() {
           const [term, def] = choice(geoFacts);
           const wrong = shuffle(geoFacts.filter(f => f[0] !== term).map(f => f[0])).slice(0, 3);
@@ -421,16 +480,16 @@
 
     function buildQueue(count, subjectIds) {
       const ids = subjectIds?.length ? subjectIds : ALL_SUBJECTS;
-      const list = factories.filter(f => ids.includes(f.subject));
-      const pool = list.length ? list : factories;
+      const pool = factories.filter(f => ids.includes(f.subject));
+      const list = pool.length ? pool : factories;
       const items = [];
       const sessionSeen = new Set();
 
       for (let i = 0; i < count; i += 1) {
         let question = null;
         let sig = "";
-        for (let tries = 0; tries < 100; tries += 1) {
-          question = pool[rand(0, pool.length - 1)].make();
+        for (let tries = 0; tries < 150; tries += 1) {
+          question = pickWeightedFactory(list).make();
           sig = signature(question);
           if (!sessionSeen.has(sig)) break;
         }
@@ -515,7 +574,8 @@
       feedback.textContent = `${queueCorrect} bonnes réponses sur ${total} (${pct}%). Continue comme ça !`;
       document.getElementById("quizProgressBar").style.width = "100%";
       document.getElementById("nextQuestion").disabled = false;
-      document.getElementById("nextQuestion").textContent = "Retour à l'accueil";
+      document.getElementById("nextQuestion").textContent =
+        sessionReturnView === "view-home" ? "Retour à l'accueil" : "Retour au quiz";
     }
 
     function startOfDay(date) {
@@ -565,18 +625,9 @@
     }
 
     function enterQuizSession() {
-      sessionMode = "free";
-      sessionReturnView = "view-quiz";
-      queueSummaryShown = false;
-      sessionCount = 0;
-      document.getElementById("app").classList.add("app--quiz");
-      document.getElementById("quizSession").hidden = false;
-      document.getElementById("quizSession").classList.remove("quiz-session--in");
-      void document.getElementById("quizSession").offsetWidth;
-      document.getElementById("quizSession").classList.add("quiz-session--in");
-      document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
-      document.getElementById("nextQuestion").textContent = "Suivant";
-      drawQuestion();
+      const ids = activeSubject === "mix" ? ALL_SUBJECTS : [activeSubject];
+      const label = subjects.find(s => s.id === activeSubject)?.label || "Mix";
+      enterQueuedSession("subject", ids, SUBJECT_QUESTION_COUNT, "view-quiz", `Bilan · ${label}`);
     }
 
     window.exitQuizSession = function () {
@@ -672,9 +723,9 @@
     }
 
     function renderQuestion() {
-      if (sessionMode === "free") sessionCount += 1;
+      const isQueued = isQueuedMode();
+      if (!isQueued) sessionCount += 1;
 
-      const isQueued = sessionMode === "daily" || sessionMode === "ultimate";
       const qNum = isQueued ? queueIndex + 1 : sessionCount;
       const qTotal = isQueued ? queueTotal : null;
 
@@ -734,7 +785,7 @@
       if (selected.correct) {
         state.correct += 1;
         state.streak += 1;
-        if (sessionMode === "daily" || sessionMode === "ultimate") queueCorrect += 1;
+        if (isQueuedMode()) queueCorrect += 1;
         feedback.className = "quiz-feedback quiz-feedback--ok";
         feedback.textContent = `✓ ${currentQuestion.explanation}`;
         if (navigator.vibrate) navigator.vibrate(10);
@@ -761,7 +812,7 @@
     }
 
     document.getElementById("nextQuestion").addEventListener("click", () => {
-      if (sessionMode === "daily" || sessionMode === "ultimate") advanceQueuedQuestion();
+      if (isQueuedMode()) advanceQueuedQuestion();
       else drawQuestion();
     });
     document.getElementById("resetStats").addEventListener("click", resetStats);
