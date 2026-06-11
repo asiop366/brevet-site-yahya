@@ -4,7 +4,8 @@
     quiz: "view-quiz",
     fiches: "view-fiches",
     plan: "view-plan",
-    info: "view-info"
+    info: "view-info",
+    settings: "view-settings"
   };
 
   window.showView = function (name) {
@@ -41,6 +42,7 @@
     }
   });
 
+  if (typeof window.initThemes === "function") window.initThemes();
   if (typeof window.initFiches === "function") window.initFiches();
 
   if ("serviceWorker" in navigator && !window.Capacitor?.isNativePlatform?.()) {

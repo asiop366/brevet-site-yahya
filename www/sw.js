@@ -1,7 +1,9 @@
-const CACHE = "brevet2026-v6";
+const CACHE = "brevet2026-v7";
 const ASSETS = [
   "/",
   "/index.html",
+  "/themes.css",
+  "/themes.js",
   "/app.js",
   "/ui.js",
   "/native.js",

@@ -751,6 +751,7 @@
     }
 
     function resetStats() {
+      if (!confirm("Remettre toutes les stats à zéro ?")) return;
       state.answered = 0;
       state.correct = 0;
       state.streak = 0;

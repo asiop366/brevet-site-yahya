@@ -73,7 +73,7 @@ Rafraîchis chaque semaine dans AltStore (Wi‑Fi + AltServer sur PC).
 
 | Version | Contenu |
 |---------|---------|
+| **1.3** | Thèmes colorés + onglet Paramètres · défaut sombre |
 | **1.2** | Nouvelle UI « carnet » claire, dock flottant, quiz 2×2 |
-| **1.1** | UI iPhone optimisée, haptics, Session Ultime |
 
 Build automatique à chaque push sur `main` → artifact **`brevet2026-ios-ipa`**.
