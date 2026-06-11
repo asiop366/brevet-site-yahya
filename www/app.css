@@ -216,6 +216,98 @@ a { color: var(--accent); text-decoration: none; }
   text-align: center;
 }
 
+/* ── Activité du jour ── */
+.daily-card {
+  background: linear-gradient(145deg, rgba(91, 124, 250, 0.14) 0%, rgba(124, 92, 252, 0.08) 100%);
+  border: 1px solid rgba(108, 140, 255, 0.22);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.daily-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.daily-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.daily-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.daily-work {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  margin-bottom: 6px;
+}
+
+.daily-meta {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 16px;
+}
+
+.cta-daily {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 64px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #5b7cfa 0%, #7c5cfc 100%);
+  color: #fff;
+  box-shadow: 0 10px 36px rgba(108, 140, 255, 0.4);
+  text-align: left;
+}
+
+.cta-daily:active { transform: scale(0.98); }
+
+.cta-daily-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cta-daily-text strong {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cta-daily-text small {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.cta-daily-count {
+  flex-shrink: 0;
+  min-width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.daily-card--exam .daily-work { color: var(--exam); }
+.daily-card--exam .cta-daily { opacity: 0.5; pointer-events: none; }
+
 /* ── Subject grid ── */
 .subject-grid {
   display: grid;
@@ -328,8 +420,30 @@ a { color: var(--accent); text-decoration: none; }
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 24px 20px;
+  padding: 16px 20px 24px;
 }
+
+.quiz-subject-banner {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(108, 140, 255, 0.15);
+  color: var(--maths);
+  border: 1px solid rgba(108, 140, 255, 0.25);
+}
+
+.quiz-subject-banner--maths { color: var(--maths); background: rgba(108,140,255,0.12); border-color: rgba(108,140,255,0.25); }
+.quiz-subject-banner--francais { color: var(--francais); background: rgba(244,114,182,0.12); border-color: rgba(244,114,182,0.25); }
+.quiz-subject-banner--histoire { color: var(--histoire); background: rgba(251,146,60,0.12); border-color: rgba(251,146,60,0.25); }
+.quiz-subject-banner--geo { color: var(--histoire); background: rgba(251,146,60,0.12); border-color: rgba(251,146,60,0.25); }
+.quiz-subject-banner--emc { color: var(--emc); background: rgba(167,139,250,0.12); border-color: rgba(167,139,250,0.25); }
+.quiz-subject-banner--sciences { color: var(--sciences); background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.25); }
+.quiz-subject-banner--mix { color: var(--text-2); background: var(--bg-card); border-color: var(--border); }
 
 .quiz-tags {
   display: flex;

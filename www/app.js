@@ -21,15 +21,17 @@
       { subject: "Sciences", topic: "Données, unités, formules", score: 78, color: "var(--sciences)", why: "Le plus rentable : savoir extraire une donnée, appliquer une formule et conclure avec unité." }
     ];
 
+    const DAILY_QUESTION_COUNT = 45;
+
     const plan = [
-      { date: "11", label: "Aujourd'hui", work: "Maths auto + WW2", tone: "normal" },
-      { date: "12", label: "Vendredi", work: "Français + EMC", tone: "normal" },
-      { date: "13", label: "Samedi", work: "Géo France + sciences", tone: "normal" },
-      { date: "14", label: "Dimanche", work: "Annales courtes", tone: "normal" },
-      { date: "15", label: "Lundi", work: "Maths problèmes", tone: "normal" },
-      { date: "16", label: "Mardi", work: "Rédaction + repères", tone: "normal" },
-      { date: "17", label: "Mercredi", work: "Dates + matériel", tone: "normal" },
-      { date: "18", label: "Jeudi", work: "Brevet", tone: "exam" }
+      { date: "11", label: "Aujourd'hui", work: "Maths auto + WW2", tone: "normal", subjects: ["maths", "histoire"] },
+      { date: "12", label: "Vendredi", work: "Français + EMC", tone: "normal", subjects: ["francais", "emc"] },
+      { date: "13", label: "Samedi", work: "Géo France + sciences", tone: "normal", subjects: ["histoire", "sciences"] },
+      { date: "14", label: "Dimanche", work: "Annales courtes", tone: "normal", subjects: ["maths", "francais", "histoire", "emc", "sciences"] },
+      { date: "15", label: "Lundi", work: "Maths problèmes", tone: "normal", subjects: ["maths"] },
+      { date: "16", label: "Mardi", work: "Rédaction + repères", tone: "normal", subjects: ["francais", "histoire"] },
+      { date: "17", label: "Mercredi", work: "Dates + matériel", tone: "normal", subjects: ["histoire"] },
+      { date: "18", label: "Jeudi", work: "Brevet", tone: "exam", subjects: [] }
     ];
 
     const historyFacts = [
@@ -86,6 +88,12 @@
     let currentQuestion = null;
     let activeSubject = "mix";
     let sessionCount = 0;
+    let sessionMode = "free";
+    let sessionReturnView = "view-quiz";
+    let dailyQueue = [];
+    let dailyIndex = 0;
+    let dailySessionCorrect = 0;
+    let dailySummaryShown = false;
 
     function loadState() {
       try {
@@ -299,6 +307,157 @@
       };
     }
 
+    function getTodayPlan() {
+      const today = new Date().getDate();
+      return plan.find(d => Number(d.date) === today) || plan.find(d => d.tone !== "exam") || plan[0];
+    }
+
+    function subjectIdFromQuestion(question) {
+      const map = {
+        Maths: "maths",
+        Français: "francais",
+        "Histoire-Géo": question.topic === "Géographie" ? "histoire" : "histoire",
+        EMC: "emc",
+        Sciences: "sciences"
+      };
+      return map[question.subject] || "mix";
+    }
+
+    function getSubjectDisplayName(question) {
+      if (question.topic === "Géographie") return "Géographie";
+      const map = {
+        Maths: "Maths",
+        Français: "Français",
+        "Histoire-Géo": "Histoire",
+        EMC: "EMC",
+        Sciences: "Sciences"
+      };
+      return map[question.subject] || question.subject;
+    }
+
+    function getSubjectBannerClass(question) {
+      if (question.topic === "Géographie") return "quiz-subject-banner--geo";
+      const map = {
+        Maths: "quiz-subject-banner--maths",
+        Français: "quiz-subject-banner--francais",
+        "Histoire-Géo": "quiz-subject-banner--histoire",
+        EMC: "quiz-subject-banner--emc",
+        Sciences: "quiz-subject-banner--sciences"
+      };
+      return map[question.subject] || "quiz-subject-banner--mix";
+    }
+
+    function formatSubjectList(subjectIds) {
+      const labels = {
+        maths: "Maths",
+        francais: "Français",
+        histoire: "Histoire",
+        emc: "EMC",
+        sciences: "Sciences"
+      };
+      return subjectIds.map(id => labels[id] || id).join(" · ");
+    }
+
+    function updateHomeDaily() {
+      const todayPlan = getTodayPlan();
+      const card = document.getElementById("dailyCard");
+      const btn = document.getElementById("startDaily");
+      document.getElementById("dailyPlanWork").textContent = todayPlan.work;
+      document.getElementById("dailyPlanDate").textContent = `${todayPlan.date} juin`;
+      const subjects = todayPlan.subjects?.length ? todayPlan.subjects : ["mix"];
+      document.getElementById("dailySubjectList").textContent = formatSubjectList(subjects);
+      document.getElementById("dailyPlanMeta").textContent =
+        `${DAILY_QUESTION_COUNT} questions aléatoires · ${formatSubjectList(subjects)}`;
+      card.classList.toggle("daily-card--exam", todayPlan.tone === "exam");
+      btn.disabled = todayPlan.tone === "exam";
+    }
+
+    function buildDailyQueue(subjectIds) {
+      const ids = subjectIds?.length ? subjectIds : ["maths", "francais", "histoire", "emc", "sciences"];
+      const list = factories.filter(f => ids.includes(f.subject));
+      const pool = list.length ? list : factories;
+      const queue = [];
+      const sessionSeen = new Set();
+
+      for (let i = 0; i < DAILY_QUESTION_COUNT; i += 1) {
+        let question = null;
+        let sig = "";
+        for (let tries = 0; tries < 100; tries += 1) {
+          question = pool[rand(0, pool.length - 1)].make();
+          sig = signature(question);
+          if (!sessionSeen.has(sig)) break;
+        }
+        sessionSeen.add(sig);
+        queue.push(question);
+      }
+      return queue;
+    }
+
+    function enterDailySession() {
+      const todayPlan = getTodayPlan();
+      if (todayPlan.tone === "exam") return;
+
+      sessionMode = "daily";
+      sessionReturnView = "view-home";
+      dailyQueue = buildDailyQueue(todayPlan.subjects);
+      dailyIndex = 0;
+      dailySessionCorrect = 0;
+      dailySummaryShown = false;
+      sessionCount = 0;
+
+      document.getElementById("app").classList.add("app--quiz");
+      document.getElementById("quizSession").hidden = false;
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
+      document.getElementById("nextQuestion").textContent = "Suivant";
+      showDailyQuestion();
+    }
+
+    window.enterDailySession = enterDailySession;
+
+    function showDailyQuestion() {
+      if (dailyIndex >= dailyQueue.length) {
+        showDailySummary();
+        return;
+      }
+      currentQuestion = dailyQueue[dailyIndex];
+      renderQuestion();
+    }
+
+    function advanceDailyQuestion() {
+      if (dailySummaryShown) {
+        exitQuizSession();
+        return;
+      }
+      dailyIndex += 1;
+      if (dailyIndex >= dailyQueue.length) {
+        showDailySummary();
+      } else {
+        currentQuestion = dailyQueue[dailyIndex];
+        renderQuestion();
+      }
+    }
+
+    function showDailySummary() {
+      dailySummaryShown = true;
+      const total = dailyQueue.length;
+      const pct = total ? Math.round(dailySessionCorrect / total * 100) : 0;
+      const banner = document.getElementById("questionSubjectBanner");
+      banner.textContent = "Bilan du jour";
+      banner.className = "quiz-subject-banner quiz-subject-banner--mix";
+      document.getElementById("questionSubject").textContent = "Terminé";
+      document.getElementById("questionTopic").textContent = `${dailySessionCorrect}/${total}`;
+      document.getElementById("questionId").textContent = "100%";
+      document.getElementById("questionText").textContent = "Session terminée !";
+      document.getElementById("answers").innerHTML = "";
+      const feedback = document.getElementById("feedback");
+      feedback.hidden = false;
+      feedback.className = "quiz-feedback quiz-feedback--ok";
+      feedback.textContent = `${dailySessionCorrect} bonnes réponses sur ${total} (${pct}%). Continue comme ça !`;
+      document.getElementById("quizProgressBar").style.width = "100%";
+      document.getElementById("nextQuestion").disabled = false;
+      document.getElementById("nextQuestion").textContent = "Retour à l'accueil";
+    }
+
     function startOfDay(date) {
       return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
@@ -316,6 +475,7 @@
         const pct = Math.min(1, days / 30);
         ring.style.strokeDashoffset = String(327 * (1 - pct));
       }
+      updateHomeDaily();
     }
 
     function updateStats() {
@@ -345,17 +505,27 @@
     }
 
     function enterQuizSession() {
+      sessionMode = "free";
+      sessionReturnView = "view-quiz";
+      dailySummaryShown = false;
       sessionCount = 0;
       document.getElementById("app").classList.add("app--quiz");
       document.getElementById("quizSession").hidden = false;
       document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
+      document.getElementById("nextQuestion").textContent = "Suivant";
       drawQuestion();
     }
 
     window.exitQuizSession = function () {
+      sessionMode = "free";
+      dailyQueue = [];
+      dailyIndex = 0;
+      dailySummaryShown = false;
       document.getElementById("app").classList.remove("app--quiz");
       document.getElementById("quizSession").hidden = true;
-      document.getElementById("view-quiz").classList.add("view--active");
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
+      document.getElementById(sessionReturnView).classList.add("view--active");
+      document.getElementById("nextQuestion").textContent = "Suivant";
     };
 
     function renderPriorities() {
@@ -437,17 +607,30 @@
     }
 
     function renderQuestion() {
-      sessionCount += 1;
-      document.getElementById("questionSubject").textContent = currentQuestion.subject;
+      if (sessionMode === "free") sessionCount += 1;
+
+      const qNum = sessionMode === "daily" ? dailyIndex + 1 : sessionCount;
+      const qTotal = sessionMode === "daily" ? DAILY_QUESTION_COUNT : null;
+
+      document.getElementById("questionId").textContent = qTotal ? `${qNum}/${qTotal}` : `Q${qNum}`;
+
+      const displayName = getSubjectDisplayName(currentQuestion);
+      const banner = document.getElementById("questionSubjectBanner");
+      banner.textContent = displayName;
+      banner.className = `quiz-subject-banner ${getSubjectBannerClass(currentQuestion)}`;
+
+      document.getElementById("questionSubject").textContent = displayName;
       document.getElementById("questionTopic").textContent = currentQuestion.topic;
-      document.getElementById("questionId").textContent = `Q${sessionCount}`;
       document.getElementById("questionText").textContent = currentQuestion.prompt;
       const feedback = document.getElementById("feedback");
       feedback.hidden = true;
       feedback.className = "quiz-feedback";
       feedback.textContent = "";
       document.getElementById("nextQuestion").disabled = true;
-      const progress = Math.min(100, sessionCount * 10);
+
+      const progress = sessionMode === "daily"
+        ? ((dailyIndex + 1) / DAILY_QUESTION_COUNT) * 100
+        : Math.min(100, sessionCount * 10);
       document.getElementById("quizProgressBar").style.width = `${progress}%`;
       document.getElementById("answers").innerHTML = currentQuestion.choices.map((choiceItem, index) => `
         <button class="quiz-answer" type="button" data-index="${index}">
@@ -477,6 +660,7 @@
       if (selected.correct) {
         state.correct += 1;
         state.streak += 1;
+        if (sessionMode === "daily") dailySessionCorrect += 1;
         feedback.className = "quiz-feedback quiz-feedback--ok";
         feedback.textContent = `✓ ${currentQuestion.explanation}`;
         if (navigator.vibrate) navigator.vibrate(10);
@@ -499,8 +683,12 @@
       updateStats();
     }
 
-    document.getElementById("nextQuestion").addEventListener("click", drawQuestion);
+    document.getElementById("nextQuestion").addEventListener("click", () => {
+      if (sessionMode === "daily") advanceDailyQuestion();
+      else drawQuestion();
+    });
     document.getElementById("resetStats").addEventListener("click", resetStats);
+    document.getElementById("startDaily").addEventListener("click", enterDailySession);
 
     updateCountdown();
     renderSubjects();
