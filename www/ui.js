@@ -2,6 +2,7 @@
   const viewMap = {
     home: "view-home",
     quiz: "view-quiz",
+    fiches: "view-fiches",
     plan: "view-plan",
     info: "view-info"
   };
@@ -25,6 +26,20 @@
   document.getElementById("quizBack").addEventListener("click", () => {
     if (typeof window.exitQuizSession === "function") window.exitQuizSession();
   });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "v" && event.key !== "V") return;
+    const target = event.target;
+    if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+    const homeActive = document.getElementById("view-home").classList.contains("view--active");
+    const quizHidden = document.getElementById("quizSession").hidden;
+    if (homeActive && quizHidden && typeof window.enterUltimateSession === "function") {
+      event.preventDefault();
+      window.enterUltimateSession();
+    }
+  });
+
+  if (typeof window.initFiches === "function") window.initFiches();
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});

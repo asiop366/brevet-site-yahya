@@ -22,6 +22,8 @@
     ];
 
     const DAILY_QUESTION_COUNT = 45;
+    const ULTIMATE_QUESTION_COUNT = 100;
+    const ALL_SUBJECTS = ["maths", "francais", "histoire", "emc", "sciences"];
 
     const plan = [
       { date: "11", label: "Aujourd'hui", work: "Maths auto + WW2", tone: "normal", subjects: ["maths", "histoire"] },
@@ -90,10 +92,12 @@
     let sessionCount = 0;
     let sessionMode = "free";
     let sessionReturnView = "view-quiz";
-    let dailyQueue = [];
-    let dailyIndex = 0;
-    let dailySessionCorrect = 0;
-    let dailySummaryShown = false;
+    let queue = [];
+    let queueIndex = 0;
+    let queueTotal = 0;
+    let queueCorrect = 0;
+    let queueSummaryShown = false;
+    let queueSummaryTitle = "Bilan";
 
     function loadState() {
       try {
@@ -368,18 +372,18 @@
       document.getElementById("dailySubjectList").textContent = formatSubjectList(subjects);
       document.getElementById("dailyPlanMeta").textContent =
         `${DAILY_QUESTION_COUNT} questions aléatoires · ${formatSubjectList(subjects)}`;
-      card.classList.toggle("daily-card--exam", todayPlan.tone === "exam");
+      card.classList.toggle("mode-card--exam", todayPlan.tone === "exam");
       btn.disabled = todayPlan.tone === "exam";
     }
 
-    function buildDailyQueue(subjectIds) {
-      const ids = subjectIds?.length ? subjectIds : ["maths", "francais", "histoire", "emc", "sciences"];
+    function buildQueue(count, subjectIds) {
+      const ids = subjectIds?.length ? subjectIds : ALL_SUBJECTS;
       const list = factories.filter(f => ids.includes(f.subject));
       const pool = list.length ? list : factories;
-      const queue = [];
+      const items = [];
       const sessionSeen = new Set();
 
-      for (let i = 0; i < DAILY_QUESTION_COUNT; i += 1) {
+      for (let i = 0; i < count; i += 1) {
         let question = null;
         let sig = "";
         for (let tries = 0; tries < 100; tries += 1) {
@@ -388,71 +392,81 @@
           if (!sessionSeen.has(sig)) break;
         }
         sessionSeen.add(sig);
-        queue.push(question);
+        items.push(question);
       }
-      return queue;
+      return items;
     }
 
-    function enterDailySession() {
-      const todayPlan = getTodayPlan();
-      if (todayPlan.tone === "exam") return;
-
-      sessionMode = "daily";
-      sessionReturnView = "view-home";
-      dailyQueue = buildDailyQueue(todayPlan.subjects);
-      dailyIndex = 0;
-      dailySessionCorrect = 0;
-      dailySummaryShown = false;
+    function enterQueuedSession(mode, subjectIds, count, returnView, summaryTitle) {
+      sessionMode = mode;
+      sessionReturnView = returnView;
+      queue = buildQueue(count, subjectIds);
+      queueIndex = 0;
+      queueTotal = count;
+      queueCorrect = 0;
+      queueSummaryShown = false;
+      queueSummaryTitle = summaryTitle;
       sessionCount = 0;
 
       document.getElementById("app").classList.add("app--quiz");
       document.getElementById("quizSession").hidden = false;
       document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
       document.getElementById("nextQuestion").textContent = "Suivant";
-      showDailyQuestion();
+      showQueuedQuestion();
+    }
+
+    function enterDailySession() {
+      const todayPlan = getTodayPlan();
+      if (todayPlan.tone === "exam") return;
+      enterQueuedSession("daily", todayPlan.subjects, DAILY_QUESTION_COUNT, "view-home", "Bilan du jour");
+    }
+
+    function enterUltimateSession() {
+      enterQueuedSession("ultimate", ALL_SUBJECTS, ULTIMATE_QUESTION_COUNT, "view-home", "Session Ultime");
     }
 
     window.enterDailySession = enterDailySession;
+    window.enterUltimateSession = enterUltimateSession;
 
-    function showDailyQuestion() {
-      if (dailyIndex >= dailyQueue.length) {
-        showDailySummary();
+    function showQueuedQuestion() {
+      if (queueIndex >= queue.length) {
+        showQueueSummary();
         return;
       }
-      currentQuestion = dailyQueue[dailyIndex];
+      currentQuestion = queue[queueIndex];
       renderQuestion();
     }
 
-    function advanceDailyQuestion() {
-      if (dailySummaryShown) {
+    function advanceQueuedQuestion() {
+      if (queueSummaryShown) {
         exitQuizSession();
         return;
       }
-      dailyIndex += 1;
-      if (dailyIndex >= dailyQueue.length) {
-        showDailySummary();
+      queueIndex += 1;
+      if (queueIndex >= queue.length) {
+        showQueueSummary();
       } else {
-        currentQuestion = dailyQueue[dailyIndex];
+        currentQuestion = queue[queueIndex];
         renderQuestion();
       }
     }
 
-    function showDailySummary() {
-      dailySummaryShown = true;
-      const total = dailyQueue.length;
-      const pct = total ? Math.round(dailySessionCorrect / total * 100) : 0;
+    function showQueueSummary() {
+      queueSummaryShown = true;
+      const total = queue.length;
+      const pct = total ? Math.round(queueCorrect / total * 100) : 0;
       const banner = document.getElementById("questionSubjectBanner");
-      banner.textContent = "Bilan du jour";
+      banner.textContent = queueSummaryTitle;
       banner.className = "quiz-subject-banner quiz-subject-banner--mix";
       document.getElementById("questionSubject").textContent = "Terminé";
-      document.getElementById("questionTopic").textContent = `${dailySessionCorrect}/${total}`;
+      document.getElementById("questionTopic").textContent = `${queueCorrect}/${total}`;
       document.getElementById("questionId").textContent = "100%";
       document.getElementById("questionText").textContent = "Session terminée !";
       document.getElementById("answers").innerHTML = "";
       const feedback = document.getElementById("feedback");
       feedback.hidden = false;
       feedback.className = "quiz-feedback quiz-feedback--ok";
-      feedback.textContent = `${dailySessionCorrect} bonnes réponses sur ${total} (${pct}%). Continue comme ça !`;
+      feedback.textContent = `${queueCorrect} bonnes réponses sur ${total} (${pct}%). Continue comme ça !`;
       document.getElementById("quizProgressBar").style.width = "100%";
       document.getElementById("nextQuestion").disabled = false;
       document.getElementById("nextQuestion").textContent = "Retour à l'accueil";
@@ -507,7 +521,7 @@
     function enterQuizSession() {
       sessionMode = "free";
       sessionReturnView = "view-quiz";
-      dailySummaryShown = false;
+      queueSummaryShown = false;
       sessionCount = 0;
       document.getElementById("app").classList.add("app--quiz");
       document.getElementById("quizSession").hidden = false;
@@ -518,9 +532,9 @@
 
     window.exitQuizSession = function () {
       sessionMode = "free";
-      dailyQueue = [];
-      dailyIndex = 0;
-      dailySummaryShown = false;
+      queue = [];
+      queueIndex = 0;
+      queueSummaryShown = false;
       document.getElementById("app").classList.remove("app--quiz");
       document.getElementById("quizSession").hidden = true;
       document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
@@ -609,8 +623,9 @@
     function renderQuestion() {
       if (sessionMode === "free") sessionCount += 1;
 
-      const qNum = sessionMode === "daily" ? dailyIndex + 1 : sessionCount;
-      const qTotal = sessionMode === "daily" ? DAILY_QUESTION_COUNT : null;
+      const isQueued = sessionMode === "daily" || sessionMode === "ultimate";
+      const qNum = isQueued ? queueIndex + 1 : sessionCount;
+      const qTotal = isQueued ? queueTotal : null;
 
       document.getElementById("questionId").textContent = qTotal ? `${qNum}/${qTotal}` : `Q${qNum}`;
 
@@ -628,8 +643,8 @@
       feedback.textContent = "";
       document.getElementById("nextQuestion").disabled = true;
 
-      const progress = sessionMode === "daily"
-        ? ((dailyIndex + 1) / DAILY_QUESTION_COUNT) * 100
+      const progress = isQueued
+        ? ((queueIndex + 1) / queueTotal) * 100
         : Math.min(100, sessionCount * 10);
       document.getElementById("quizProgressBar").style.width = `${progress}%`;
       document.getElementById("answers").innerHTML = currentQuestion.choices.map((choiceItem, index) => `
@@ -660,7 +675,7 @@
       if (selected.correct) {
         state.correct += 1;
         state.streak += 1;
-        if (sessionMode === "daily") dailySessionCorrect += 1;
+        if (sessionMode === "daily" || sessionMode === "ultimate") queueCorrect += 1;
         feedback.className = "quiz-feedback quiz-feedback--ok";
         feedback.textContent = `✓ ${currentQuestion.explanation}`;
         if (navigator.vibrate) navigator.vibrate(10);
@@ -684,11 +699,12 @@
     }
 
     document.getElementById("nextQuestion").addEventListener("click", () => {
-      if (sessionMode === "daily") advanceDailyQuestion();
+      if (sessionMode === "daily" || sessionMode === "ultimate") advanceQueuedQuestion();
       else drawQuestion();
     });
     document.getElementById("resetStats").addEventListener("click", resetStats);
     document.getElementById("startDaily").addEventListener("click", enterDailySession);
+    document.getElementById("startUltimate").addEventListener("click", enterUltimateSession);
 
     updateCountdown();
     renderSubjects();
