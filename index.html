@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brevet 2026 - Révisions</title>
+  <style>
+    :root {
+      --bg: #f7f5f0;
+      --panel: #ffffff;
+      --ink: #161616;
+      --muted: #62615d;
+      --quiet: #ebe7dd;
+      --line: #d8d2c4;
+      --blue: #245b9d;
+      --green: #20744c;
+      --red: #b43d32;
+      --amber: #ad6a19;
+      --violet: #7353a4;
+      --radius: 8px;
+      --shadow: 0 18px 46px rgba(32, 30, 26, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(36, 91, 157, 0.11), transparent 340px),
+        var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 54px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 2px;
+    }
+
+    .kicker,
+    .tag,
+    .metric-label,
+    .source-note,
+    .tiny {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.1;
+    }
+
+    .nav {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .nav a,
+    .btn,
+    .chip,
+    .answer {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--ink);
+      text-decoration: none;
+      padding: 9px 12px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .nav a:hover,
+    .btn:hover,
+    .chip:hover,
+    .answer:hover {
+      transform: translateY(-1px);
+      border-color: var(--ink);
+    }
+
+    .btn.primary,
+    .chip.active {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.72fr) minmax(360px, 1.28fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .panel,
+    .card,
+    .question,
+    .priority,
+    .day {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .countdown {
+      min-height: 310px;
+      padding: 24px;
+      display: grid;
+      align-content: space-between;
+      gap: 20px;
+    }
+
+    .days {
+      font-size: 92px;
+      font-weight: 900;
+      line-height: 0.9;
+      margin-top: 8px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 29px;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--quiet);
+      font-size: 13px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .panel-main {
+      min-height: 310px;
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel-main h2,
+    .section-head h2,
+    .question h3 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.18;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 72ch;
+      color: var(--muted);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      min-height: 92px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg);
+      display: grid;
+      align-content: space-between;
+      gap: 8px;
+    }
+
+    .metric-value {
+      font-size: 27px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 30px 0 12px;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .practice {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.75fr) minmax(360px, 1.25fr);
+      gap: 14px;
+    }
+
+    .card {
+      padding: 18px;
+      box-shadow: none;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      min-height: 36px;
+      padding: 7px 10px;
+    }
+
+    .question {
+      padding: 22px;
+      box-shadow: none;
+      display: grid;
+      gap: 16px;
+    }
+
+    .question-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .question-text {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.28;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .answer {
+      min-height: 62px;
+      text-align: left;
+      background: #fbfaf7;
+      white-space: normal;
+    }
+
+    .answer.correct {
+      border-color: var(--green);
+      background: #eef8f2;
+    }
+
+    .answer.wrong {
+      border-color: var(--red);
+      background: #fff0ee;
+    }
+
+    .feedback {
+      min-height: 52px;
+      border-left: 4px solid var(--line);
+      padding-left: 12px;
+      color: var(--muted);
+    }
+
+    .feedback.ok {
+      border-color: var(--green);
+      color: #164e36;
+    }
+
+    .feedback.no {
+      border-color: var(--red);
+      color: #7e241d;
+    }
+
+    .question-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .priority-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .priority {
+      padding: 16px;
+      box-shadow: none;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      min-height: 190px;
+    }
+
+    .priority h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+      color: var(--accent, var(--ink));
+    }
+
+    .priority p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--quiet);
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: var(--w);
+      background: var(--accent, var(--ink));
+    }
+
+    .plan {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .day {
+      min-height: 146px;
+      padding: 14px;
+      box-shadow: none;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .day.exam {
+      border-color: var(--red);
+      background: #fff7f5;
+    }
+
+    .day strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .day span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .sources {
+      margin-top: 26px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sources a {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    @media (max-width: 1040px) {
+      .hero,
+      .practice {
+        grid-template-columns: 1fr;
+      }
+
+      .priority-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .plan {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(100% - 22px, 1220px);
+        padding-top: 18px;
+      }
+
+      .topbar,
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .nav {
+        justify-content: flex-start;
+      }
+
+      .days {
+        font-size: 72px;
+      }
+
+      .metrics,
+      .answers,
+      .priority-grid,
+      .plan {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="kicker">Brevet 2026</div>
+        <h1>Sprint de révision</h1>
+      </div>
+      <nav class="nav" aria-label="Navigation">
+        <a href="#entrainement">Questions</a>
+        <a href="#priorites">Probables</a>
+        <a href="#planning">Planning</a>
+        <a href="#sources">Sources</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-label="Tableau de bord">
+        <div class="panel countdown">
+          <div>
+            <div class="kicker">Échéance AEFE Maroc</div>
+            <div class="days" id="daysLeft">7</div>
+            <div class="pill-row">
+              <span class="pill" id="daysLabel">jours restants</span>
+              <span class="pill">Jeudi 18 juin 2026</span>
+            </div>
+          </div>
+          <div class="source-note">Date adaptée à ton centre d’examen.</div>
+        </div>
+
+        <div class="panel panel-main">
+          <div>
+            <div class="kicker" id="todayLabel">Jeudi 11 juin 2026</div>
+            <h2>Un vrai moteur de questions, pas une petite liste répétée.</h2>
+            <p class="lead">Les maths et les sciences génèrent des valeurs nouvelles, les réponses sont mélangées, et les questions déjà vues sont évitées pendant la session. Le site reste un simple HTML, donc facile à mettre sur GitHub puis Vercel.</p>
+          </div>
+
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-value" id="scoreValue">0%</div>
+              <div class="metric-label">Score</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value" id="answeredValue">0</div>
+              <div class="metric-label">Questions</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value" id="streakValue">0</div>
+              <div class="metric-label">Série</div>
+            </div>
+            <div class="metric">
+              <div class="metric-value" id="seenValue">0</div>
+              <div class="metric-label">Variantes vues</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="entrainement">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Entraînement</div>
+            <h2>Question aléatoire intelligente</h2>
+            <p>Choisis une matière ou laisse le mode mixte travailler les priorités.</p>
+          </div>
+          <button class="btn ghost" id="resetStats" type="button">Remettre le score</button>
+        </div>
+
+        <div class="practice">
+          <aside class="card">
+            <div class="kicker">Matière</div>
+            <div class="chips" id="subjectChips"></div>
+            <div style="height: 16px"></div>
+            <div class="kicker">À viser cette semaine</div>
+            <p class="lead">Automatismes de maths, lecture de documents, repères en histoire-géo, rédaction courte, et vocabulaire EMC. Les probabilités affichées sont des priorités de révision, pas des promesses de sujet.</p>
+          </aside>
+
+          <article class="question">
+            <div class="question-top">
+              <div class="pill-row">
+                <span class="pill" id="questionSubject">Mix</span>
+                <span class="pill" id="questionTopic">Sujet</span>
+              </div>
+              <span class="tiny" id="questionId">Variante</span>
+            </div>
+            <h3 class="question-text" id="questionText">Question</h3>
+            <div class="answers" id="answers"></div>
+            <div class="feedback" id="feedback">Lance une question pour commencer.</div>
+            <div class="question-actions">
+              <span class="pill" id="engineStatus">Prêt</span>
+              <button class="btn primary" id="nextQuestion" type="button">Nouvelle question</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="priorites">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Probabilités de révision</div>
+            <h2>Ce qui mérite le plus de temps</h2>
+            <p>Classement construit à partir du format 2026, des sujets zéro/annales et des thèmes qui reviennent souvent dans les entraînements DNB.</p>
+          </div>
+        </div>
+        <div class="priority-grid" id="priorityGrid"></div>
+      </section>
+
+      <section id="planning">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Dernière ligne droite</div>
+            <h2>Planning jusqu’au 18</h2>
+          </div>
+          <span class="pill">Mode efficace : court, régulier, corrigé</span>
+        </div>
+        <div class="plan" id="planGrid"></div>
+      </section>
+
+      <section class="sources" id="sources">
+        <div class="kicker">Sources et nuance</div>
+        <div>Cette version est calée sur ton centre AEFE au Maroc : <strong>début du brevet le jeudi 18 juin 2026</strong>. Les dates peuvent différer de la session organisée en France.</div>
+        <div>Format 2026, coefficients, automatismes maths et nouvelles modalités du DNB : <a href="https://www.education.gouv.fr/le-diplome-national-du-brevet-10613" target="_blank" rel="noreferrer">Ministère de l’Éducation nationale</a>.</div>
+        <div>Annales et sujets zéro pour préparer le DNB : <a href="https://eduscol.education.gouv.fr/5202/preparer-le-diplome-national-du-brevet-dnb-avec-les-sujets-des-annales" target="_blank" rel="noreferrer">Éduscol</a>.</div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const EXAM_DATE = new Date(2026, 5, 18, 8, 0, 0);
+    const DAY = 24 * 60 * 60 * 1000;
+    const STORAGE_KEY = "brevet2026-engine-state";
+
+    const subjects = [
+      { id: "mix", label: "Mix" },
+      { id: "maths", label: "Maths" },
+      { id: "francais", label: "Français" },
+      { id: "histoire", label: "Histoire-Géo" },
+      { id: "emc", label: "EMC" },
+      { id: "sciences", label: "Sciences" }
+    ];
+
+    const priorities = [
+      { subject: "Maths", topic: "Automatismes 2026", score: 96, color: "var(--blue)", why: "Partie dédiée de 20 minutes : calcul mental, fractions, pourcentages, puissances, géométrie rapide." },
+      { subject: "Français", topic: "Compréhension + grammaire", score: 92, color: "var(--red)", why: "Toujours central : lecture précise, réécriture, accords, valeurs des temps, justification." },
+      { subject: "Histoire", topic: "WW2 / Guerre froide", score: 88, color: "var(--amber)", why: "Repères chronologiques très rentables et développement construit possible." },
+      { subject: "Géographie", topic: "France productive et aménagée", score: 84, color: "var(--green)", why: "Espaces productifs, aires urbaines, mobilités, aménagement du territoire, croquis simple." },
+      { subject: "EMC", topic: "Citoyenneté / laïcité", score: 80, color: "var(--violet)", why: "Situation pratique fréquente : droits, devoirs, valeurs, engagement, institutions." },
+      { subject: "Sciences", topic: "Données, unités, formules", score: 78, color: "var(--green)", why: "Le plus rentable : savoir extraire une donnée, appliquer une formule et conclure avec unité." }
+    ];
+
+    const plan = [
+      { date: "11", label: "Aujourd’hui", work: "Maths auto + WW2", tone: "normal" },
+      { date: "12", label: "Vendredi", work: "Français + EMC", tone: "normal" },
+      { date: "13", label: "Samedi", work: "Géo France + sciences", tone: "normal" },
+      { date: "14", label: "Dimanche", work: "Annales courtes", tone: "normal" },
+      { date: "15", label: "Lundi", work: "Maths problèmes", tone: "normal" },
+      { date: "16", label: "Mardi", work: "Rédaction + repères", tone: "normal" },
+      { date: "17", label: "Mercredi", work: "Dates + matériel", tone: "normal" },
+      { date: "18", label: "Jeudi", work: "Brevet", tone: "exam" }
+    ];
+
+    const historyFacts = [
+      ["1er septembre 1939", "Invasion de la Pologne par l’Allemagne : début de la Seconde Guerre mondiale en Europe."],
+      ["18 juin 1940", "Appel du général de Gaulle depuis Londres."],
+      ["22 juin 1940", "Armistice franco-allemand et installation du régime de Vichy."],
+      ["6 juin 1944", "Débarquement allié en Normandie."],
+      ["8 mai 1945", "Capitulation de l’Allemagne nazie en Europe."],
+      ["1947", "Doctrine Truman, plan Marshall et début de la Guerre froide."],
+      ["1948-1949", "Blocus de Berlin."],
+      ["1961", "Construction du mur de Berlin."],
+      ["1962", "Crise des missiles de Cuba et indépendance de l’Algérie."],
+      ["9 novembre 1989", "Chute du mur de Berlin."]
+    ];
+
+    const geoFacts = [
+      ["espace productif", "Espace organisé pour produire des richesses : agriculture, industrie ou services."],
+      ["aire urbaine", "Ensemble formé par un pôle urbain et sa couronne périurbaine."],
+      ["métropolisation", "Concentration des populations, activités et pouvoirs dans les grandes villes."],
+      ["aménagement du territoire", "Action visant à réduire les inégalités et organiser les espaces."],
+      ["DROM", "Territoires ultramarins français avec contraintes d’éloignement et atouts stratégiques."],
+      ["mobilités", "Déplacements de personnes, quotidiens ou à plus longue distance."]
+    ];
+
+    const emcFacts = [
+      ["laïcité", "Neutralité de l’État et liberté de conscience."],
+      ["citoyen", "Personne qui possède des droits politiques et participe à la vie démocratique."],
+      ["démocratie", "Régime où la souveraineté appartient au peuple."],
+      ["discrimination", "Traitement défavorable interdit par la loi sur un critère précis."],
+      ["liberté d’expression", "Droit d’exprimer ses idées dans les limites fixées par la loi."],
+      ["Constitution", "Texte qui organise les pouvoirs et garantit les droits fondamentaux."]
+    ];
+
+    const frenchItems = [
+      { topic: "Homophones", q: "Complète : il ___ révisé ses formules.", answers: ["a", "à", "as", "ha"], correct: "a", explain: "On peut remplacer par “avait” : il avait révisé." },
+      { topic: "Accords", q: "Quelle phrase est correctement accordée ?", answers: ["Les copies sont corrigé.", "Les copies sont corrigées.", "Les copies est corrigées.", "Les copie sont corrigées."], correct: "Les copies sont corrigées.", explain: "Le participe passé employé avec être s’accorde avec le sujet “copies”." },
+      { topic: "Valeurs des temps", q: "Dans “Il marchait quand l’orage éclata”, l’imparfait exprime...", answers: ["une action de premier plan", "une action d’arrière-plan", "un ordre", "une hypothèse"], correct: "une action d’arrière-plan", explain: "L’imparfait installe le décor ; le passé simple marque l’événement." },
+      { topic: "Réécriture", q: "Transforme au pluriel : “Ce cheval rapide franchit l’obstacle.”", answers: ["Ces chevaux rapides franchissent l’obstacle.", "Ces cheval rapides franchit l’obstacle.", "Ce chevaux rapide franchissent l’obstacle.", "Ces chevaux rapide franchit l’obstacle."], correct: "Ces chevaux rapides franchissent l’obstacle.", explain: "Ce devient ces, cheval devient chevaux, rapide s’accorde, franchit devient franchissent." },
+      { topic: "Argumentation", q: "Dans un paragraphe argumenté, l’exemple sert surtout à...", answers: ["décorer la copie", "prouver et préciser l’idée", "remplacer la thèse", "allonger sans raison"], correct: "prouver et préciser l’idée", explain: "Une idée solide s’appuie sur un exemple précis." },
+      { topic: "Compréhension", q: "Pour justifier une réponse sur un texte, il faut d’abord...", answers: ["citer ou reformuler un indice précis", "donner son avis seulement", "écrire plus long", "changer de sujet"], correct: "citer ou reformuler un indice précis", explain: "La justification doit venir du texte ou de l’image." }
+    ];
+
+    const state = loadState();
+    let currentQuestion = null;
+    let activeSubject = "mix";
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        return {
+          answered: saved.answered || 0,
+          correct: saved.correct || 0,
+          streak: saved.streak || 0,
+          seen: Array.isArray(saved.seen) ? saved.seen.slice(-180) : []
+        };
+      } catch {
+        return { answered: 0, correct: 0, streak: 0, seen: [] };
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {
+        // Le site doit rester utilisable même si le stockage local est bloqué.
+      }
+    }
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function choice(items) {
+      return items[rand(0, items.length - 1)];
+    }
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = rand(0, i);
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function unique(items) {
+      return [...new Set(items.map(String))];
+    }
+
+    function makeChoices(correct, distractors) {
+      const options = unique([correct, ...distractors]).slice(0, 4);
+      while (options.length < 4) {
+        const candidate = String(rand(2, 99));
+        if (!options.includes(candidate)) options.push(candidate);
+      }
+      return shuffle(options).map(text => ({ text, correct: text === String(correct) }));
+    }
+
+    function gcd(a, b) {
+      return b === 0 ? Math.abs(a) : gcd(b, a % b);
+    }
+
+    function formatPercent(n) {
+      return `${n} %`;
+    }
+
+    const factories = [
+      {
+        subject: "maths",
+        topic: "Automatismes",
+        weight: 16,
+        make() {
+          const n = rand(4, 15);
+          return q("Maths", "Automatismes", `Quel est le résultat de ${n}² ?`, String(n * n), [n * 2, n * 10, n * n + n, n * n - 1], `${n}² = ${n} × ${n} = ${n * n}.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Pourcentages",
+        weight: 14,
+        make() {
+          const base = choice([40, 50, 60, 80, 120, 150, 200, 240]);
+          const pct = choice([5, 10, 15, 20, 25, 30, 40]);
+          const result = base * pct / 100;
+          return q("Maths", "Pourcentages", `Combien vaut ${pct} % de ${base} ?`, String(result), [result + 5, result * 2, Math.max(1, result - 3), base - result], `${pct} % de ${base} = ${base} × ${pct} / 100 = ${result}.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Fractions",
+        weight: 12,
+        make() {
+          const den = choice([6, 8, 10, 12, 14, 16, 18]);
+          const num = choice([2, 4, 6, 8]);
+          const d = gcd(num, den);
+          const answer = `${num / d}/${den / d}`;
+          return q("Maths", "Fractions", `Simplifie la fraction ${num}/${den}.`, answer, [`${num}/${den / d}`, `${num / d}/${den}`, `${den / d}/${num / d}`, `${num + d}/${den}`], `On divise le numérateur et le dénominateur par ${d}.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Fonctions",
+        weight: 12,
+        make() {
+          const a = rand(2, 6);
+          const b = rand(-5, 9);
+          const x = rand(2, 9);
+          const value = a * x + b;
+          const sign = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+          return q("Maths", "Fonctions", `Si f(x) = ${a}x ${sign}, combien vaut f(${x}) ?`, String(value), [value + a, value - b, a + x + b, value + 2], `On remplace x par ${x} : ${a} × ${x} ${sign} = ${value}.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Probabilités",
+        weight: 11,
+        make() {
+          const red = rand(2, 8);
+          const blue = rand(2, 8);
+          const total = red + blue;
+          const answer = `${red}/${total}`;
+          return q("Maths", "Probabilités", `Dans une urne, il y a ${red} boules rouges et ${blue} boules bleues. Probabilité de tirer une rouge ?`, answer, [`${blue}/${total}`, `${red}/${blue}`, `${total}/${red}`, `${red + 1}/${total}`], `Cas favorables : ${red}. Cas possibles : ${total}. Donc ${answer}.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Pythagore",
+        weight: 10,
+        make() {
+          const triples = [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [7, 24, 25]];
+          const [a, b, c] = choice(triples);
+          return q("Maths", "Pythagore", `Un triangle rectangle a pour côtés de l’angle droit ${a} cm et ${b} cm. Longueur de l’hypoténuse ?`, `${c} cm`, [`${a + b} cm`, `${c - 1} cm`, `${Math.abs(b - a)} cm`, `${c + 2} cm`], `c² = ${a}² + ${b}² = ${a * a + b * b}, donc c = ${c} cm.`);
+        }
+      },
+      {
+        subject: "sciences",
+        topic: "Vitesse",
+        weight: 9,
+        make() {
+          const speed = choice([4, 5, 6, 8, 10, 12]);
+          const time = choice([3, 4, 5, 6]);
+          const distance = speed * time;
+          return q("Sciences", "Vitesse", `Un objet parcourt ${distance} m en ${time} s. Sa vitesse est...`, `${speed} m/s`, [`${distance + time} m/s`, `${time / distance} m/s`, `${distance * time} m/s`, `${speed + 2} m/s`], `v = d / t = ${distance} / ${time} = ${speed} m/s.`);
+        }
+      },
+      {
+        subject: "sciences",
+        topic: "Électricité",
+        weight: 8,
+        make() {
+          const r = choice([5, 10, 20, 25, 50]);
+          const i = choice([0.2, 0.4, 0.5, 0.8, 1]);
+          const u = Number((r * i).toFixed(1));
+          return q("Sciences", "Électricité", `Avec R = ${r} Ω et I = ${i} A, quelle est la tension U ?`, `${u} V`, [`${r + i} V`, `${r / i} V`, `${Math.max(1, u - 2)} V`, `${u + 5} V`], `Loi d’Ohm : U = R × I = ${r} × ${i} = ${u} V.`);
+        }
+      },
+      {
+        subject: "sciences",
+        topic: "SVT",
+        weight: 7,
+        make() {
+          const items = [
+            ["Quel organe assure principalement les échanges gazeux avec le sang ?", "Les poumons", ["Le foie", "L’estomac", "Le rein"], "Les alvéoles pulmonaires permettent les échanges entre l’air et le sang."],
+            ["Quel support porte l’information génétique dans le noyau ?", "L’ADN", ["Le plasma", "Le dioxygène", "Le glucose"], "L’ADN porte l’information génétique sous forme de gènes."],
+            ["Dans une chaîne alimentaire, un producteur primaire est souvent...", "un végétal chlorophyllien", ["un prédateur", "un parasite", "un décomposeur uniquement"], "Les végétaux produisent de la matière organique grâce à la photosynthèse."]
+          ];
+          const item = choice(items);
+          return q("Sciences", "SVT", item[0], item[1], item[2], item[3]);
+        }
+      },
+      {
+        subject: "francais",
+        topic: "Français",
+        weight: 13,
+        make() {
+          const item = choice(frenchItems);
+          return q("Français", item.topic, item.q, item.correct, item.answers.filter(a => a !== item.correct), item.explain);
+        }
+      },
+      {
+        subject: "histoire",
+        topic: "Repères",
+        weight: 11,
+        make() {
+          const [date, meaning] = choice(historyFacts);
+          const wrong = shuffle(historyFacts.filter(f => f[0] !== date).map(f => f[0])).slice(0, 3);
+          return q("Histoire-Géo", "Repères", `${meaning} Quelle date faut-il retenir ?`, date, wrong, `${date} : ${meaning}`);
+        }
+      },
+      {
+        subject: "histoire",
+        topic: "Géographie",
+        weight: 10,
+        make() {
+          const [term, def] = choice(geoFacts);
+          const wrong = shuffle(geoFacts.filter(f => f[0] !== term).map(f => f[0])).slice(0, 3);
+          return q("Histoire-Géo", "Géographie", `${def} Quel est le bon terme ?`, term, wrong, `${term} : ${def}`);
+        }
+      },
+      {
+        subject: "emc",
+        topic: "Citoyenneté",
+        weight: 9,
+        make() {
+          const [term, def] = choice(emcFacts);
+          const wrong = shuffle(emcFacts.filter(f => f[0] !== term).map(f => f[0])).slice(0, 3);
+          return q("EMC", "Citoyenneté", `${def} Quel mot correspond ?`, term, wrong, `${term} : ${def}`);
+        }
+      }
+    ];
+
+    function q(subject, topic, prompt, correct, distractors, explanation) {
+      return {
+        subject,
+        topic,
+        prompt,
+        choices: makeChoices(correct, distractors),
+        answer: String(correct),
+        explanation
+      };
+    }
+
+    function startOfDay(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const days = Math.max(0, Math.ceil((startOfDay(EXAM_DATE) - startOfDay(now)) / DAY));
+      const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+      const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+      document.getElementById("daysLeft").textContent = days;
+      document.getElementById("daysLabel").textContent = days <= 1 ? "jour restant" : "jours restants";
+      document.getElementById("todayLabel").textContent = `${dayNames[now.getDay()]} ${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    }
+
+    function updateStats() {
+      const pct = state.answered ? Math.round(state.correct / state.answered * 100) : 0;
+      document.getElementById("scoreValue").textContent = `${pct}%`;
+      document.getElementById("answeredValue").textContent = state.answered;
+      document.getElementById("streakValue").textContent = state.streak;
+      document.getElementById("seenValue").textContent = state.seen.length;
+      saveState();
+    }
+
+    function renderSubjects() {
+      const wrap = document.getElementById("subjectChips");
+      wrap.innerHTML = subjects.map(s => `<button class="chip ${s.id === activeSubject ? "active" : ""}" type="button" data-subject="${s.id}">${s.label}</button>`).join("");
+      wrap.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", () => {
+          activeSubject = button.dataset.subject;
+          renderSubjects();
+          drawQuestion();
+        });
+      });
+    }
+
+    function renderPriorities() {
+      document.getElementById("priorityGrid").innerHTML = priorities.map(item => `
+        <article class="priority" style="--accent:${item.color};--w:${item.score}%">
+          <div class="tag">${item.subject}</div>
+          <h3>${item.topic}</h3>
+          <div class="bar"><span></span></div>
+          <span class="pill">${item.score}% priorité</span>
+          <p>${item.why}</p>
+        </article>
+      `).join("");
+    }
+
+    function renderPlan() {
+      document.getElementById("planGrid").innerHTML = plan.map(day => `
+        <article class="day ${day.tone === "exam" ? "exam" : ""}">
+          <div class="tag">${day.label}</div>
+          <strong>${day.date}</strong>
+          <span>${day.work}</span>
+        </article>
+      `).join("");
+    }
+
+    function filteredFactories() {
+      if (activeSubject === "mix") return factories;
+      return factories.filter(factory => factory.subject === activeSubject);
+    }
+
+    function weightedFactory() {
+      const list = filteredFactories();
+      const total = list.reduce((sum, factory) => sum + factory.weight, 0);
+      let pick = Math.random() * total;
+      for (const factory of list) {
+        pick -= factory.weight;
+        if (pick <= 0) return factory;
+      }
+      return list[list.length - 1];
+    }
+
+    function signature(question) {
+      return `${question.subject}|${question.topic}|${question.prompt}|${question.answer}`.toLowerCase();
+    }
+
+    function drawQuestion() {
+      let question = null;
+      let sig = "";
+
+      for (let tries = 0; tries < 80; tries += 1) {
+        question = weightedFactory().make();
+        sig = signature(question);
+        if (!state.seen.includes(sig)) break;
+        if (tries === 60) state.seen = state.seen.slice(-50);
+      }
+
+      currentQuestion = question;
+      state.seen.push(sig);
+      state.seen = state.seen.slice(-180);
+      renderQuestion();
+      updateStats();
+    }
+
+    function renderQuestion() {
+      document.getElementById("questionSubject").textContent = currentQuestion.subject;
+      document.getElementById("questionTopic").textContent = currentQuestion.topic;
+      document.getElementById("questionId").textContent = `Variante ${state.seen.length}`;
+      document.getElementById("questionText").textContent = currentQuestion.prompt;
+      document.getElementById("feedback").textContent = "Choisis une réponse.";
+      document.getElementById("feedback").className = "feedback";
+      document.getElementById("engineStatus").textContent = "Sans répétition récente";
+      document.getElementById("answers").innerHTML = currentQuestion.choices.map((choiceItem, index) => `
+        <button class="answer" type="button" data-index="${index}">${choiceItem.text}</button>
+      `).join("");
+
+      document.querySelectorAll(".answer").forEach(button => {
+        button.addEventListener("click", () => answerQuestion(Number(button.dataset.index)));
+      });
+    }
+
+    function answerQuestion(index) {
+      const buttons = [...document.querySelectorAll(".answer")];
+      if (buttons.some(button => button.disabled)) return;
+
+      const selected = currentQuestion.choices[index];
+      buttons.forEach((button, buttonIndex) => {
+        button.disabled = true;
+        if (currentQuestion.choices[buttonIndex].correct) button.classList.add("correct");
+        if (buttonIndex === index && !selected.correct) button.classList.add("wrong");
+      });
+
+      state.answered += 1;
+      if (selected.correct) {
+        state.correct += 1;
+        state.streak += 1;
+        document.getElementById("feedback").className = "feedback ok";
+        document.getElementById("feedback").textContent = `Oui. ${currentQuestion.explanation}`;
+      } else {
+        state.streak = 0;
+        document.getElementById("feedback").className = "feedback no";
+        document.getElementById("feedback").textContent = `Pas tout à fait. Réponse : ${currentQuestion.answer}. ${currentQuestion.explanation}`;
+      }
+      updateStats();
+    }
+
+    function resetStats() {
+      state.answered = 0;
+      state.correct = 0;
+      state.streak = 0;
+      state.seen = [];
+      updateStats();
+      drawQuestion();
+    }
+
+    document.getElementById("nextQuestion").addEventListener("click", drawQuestion);
+    document.getElementById("resetStats").addEventListener("click", resetStats);
+
+    updateCountdown();
+    renderSubjects();
+    renderPriorities();
+    renderPlan();
+    updateStats();
+    drawQuestion();
+    setInterval(updateCountdown, 60 * 1000);
+  </script>
+</body>
+</html>
