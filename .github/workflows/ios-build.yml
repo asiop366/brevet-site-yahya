@@ -47,14 +47,22 @@ jobs:
 
       - name: Package IPA
         run: |
-          mkdir -p "$RUNNER_TEMP/Payload"
-          cp -r "$RUNNER_TEMP/App.xcarchive/Products/Applications/App.app" "$RUNNER_TEMP/Payload/"
-          cd "$RUNNER_TEMP"
-          zip -r App.ipa Payload
+          APP_SRC="$RUNNER_TEMP/App.xcarchive/Products/Applications/App.app"
+          STAGING="$RUNNER_TEMP/ipa-staging"
+          rm -rf "$STAGING"
+          mkdir -p "$STAGING/Payload"
+          # ditto preserves the .app bundle structure (symlinks, resources)
+          ditto "$APP_SRC" "$STAGING/Payload/App.app"
+          cd "$STAGING"
+          # -y keeps symlinks; required for a valid iOS app bundle inside the IPA
+          zip -ry "${STAGING}/Brevet2026.ipa" Payload
+          # Sanity check: IPA must contain Payload/App.app/Info.plist
+          unzip -l "${STAGING}/Brevet2026.ipa" | grep -q "Payload/App.app/Info.plist"
+          ls -lh "${STAGING}/Brevet2026.ipa"
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: brevet2026-ios-ipa
-          path: ${{ runner.temp }}/App.ipa
+          path: ${{ runner.temp }}/ipa-staging/Brevet2026.ipa
           retention-days: 30

@@ -34,9 +34,12 @@ Pour un vrai fichier `.ipa` installable sans App Store.
 
 1. Va sur le repo GitHub : `asiop366/brevet-site-yahya`
 2. Onglet **Actions** → workflow **iOS Build** → dernier run réussi.
-3. Télécharge l'artifact **brevet2026-ios-ipa** (fichier `App.ipa`).
+3. Télécharge l'artifact **brevet2026-ios-ipa** (c'est un `.zip` GitHub).
+4. **Dézippe** ce fichier sur ton PC → tu dois obtenir **`Brevet2026.ipa`** (pas le `.zip` GitHub lui-même).
 
 Ou lance le workflow manuellement : **Actions** → **iOS Build** → **Run workflow**.
+
+> **Important** : un `.ipa` ne s'ouvre pas sur Windows comme un .exe. L'erreur « not in the correct format » apparaît si tu double-cliques dessus sur PC, ou si tu essaies de l'installer depuis l'app **Fichiers** sans outil de sideload.
 
 ### Étape B — Installer AltStore (Windows + iPhone)
 
@@ -48,14 +51,24 @@ Ou lance le workflow manuellement : **Actions** → **iOS Build** → **Run work
 
 ### Étape C — Installer l'app
 
+**Option 1 — Sideloadly (souvent le plus simple sur Windows)**
+
+1. Télécharge **Sideloadly** : https://sideloadly.io
+2. Branche l'iPhone en USB, déverrouille-le, fais confiance au PC.
+3. Glisse **`Brevet2026.ipa`** dans Sideloadly.
+4. Entre ton **Apple ID** → **Start**.
+5. Sideloadly signe et installe l'app directement sur l'iPhone.
+
+**Option 2 — AltStore (sur l'iPhone)**
+
 1. Ouvre **AltStore** sur l'iPhone.
 2. Onglet **My Apps** → **+** (en haut à gauche).
-3. Sélectionne le fichier `App.ipa` (AirDrop depuis le PC, ou via Fichiers iCloud).
+3. Choisis **`Brevet2026.ipa`** (envoie-le via AirDrop, iCloud ou Fichiers).
 4. AltStore signe l'app avec ton Apple ID.
 
-**Chaque semaine** : ouvre AltStore sur le même Wi‑Fi qu'AltServer sur le PC pour rafraîchir l'app.
+**Chaque semaine** : rafraîchis l'app dans Sideloadly ou AltStore (Wi‑Fi + AltServer pour AltStore).
 
-Alternative : **SideStore** (https://sidestore.io) — même principe, sans PC allumé en permanence.
+Alternative : **SideStore** (https://sidestore.io) — même principe qu'AltStore.
 
 ---
 
@@ -85,6 +98,7 @@ npx cap open ios       # ouvre Xcode (Mac uniquement)
 | Problème | Solution |
 |----------|----------|
 | PWA ne s'installe pas | Utilise Safari, pas Chrome |
-| .ipa refuse de s'installer | Vérifie que l'IPA est bien signé par AltStore |
-| App expirée après 7 jours | Rafraîchis dans AltStore (Wi‑Fi + AltServer) |
+| « Not in the correct format » | Ne double-clique pas le .ipa sur PC. Dézippe l'artifact GitHub, utilise **Sideloadly** ou **AltStore**, pas l'app Fichiers seule |
+| .ipa refuse de s'installer | Télécharge le **dernier** build Actions (après correction du packaging) |
+| App expirée après 7 jours | Rafraîchis dans Sideloadly / AltStore |
 | Score perdu | Données dans localStorage — ne pas supprimer l'app |
