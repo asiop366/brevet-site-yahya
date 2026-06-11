@@ -381,17 +381,17 @@
     }
 
     function getSubjectBannerClass(question) {
-      if (question.topic === "Géographie") return "quiz-subject-banner--geo";
-      if (question.topic === "Physique") return "quiz-subject-banner--physique";
-      if (question.topic === "SVT") return "quiz-subject-banner--svt";
+      if (question.topic === "Géographie") return "quiz-subject-pill--geo";
+      if (question.topic === "Physique") return "quiz-subject-pill--physique";
+      if (question.topic === "SVT") return "quiz-subject-pill--svt";
       const map = {
-        Maths: "quiz-subject-banner--maths",
-        Français: "quiz-subject-banner--francais",
-        "Histoire-Géo": "quiz-subject-banner--histoire",
-        EMC: "quiz-subject-banner--emc",
-        Sciences: "quiz-subject-banner--sciences"
+        Maths: "quiz-subject-pill--maths",
+        Français: "quiz-subject-pill--francais",
+        "Histoire-Géo": "quiz-subject-pill--histoire",
+        EMC: "quiz-subject-pill--emc",
+        Sciences: "quiz-subject-pill--sciences"
       };
-      return map[question.subject] || "quiz-subject-banner--mix";
+      return map[question.subject] || "quiz-subject-pill--mix";
     }
 
     function formatSubjectList(subjectIds) {
@@ -410,12 +410,12 @@
       const card = document.getElementById("dailyCard");
       const btn = document.getElementById("startDaily");
       document.getElementById("dailyPlanWork").textContent = todayPlan.work;
-      document.getElementById("dailyPlanDate").textContent = `${todayPlan.date} juin`;
+      document.getElementById("dailyPlanDate").textContent = `${todayPlan.date} juin · ${todayPlan.label}`;
       const subjects = todayPlan.subjects?.length ? todayPlan.subjects : ["mix"];
       document.getElementById("dailySubjectList").textContent = formatSubjectList(subjects);
       document.getElementById("dailyPlanMeta").textContent =
         `${DAILY_QUESTION_COUNT} questions aléatoires · ${formatSubjectList(subjects)}`;
-      card.classList.toggle("mode-card--exam", todayPlan.tone === "exam");
+      card.classList.toggle("action-tile--exam", todayPlan.tone === "exam");
       btn.disabled = todayPlan.tone === "exam";
     }
 
@@ -503,7 +503,7 @@
       const pct = total ? Math.round(queueCorrect / total * 100) : 0;
       const banner = document.getElementById("questionSubjectBanner");
       banner.textContent = queueSummaryTitle;
-      banner.className = "quiz-subject-banner quiz-subject-banner--mix";
+      banner.className = "quiz-subject-pill quiz-subject-pill--mix";
       document.getElementById("questionSubject").textContent = "Terminé";
       document.getElementById("questionTopic").textContent = `${queueCorrect}/${total}`;
       document.getElementById("questionId").textContent = "100%";
@@ -530,10 +530,10 @@
       document.getElementById("daysLeft").textContent = days;
       document.getElementById("daysLabel").textContent = days <= 1 ? "jour" : "jours";
       document.getElementById("todayLabel").textContent = `${dayNames[now.getDay()]} ${now.getDate()} ${monthNames[now.getMonth()]}`;
-      const ring = document.getElementById("countdownRing");
-      if (ring) {
-        const pct = Math.min(1, days / 30);
-        ring.style.strokeDashoffset = String(327 * (1 - pct));
+      const bar = document.getElementById("countdownBar");
+      if (bar) {
+        const pct = Math.min(100, Math.max(0, (1 - days / 30) * 100));
+        bar.style.width = `${pct}%`;
       }
       updateHomeDaily();
     }
@@ -600,15 +600,14 @@
         EMC: "var(--emc)",
         Sciences: "var(--sciences)"
       };
-      document.getElementById("priorityGrid").innerHTML = priorities.map((item, i) => `
-        <article class="priority-item" style="--p-color:${colors[item.subject] || "var(--accent)"}">
-          <span class="priority-rank">${i + 1}</span>
-          <div class="priority-body">
-            <div class="timeline-meta">${item.subject} · ${item.score}%</div>
-            <h3>${item.topic}</h3>
-            <p>${item.why}</p>
-            <div class="priority-bar"><span style="width:${item.score}%"></span></div>
+      document.getElementById("priorityGrid").innerHTML = priorities.map((item) => `
+        <article class="prio-card" style="--p-color:${colors[item.subject] || "var(--ink-3)"}">
+          <div class="prio-head">
+            <span class="prio-subject">${item.subject}</span>
+            <span class="prio-score">${item.score}%</span>
           </div>
+          <h3 class="prio-title">${item.topic}</h3>
+          <p class="prio-why">${item.why}</p>
         </article>
       `).join("");
     }
@@ -618,13 +617,16 @@
       document.getElementById("planGrid").innerHTML = plan.map(day => {
         const isToday = Number(day.date) === today;
         const isExam = day.tone === "exam";
-        const cls = ["timeline-item", isToday ? "timeline-item--today" : "", isExam ? "timeline-item--exam" : ""].filter(Boolean).join(" ");
+        const cls = ["plan-card", isToday ? "plan-card--today" : "", isExam ? "plan-card--exam" : ""].filter(Boolean).join(" ");
         return `
           <article class="${cls}">
-            <div class="timeline-dot"></div>
-            <div class="timeline-body">
-              <div class="timeline-meta">${day.label} · ${day.date} juin</div>
-              <div class="timeline-work">${day.work}</div>
+            <div class="plan-date">
+              <span class="plan-date-num">${day.date}</span>
+              <span class="plan-date-mon">juin</span>
+            </div>
+            <div class="plan-body">
+              <div class="plan-label">${day.label}</div>
+              <div class="plan-work">${day.work}</div>
             </div>
           </article>
         `;
@@ -681,7 +683,7 @@
       const displayName = getSubjectDisplayName(currentQuestion);
       const banner = document.getElementById("questionSubjectBanner");
       banner.textContent = displayName;
-      banner.className = `quiz-subject-banner ${getSubjectBannerClass(currentQuestion)}`;
+      banner.className = `quiz-subject-pill ${getSubjectBannerClass(currentQuestion)}`;
 
       document.getElementById("questionSubject").textContent = displayName;
       document.getElementById("questionTopic").textContent = currentQuestion.topic;

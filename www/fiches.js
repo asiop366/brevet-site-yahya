@@ -92,8 +92,8 @@
     wrap.innerHTML = FICHES.map(f => `
       <button class="fiche-card fiche-card--${f.id}" type="button" data-fiche="${f.id}">
         <span class="fiche-card-subject">${f.subject}</span>
-        <span class="fiche-card-tag">${f.tag}</span>
-        <span class="fiche-card-count">${f.cards.length} points clés</span>
+        <span class="fiche-card-tag">${f.tag} · ${f.cards.length} cartes</span>
+        <span class="fiche-card-count">›</span>
       </button>
     `).join("");
     wrap.querySelectorAll("button").forEach(btn => {
@@ -127,34 +127,31 @@
     if (!deck) return;
     const card = deck.cards[index];
     const total = deck.cards.length;
-    const flipEl = document.getElementById("ficheFlip");
+    const flipBtn = document.getElementById("ficheFlip");
 
     document.getElementById("ficheSubject").textContent = deck.subject;
     document.getElementById("ficheProgress").textContent = `${index + 1} / ${total}`;
     document.getElementById("ficheTitle").textContent = card.title;
     document.getElementById("ficheFront").textContent = card.front;
     document.getElementById("ficheBack").textContent = card.back;
-    flipEl.classList.remove("fiche-flip--revealed", "fiche-flip--slide");
-    void flipEl.offsetWidth;
-    flipEl.classList.add("fiche-flip--slide");
-    if (flipped) flipEl.classList.add("fiche-flip--revealed");
-    document.getElementById("ficheHint").textContent = flipped ? "Appuie pour revoir la question" : "Appuie pour révéler la réponse";
+    flipBtn.classList.toggle("flash-card--flip", flipped);
+    document.getElementById("ficheHint").textContent = flipped ? "Tape pour revoir la question" : "Tape pour retourner";
 
     document.getElementById("fichePrev").disabled = index === 0;
-    document.getElementById("ficheNext").textContent = index >= total - 1 ? "Terminer" : "Suivant";
+    document.getElementById("ficheNext").textContent = index >= total - 1 ? "Terminer ✓" : "Suivant →";
 
-    const dots = document.getElementById("ficheDots");
-    dots.innerHTML = deck.cards.map((_, i) =>
-      `<span class="fiche-dot${i === index ? " fiche-dot--active" : ""}${i < index ? " fiche-dot--done" : ""}"></span>`
-    ).join("");
+    document.getElementById("ficheDots").innerHTML = deck.cards.map((_, i) => {
+      const cls = i === index ? "active" : i < index ? "done" : "";
+      return `<span class="${cls}"></span>`;
+    }).join("");
   }
 
   function toggleFlip() {
     ficheState.flipped = !ficheState.flipped;
-    document.getElementById("ficheFlip").classList.toggle("fiche-flip--revealed", ficheState.flipped);
+    document.getElementById("ficheFlip").classList.toggle("flash-card--flip", ficheState.flipped);
     document.getElementById("ficheHint").textContent = ficheState.flipped
-      ? "Appuie pour revoir la question"
-      : "Appuie pour révéler la réponse";
+      ? "Tape pour revoir la question"
+      : "Tape pour retourner";
   }
 
   function nextFicheCard() {

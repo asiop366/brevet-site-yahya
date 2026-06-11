@@ -8,8 +8,8 @@
 
     const plugins = cap.Plugins || {};
     if (plugins.StatusBar) {
-      plugins.StatusBar.setStyle({ style: "DARK" }).catch(function () {});
-      plugins.StatusBar.setBackgroundColor({ color: "#09090b" }).catch(function () {});
+      plugins.StatusBar.setStyle({ style: "LIGHT" }).catch(function () {});
+      plugins.StatusBar.setBackgroundColor({ color: "#F4EFE6" }).catch(function () {});
     }
     if (plugins.SplashScreen) {
       plugins.SplashScreen.hide().catch(function () {});

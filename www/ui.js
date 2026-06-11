@@ -9,19 +9,18 @@
 
   window.showView = function (name) {
     Object.values(viewMap).forEach((id) => {
-      const el = document.getElementById(id);
-      el.classList.remove("view--active", "view--enter");
+      document.getElementById(id).classList.remove("view--active", "view--enter", "view--entered");
     });
     const next = document.getElementById(viewMap[name]);
     next.classList.add("view--active", "view--enter");
     requestAnimationFrame(() => next.classList.add("view--entered"));
-    document.querySelectorAll(".tab").forEach((tab) => {
-      tab.classList.toggle("tab--active", tab.dataset.view === name);
+    document.querySelectorAll(".dock-item").forEach((item) => {
+      item.classList.toggle("dock-item--active", item.dataset.view === name);
     });
   };
 
-  document.querySelectorAll(".tab").forEach((tab) => {
-    tab.addEventListener("click", () => showView(tab.dataset.view));
+  document.querySelectorAll(".dock-item").forEach((item) => {
+    item.addEventListener("click", () => showView(item.dataset.view));
   });
 
   document.getElementById("startQuiz").addEventListener("click", () => showView("quiz"));
@@ -44,7 +43,7 @@
 
   if (typeof window.initFiches === "function") window.initFiches();
 
-  if ("serviceWorker" in navigator) {
+  if ("serviceWorker" in navigator && !window.Capacitor?.isNativePlatform?.()) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 

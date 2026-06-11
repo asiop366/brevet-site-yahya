@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#09090b">
+  <meta name="theme-color" content="#F4EFE6">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Brevet 2026">
   <title>Brevet 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -16,203 +19,176 @@
 <body>
   <div class="app" id="app">
 
-    <!-- ═══ ACCUEIL ═══ -->
+    <!-- ACCUEIL -->
     <section class="view view--active" id="view-home" data-view="home">
-      <div class="home-hero">
-        <p class="home-greeting" id="todayLabel">Bonjour</p>
-        <h1 class="home-title">Prêt pour<br>le brevet ?</h1>
-        <div class="countdown-ring-wrap">
-          <svg class="countdown-ring" viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="ring-bg" cx="60" cy="60" r="52"/>
-            <circle class="ring-fill" id="countdownRing" cx="60" cy="60" r="52"/>
-          </svg>
-          <div class="countdown-center">
-            <span class="countdown-num" id="daysLeft">—</span>
+      <header class="screen-top">
+        <p class="screen-date" id="todayLabel">Bonjour</p>
+        <h1 class="screen-title">Brevet <em>2026</em></h1>
+      </header>
+
+      <div class="countdown-card">
+        <span class="countdown-label">Avant l'examen</span>
+        <div class="countdown-row">
+          <span class="countdown-num" id="daysLeft">—</span>
+          <div class="countdown-side">
             <span class="countdown-unit" id="daysLabel">jours</span>
+            <span class="countdown-exam">18 juin · AEFE Maroc</span>
           </div>
         </div>
-        <p class="countdown-date">Brevet · 18 juin 2026 · AEFE Maroc</p>
+        <div class="countdown-track"><div class="countdown-fill" id="countdownBar"></div></div>
       </div>
 
-      <article class="mode-card mode-card--daily" id="dailyCard">
-        <div class="mode-card-head">
-          <span class="mode-badge">Activité du jour</span>
-          <span class="mode-date" id="dailyPlanDate">—</span>
-        </div>
-        <p class="mode-work" id="dailyPlanWork">—</p>
-        <p class="mode-meta" id="dailyPlanMeta">45 questions · matières du planning</p>
-        <button class="mode-btn" type="button" id="startDaily">
-          <span class="mode-btn-text">
-            <strong>QCM du jour</strong>
-            <small id="dailySubjectList">Maths · Histoire</small>
-          </span>
-          <span class="mode-btn-count">45</span>
-        </button>
-      </article>
+      <div class="action-stack">
+        <article class="action-tile action-tile--daily" id="dailyCard">
+          <div class="action-tile-icon">☀️</div>
+          <div class="action-tile-body">
+            <span class="action-tile-tag" id="dailyPlanDate">—</span>
+            <h2 class="action-tile-title" id="dailyPlanWork">—</h2>
+            <p class="action-tile-sub" id="dailyPlanMeta">45 questions</p>
+            <p class="action-tile-mat" id="dailySubjectList">Maths · Histoire</p>
+          </div>
+          <button class="action-tile-go" type="button" id="startDaily">
+            <span>Go</span>
+            <small>45</small>
+          </button>
+        </article>
 
-      <article class="mode-card mode-card--ultimate">
-        <div class="mode-card-head">
-          <span class="mode-badge mode-badge--ultimate">Session Ultime</span>
-          <span class="mode-kbd">V</span>
-        </div>
-        <p class="mode-work">Toutes les matières</p>
-        <p class="mode-meta">100 questions aléatoires · couverture totale du brevet</p>
-        <button class="mode-btn mode-btn--outline" type="button" id="startUltimate">
-          <span class="mode-btn-text">
-            <strong>Lancer la Session Ultime</strong>
-            <small>Maths · Français · Histoire · EMC · Sciences</small>
-          </span>
-          <span class="mode-btn-count">100</span>
-        </button>
-      </article>
-
-      <div class="stats-row">
-        <div class="stat-chip">
-          <span class="stat-val" id="scoreValue">0%</span>
-          <span class="stat-lbl">Score</span>
-        </div>
-        <div class="stat-chip">
-          <span class="stat-val" id="answeredValue">0</span>
-          <span class="stat-lbl">Réponses</span>
-        </div>
-        <div class="stat-chip">
-          <span class="stat-val" id="streakValue">0</span>
-          <span class="stat-lbl">Série</span>
-        </div>
-        <div class="stat-chip">
-          <span class="stat-val" id="seenValue">0</span>
-          <span class="stat-lbl">Vues</span>
-        </div>
+        <article class="action-tile action-tile--ultimate">
+          <div class="action-tile-icon">⚡</div>
+          <div class="action-tile-body">
+            <span class="action-tile-tag">Session Ultime · touche V</span>
+            <h2 class="action-tile-title">Toutes les matières</h2>
+            <p class="action-tile-sub">100 questions · annales DNB</p>
+          </div>
+          <button class="action-tile-go action-tile-go--dark" type="button" id="startUltimate">
+            <span>Go</span>
+            <small>100</small>
+          </button>
+        </article>
       </div>
 
-      <button class="btn-secondary" type="button" id="startQuiz">Réviser par matière</button>
-      <button class="btn-ghost" type="button" id="resetStats">Remettre les stats à zéro</button>
+      <div class="metric-strip">
+        <div class="metric-pill"><strong id="scoreValue">0%</strong><span>Score</span></div>
+        <div class="metric-pill"><strong id="answeredValue">0</strong><span>Réponses</span></div>
+        <div class="metric-pill"><strong id="streakValue">0</strong><span>Série</span></div>
+        <div class="metric-pill"><strong id="seenValue">0</strong><span>Vues</span></div>
+      </div>
+
+      <button class="link-btn" type="button" id="startQuiz">Parcourir les matières →</button>
+      <button class="link-btn link-btn--muted" type="button" id="resetStats">Remettre les stats à zéro</button>
     </section>
 
-    <!-- ═══ QUIZ — choix matière ═══ -->
+    <!-- QUIZ -->
     <section class="view" id="view-quiz" data-view="quiz">
-      <header class="view-header">
-        <h2>Réviser</h2>
-        <p>Choisis une matière pour une session libre</p>
+      <header class="screen-top screen-top--compact">
+        <h1 class="screen-title">Quiz</h1>
+        <p class="screen-lead">Choisis une matière</p>
       </header>
-      <div class="subject-grid" id="subjectGrid"></div>
+      <div class="subject-scroll" id="subjectGrid"></div>
     </section>
 
-    <!-- ═══ FICHES ═══ -->
+    <!-- FICHES -->
     <section class="view" id="view-fiches" data-view="fiches">
-      <header class="view-header">
-        <h2>Fiches</h2>
-        <p>Sujets probables · annales DNB 2021–2025</p>
+      <header class="screen-top screen-top--compact">
+        <h1 class="screen-title">Fiches</h1>
+        <p class="screen-lead">Annales 2021–2025 · SVT + Physique 2026</p>
       </header>
-      <p class="fiche-intro">Thèmes repérés dans les sujets DNB 2021–2025 (Éduscol, académies). Épreuve sciences 2026 : <strong>SVT + Physique</strong>. Appuie sur une fiche pour retourner la carte.</p>
-      <div class="fiche-grid" id="ficheGrid"></div>
+      <div class="fiche-list" id="ficheGrid"></div>
     </section>
 
-    <!-- ═══ QUIZ — session plein écran ═══ -->
+    <!-- QUIZ SESSION -->
     <div class="quiz-session" id="quizSession" hidden>
-      <header class="quiz-bar">
-        <button class="icon-btn" type="button" id="quizBack" aria-label="Retour">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <div class="quiz-progress-track">
-          <div class="quiz-progress-fill" id="quizProgressBar"></div>
+      <header class="quiz-top">
+        <button class="round-btn" type="button" id="quizBack" aria-label="Retour">←</button>
+        <div class="quiz-top-center">
+          <span class="quiz-subject-pill" id="questionSubjectBanner">Maths</span>
+          <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quizProgressBar"></div></div>
         </div>
-        <span class="quiz-counter" id="questionId">Q1</span>
+        <span class="quiz-step" id="questionId">1/45</span>
       </header>
 
       <div class="quiz-content">
-        <div class="quiz-subject-banner" id="questionSubjectBanner">Maths</div>
-        <div class="quiz-tags">
-          <span class="quiz-tag" id="questionSubject">Maths</span>
-          <span class="quiz-tag quiz-tag--muted" id="questionTopic">Sujet</span>
-        </div>
+        <p class="quiz-topic" id="questionTopic">Sujet</p>
         <h2 class="quiz-question" id="questionText">…</h2>
-        <div class="quiz-answers" id="answers"></div>
+        <div class="quiz-answers quiz-answers--grid" id="answers"></div>
         <div class="quiz-feedback" id="feedback" hidden></div>
       </div>
 
-      <footer class="quiz-footer">
-        <button class="btn-primary btn-primary--compact" type="button" id="nextQuestion" disabled>Suivant</button>
+      <footer class="quiz-foot">
+        <button class="pill-btn pill-btn--wide" type="button" id="nextQuestion" disabled>Suivant</button>
       </footer>
+      <span id="questionSubject" hidden></span>
     </div>
 
-    <!-- ═══ FICHE — session plein écran ═══ -->
+    <!-- FICHE SESSION -->
     <div class="fiche-session" id="ficheSession" hidden>
-      <header class="fiche-bar">
-        <button class="icon-btn" type="button" id="ficheBackBtn" aria-label="Retour">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <span class="fiche-bar-subject" id="ficheSubject">Maths</span>
-        <span class="fiche-bar-progress" id="ficheProgress">1 / 7</span>
+      <header class="fiche-top">
+        <button class="round-btn" type="button" id="ficheBackBtn" aria-label="Retour">←</button>
+        <span class="fiche-top-subject" id="ficheSubject">Maths</span>
+        <span class="fiche-top-step" id="ficheProgress">1 / 7</span>
       </header>
 
-      <div class="fiche-body">
-        <p class="fiche-title" id="ficheTitle">Automatismes</p>
-        <button class="fiche-flip" type="button" id="ficheFlip">
-          <div class="fiche-flip-inner">
-            <div class="fiche-face fiche-face--front">
-              <span class="fiche-face-label">Question</span>
+      <div class="fiche-main">
+        <p class="fiche-chapter" id="ficheTitle">Automatismes</p>
+        <button class="flash-card" type="button" id="ficheFlip">
+          <div class="flash-card-inner" id="ficheFlipInner">
+            <div class="flash-face flash-face--q">
+              <span class="flash-label">Question</span>
               <p id="ficheFront">…</p>
             </div>
-            <div class="fiche-face fiche-face--back">
-              <span class="fiche-face-label">À retenir</span>
+            <div class="flash-face flash-face--a">
+              <span class="flash-label">À retenir</span>
               <p id="ficheBack">…</p>
             </div>
           </div>
         </button>
-        <p class="fiche-hint" id="ficheHint">Appuie pour révéler la réponse</p>
-        <div class="fiche-dots" id="ficheDots"></div>
+        <p class="flash-hint" id="ficheHint">Tape pour retourner</p>
+        <div class="flash-dots" id="ficheDots"></div>
       </div>
 
-      <footer class="fiche-footer">
-        <button class="btn-secondary btn-secondary--compact" type="button" id="fichePrev">Précédent</button>
-        <button class="btn-primary btn-primary--compact" type="button" id="ficheNext">Suivant</button>
+      <footer class="fiche-foot">
+        <button class="pill-btn pill-btn--ghost" type="button" id="fichePrev">← Préc.</button>
+        <button class="pill-btn" type="button" id="ficheNext">Suivant →</button>
       </footer>
     </div>
 
-    <!-- ═══ PLANNING ═══ -->
+    <!-- PLANNING -->
     <section class="view" id="view-plan" data-view="plan">
-      <header class="view-header">
-        <h2>Planning</h2>
-        <p>Dernière ligne droite · 11 → 18 juin</p>
+      <header class="screen-top screen-top--compact">
+        <h1 class="screen-title">Planning</h1>
+        <p class="screen-lead">11 → 18 juin</p>
       </header>
-      <div class="timeline" id="planGrid"></div>
+      <div class="plan-list" id="planGrid"></div>
     </section>
 
-    <!-- ═══ INFOS ═══ -->
+    <!-- INFOS -->
     <section class="view" id="view-info" data-view="info">
-      <header class="view-header">
-        <h2>Priorités</h2>
-        <p>Ce qui revient le plus au brevet</p>
+      <header class="screen-top screen-top--compact">
+        <h1 class="screen-title">Priorités</h1>
+        <p class="screen-lead">Ce qui tombe le plus</p>
       </header>
-      <div class="priority-list" id="priorityGrid"></div>
-      <div class="sources-block">
-        <p>Analyse des thèmes récurrents DNB 2021–2025 · sciences 2026 : <strong>SVT + Physique</strong> · AEFE Maroc · brevet le <strong>18 juin 2026</strong>.</p>
-        <p><a href="https://www.education.gouv.fr/le-diplome-national-du-brevet-10613" target="_blank" rel="noreferrer">Format DNB 2026</a> · <a href="https://eduscol.education.gouv.fr/5202/preparer-le-diplome-national-du-brevet-dnb-avec-les-sujets-des-annales" target="_blank" rel="noreferrer">Annales Éduscol</a></p>
+      <div class="prio-list" id="priorityGrid"></div>
+      <div class="note-box">
+        <p>Annales DNB 2021–2025 · sciences 2026 : <strong>SVT + Physique</strong> · brevet <strong>18 juin</strong>.</p>
       </div>
     </section>
 
-    <!-- Tab bar -->
-    <nav class="tabbar" id="tabbar" aria-label="Navigation">
-      <button class="tab tab--active" type="button" data-view="home">
-        <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
-        <span>Accueil</span>
+    <!-- DOCK -->
+    <nav class="dock" id="tabbar" aria-label="Navigation">
+      <button class="dock-item dock-item--active" type="button" data-view="home" aria-label="Accueil">
+        <span class="dock-icon">🏠</span>
       </button>
-      <button class="tab" type="button" data-view="quiz">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
-        <span>Quiz</span>
+      <button class="dock-item" type="button" data-view="quiz" aria-label="Quiz">
+        <span class="dock-icon">✦</span>
       </button>
-      <button class="tab" type="button" data-view="fiches">
-        <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
-        <span>Fiches</span>
+      <button class="dock-item" type="button" data-view="fiches" aria-label="Fiches">
+        <span class="dock-icon">📋</span>
       </button>
-      <button class="tab" type="button" data-view="plan">
-        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
-        <span>Planning</span>
+      <button class="dock-item" type="button" data-view="plan" aria-label="Planning">
+        <span class="dock-icon">📅</span>
       </button>
-      <button class="tab" type="button" data-view="info">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></svg>
-        <span>Infos</span>
+      <button class="dock-item" type="button" data-view="info" aria-label="Infos">
+        <span class="dock-icon">◎</span>
       </button>
     </nav>
   </div>
