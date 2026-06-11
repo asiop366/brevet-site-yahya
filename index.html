@@ -3,505 +3,987 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brevet 2026 - Révisions</title>
+  <title>Brevet 2026 — Révisions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f7f5f0;
-      --panel: #ffffff;
-      --ink: #161616;
-      --muted: #62615d;
-      --quiet: #ebe7dd;
-      --line: #d8d2c4;
-      --blue: #245b9d;
-      --green: #20744c;
-      --red: #b43d32;
-      --amber: #ad6a19;
-      --violet: #7353a4;
-      --radius: 8px;
-      --shadow: 0 18px 46px rgba(32, 30, 26, 0.08);
+      --bg: #f4f1eb;
+      --bg-warm: #ebe6dc;
+      --surface: #ffffff;
+      --surface-2: #faf9f6;
+      --ink: #1a1d26;
+      --ink-soft: #3d4454;
+      --muted: #6b7289;
+      --line: #e2ddd3;
+      --line-strong: #cfc8ba;
+
+      --navy: #1e3a5f;
+      --navy-light: #2d5280;
+      --gold: #c9922a;
+      --gold-soft: #f5ead4;
+
+      --maths: #2563eb;
+      --maths-bg: #eff6ff;
+      --francais: #dc2626;
+      --francais-bg: #fef2f2;
+      --histoire: #d97706;
+      --histoire-bg: #fffbeb;
+      --emc: #7c3aed;
+      --emc-bg: #f5f3ff;
+      --sciences: #059669;
+      --sciences-bg: #ecfdf5;
+      --mix: #1a1d26;
+
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --error: #b91c1c;
+      --error-bg: #fef2f2;
+      --exam: #be123c;
+      --exam-bg: #fff1f2;
+
+      --radius-sm: 10px;
+      --radius: 16px;
+      --radius-lg: 22px;
+      --shadow-sm: 0 1px 3px rgba(26, 29, 38, 0.06);
+      --shadow: 0 4px 24px rgba(26, 29, 38, 0.07);
+      --shadow-lg: 0 12px 48px rgba(26, 29, 38, 0.1);
+      --font-display: "Fraunces", Georgia, serif;
+      --font-body: "DM Sans", system-ui, sans-serif;
+      --header-h: 68px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 20px); }
 
     body {
       margin: 0;
-      background:
-        linear-gradient(180deg, rgba(36, 91, 157, 0.11), transparent 340px),
-        var(--bg);
+      background: var(--bg);
       color: var(--ink);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.5;
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    button,
-    input {
-      font: inherit;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(30, 58, 95, 0.09), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(201, 146, 42, 0.06), transparent);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    button {
-      cursor: pointer;
+    button, input { font: inherit; }
+    button { cursor: pointer; border: none; background: none; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Header ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--header-h);
+      background: rgba(244, 241, 235, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
     }
 
-    a {
-      color: inherit;
-    }
-
-    .shell {
-      width: min(1220px, calc(100% - 32px));
+    .header-inner {
+      max-width: 1140px;
       margin: 0 auto;
-      padding: 26px 0 54px;
-    }
-
-    .topbar {
+      padding: 0 24px;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 22px;
+      gap: 20px;
     }
 
     .brand {
-      display: grid;
-      gap: 2px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .kicker,
-    .tag,
-    .metric-label,
-    .source-note,
-    .tiny {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0;
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
+    }
+
+    .brand-text { display: grid; gap: 1px; }
+
+    .brand-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      color: var(--gold);
     }
 
     .brand h1 {
       margin: 0;
-      font-size: 25px;
-      line-height: 1.1;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--ink);
     }
 
     .nav {
       display: flex;
-      gap: 8px;
+      gap: 4px;
+      flex-wrap: wrap;
       justify-content: flex-end;
-      flex-wrap: wrap;
     }
 
-    .nav a,
-    .btn,
-    .chip,
-    .answer {
-      min-height: 40px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--panel);
+    .nav a {
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav a:hover {
+      background: var(--surface);
       color: var(--ink);
-      text-decoration: none;
-      padding: 9px 12px;
-      font-size: 14px;
-      font-weight: 800;
-      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+      box-shadow: var(--shadow-sm);
     }
 
-    .nav a:hover,
-    .btn:hover,
-    .chip:hover,
-    .answer:hover {
-      transform: translateY(-1px);
-      border-color: var(--ink);
+    /* ── Layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
     }
 
-    .btn.primary,
-    .chip.active {
-      background: var(--ink);
-      color: #fff;
-      border-color: var(--ink);
+    .section {
+      margin-top: 56px;
     }
 
-    .btn.ghost {
-      background: transparent;
+    .section:first-child {
+      margin-top: 0;
     }
 
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(280px, 0.72fr) minmax(360px, 1.28fr);
-      gap: 14px;
-      align-items: stretch;
-    }
-
-    .panel,
-    .card,
-    .question,
-    .priority,
-    .day {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .countdown {
-      min-height: 310px;
-      padding: 24px;
-      display: grid;
-      align-content: space-between;
-      gap: 20px;
-    }
-
-    .days {
-      font-size: 92px;
-      font-weight: 900;
-      line-height: 0.9;
-      margin-top: 8px;
-    }
-
-    .pill-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .pill {
+    .section-label {
       display: inline-flex;
       align-items: center;
-      min-height: 29px;
-      padding: 5px 10px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--quiet);
-      font-size: 13px;
-      font-weight: 850;
-      white-space: nowrap;
-    }
-
-    .panel-main {
-      min-height: 310px;
-      padding: 24px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .panel-main h2,
-    .section-head h2,
-    .question h3 {
-      margin: 0;
-      font-size: 24px;
-      line-height: 1.18;
-    }
-
-    .lead {
-      margin: 0;
-      max-width: 72ch;
-      color: var(--muted);
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .metric {
-      min-height: 92px;
-      padding: 14px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--bg);
-      display: grid;
-      align-content: space-between;
       gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
     }
 
-    .metric-value {
-      font-size: 27px;
-      font-weight: 900;
-      line-height: 1;
+    .section-label::before {
+      content: "";
+      width: 18px;
+      height: 2px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--ink);
+    }
+
+    .section-desc {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 58ch;
+      font-size: 14px;
     }
 
     .section-head {
       display: flex;
       justify-content: space-between;
-      align-items: end;
-      gap: 16px;
-      margin: 30px 0 12px;
+      align-items: flex-end;
+      gap: 20px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
     }
 
-    .section-head p {
-      margin: 4px 0 0;
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s, border-color 0.15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+      border-color: var(--line-strong);
+    }
+
+    .btn.primary {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(30, 58, 95, 0.28);
+    }
+
+    .btn.primary:hover {
+      background: var(--navy-light);
+      border-color: var(--navy-light);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border-color: transparent;
       color: var(--muted);
     }
 
-    .practice {
-      display: grid;
-      grid-template-columns: minmax(300px, 0.75fr) minmax(360px, 1.25fr);
-      gap: 14px;
+    .btn.ghost:hover {
+      background: var(--surface);
+      border-color: var(--line);
+      color: var(--ink);
     }
 
-    .card {
-      padding: 18px;
-      box-shadow: none;
+    /* ── Hero ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .countdown-card {
+      background: linear-gradient(160deg, var(--navy) 0%, #152a45 100%);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .countdown-card::after {
+      content: "";
+      position: absolute;
+      top: -40%;
+      right: -30%;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(201, 146, 42, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+
+    .countdown-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+      position: relative;
+    }
+
+    .countdown-number {
+      font-family: var(--font-display);
+      font-size: 88px;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      position: relative;
+    }
+
+    .countdown-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    .countdown-pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .countdown-note {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+      position: relative;
+    }
+
+    .dashboard-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .dashboard-top .date-line {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .dashboard-top h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(20px, 2.5vw, 26px);
+      font-weight: 600;
+      line-height: 1.3;
+      max-width: 46ch;
+    }
+
+    .dashboard-top .lead {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 62ch;
+      line-height: 1.65;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--navy);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Training ── */
+    .practice-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: calc(var(--header-h) + 20px);
+    }
+
+    .sidebar-card h3 {
+      margin: 0 0 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
     .chips {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .chip {
-      min-height: 36px;
-      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 42px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      text-align: left;
+      transition: all 0.15s;
     }
 
-    .question {
-      padding: 22px;
-      box-shadow: none;
-      display: grid;
-      gap: 16px;
+    .chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--line-strong);
+      flex-shrink: 0;
+      transition: background 0.15s;
     }
 
-    .question-top {
+    .chip[data-subject="maths"]::before { background: var(--maths); }
+    .chip[data-subject="francais"]::before { background: var(--francais); }
+    .chip[data-subject="histoire"]::before { background: var(--histoire); }
+    .chip[data-subject="emc"]::before { background: var(--emc); }
+    .chip[data-subject="sciences"]::before { background: var(--sciences); }
+    .chip[data-subject="mix"]::before { background: var(--mix); }
+
+    .chip:hover {
+      border-color: var(--line-strong);
+      background: var(--surface);
+    }
+
+    .chip.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+    }
+
+    .chip.active::before {
+      background: var(--gold) !important;
+    }
+
+    .sidebar-tip {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .sidebar-tip p {
+      margin: 8px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── Question card ── */
+    .question-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .question-header {
       display: flex;
       justify-content: space-between;
-      align-items: start;
-      gap: 12px;
+      align-items: flex-start;
+      gap: 16px;
       flex-wrap: wrap;
+    }
+
+    .question-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-subject {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .badge-topic {
+      background: var(--gold-soft);
+      color: #7a5a12;
+      border: 1px solid #e8d5a8;
+    }
+
+    .badge-variant {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding-top: 4px;
     }
 
     .question-text {
       margin: 0;
-      font-size: 23px;
-      line-height: 1.28;
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2.2vw, 22px);
+      font-weight: 500;
+      line-height: 1.45;
+      color: var(--ink);
     }
 
     .answers {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
     .answer {
-      min-height: 62px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-height: 58px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--line);
+      background: var(--surface-2);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-soft);
       text-align: left;
-      background: #fbfaf7;
       white-space: normal;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+      line-height: 1.45;
     }
 
+    .answer::before {
+      content: attr(data-letter);
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+
+    .answer:hover:not(:disabled) {
+      border-color: var(--navy-light);
+      background: var(--surface);
+      transform: translateY(-1px);
+    }
+
+    .answer:hover:not(:disabled)::before {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+
+    .answer:disabled { cursor: default; }
+
     .answer.correct {
-      border-color: var(--green);
-      background: #eef8f2;
+      border-color: var(--success);
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .answer.correct::before {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
     }
 
     .answer.wrong {
-      border-color: var(--red);
-      background: #fff0ee;
+      border-color: var(--error);
+      background: var(--error-bg);
+      color: var(--error);
+    }
+
+    .answer.wrong::before {
+      background: var(--error);
+      border-color: var(--error);
+      color: #fff;
     }
 
     .feedback {
-      min-height: 52px;
-      border-left: 4px solid var(--line);
-      padding-left: 12px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border-left: 3px solid var(--line-strong);
+      font-size: 14px;
       color: var(--muted);
+      line-height: 1.55;
+      min-height: 48px;
     }
 
     .feedback.ok {
-      border-color: var(--green);
-      color: #164e36;
+      background: var(--success-bg);
+      border-color: var(--success);
+      color: #14532d;
     }
 
     .feedback.no {
-      border-color: var(--red);
-      color: #7e241d;
+      background: var(--error-bg);
+      border-color: var(--error);
+      color: #7f1d1d;
     }
 
-    .question-actions {
+    .question-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       flex-wrap: wrap;
+      padding-top: 4px;
     }
 
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--sciences);
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Priorities ── */
     .priority-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .priority-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
-    }
-
-    .priority {
-      padding: 16px;
-      box-shadow: none;
-      display: grid;
-      gap: 10px;
-      align-content: start;
-      min-height: 190px;
-    }
-
-    .priority h3 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.2;
-      color: var(--accent, var(--ink));
-    }
-
-    .priority p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .bar {
-      height: 8px;
-      border-radius: 999px;
-      background: var(--quiet);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
       overflow: hidden;
     }
 
-    .bar span {
-      display: block;
-      height: 100%;
-      width: var(--w);
-      background: var(--accent, var(--ink));
+    .priority-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent, var(--navy));
     }
 
-    .plan {
-      display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
+    .priority-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .priority-subject {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent, var(--muted));
+    }
+
+    .priority-card h3 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .priority-score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 10px;
     }
 
-    .day {
-      min-height: 146px;
-      padding: 14px;
-      box-shadow: none;
-      display: grid;
-      gap: 8px;
-      align-content: start;
+    .priority-score {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent, var(--navy));
     }
 
-    .day.exam {
-      border-color: var(--red);
-      background: #fff7f5;
+    .bar-track {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--bg-warm);
+      overflow: hidden;
     }
 
-    .day strong {
+    .bar-fill {
       display: block;
-      font-size: 20px;
-      line-height: 1;
+      height: 100%;
+      width: var(--w);
+      background: var(--accent, var(--navy));
+      border-radius: 999px;
+      transition: width 0.6s ease;
     }
 
-    .day span {
-      color: var(--muted);
+    .priority-card p {
+      margin: 0;
       font-size: 13px;
-      font-weight: 650;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
-    .sources {
-      margin-top: 26px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-      display: grid;
+    /* ── Planning ── */
+    .plan-banner {
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
-      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--gold-soft);
+      border: 1px solid #e8d5a8;
       font-size: 13px;
+      font-weight: 600;
+      color: #7a5a12;
     }
 
-    .sources a {
-      color: var(--blue);
-      font-weight: 800;
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 10px;
+      position: relative;
     }
 
-    @media (max-width: 1040px) {
-      .hero,
-      .practice {
-        grid-template-columns: 1fr;
-      }
-
-      .priority-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .plan {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
+    .day-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    @media (max-width: 720px) {
-      .shell {
-        width: min(100% - 22px, 1220px);
-        padding-top: 18px;
-      }
+    .day-card:hover:not(.exam) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
 
-      .topbar,
-      .section-head {
-        align-items: start;
-        flex-direction: column;
-      }
+    .day-card.exam {
+      background: linear-gradient(160deg, var(--exam-bg), #ffe4e6);
+      border-color: #fecdd3;
+      box-shadow: 0 4px 20px rgba(190, 18, 60, 0.12);
+    }
 
-      .nav {
-        justify-content: flex-start;
-      }
+    .day-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
 
-      .days {
-        font-size: 72px;
-      }
+    .day-card.exam .day-label { color: var(--exam); }
 
-      .metrics,
-      .answers,
-      .priority-grid,
-      .plan {
-        grid-template-columns: 1fr;
+    .day-date {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .day-card.exam .day-date { color: var(--exam); }
+
+    .day-work {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .day-card.exam .day-work {
+      color: #9f1239;
+      font-weight: 600;
+    }
+
+    /* ── Sources / Footer ── */
+    .sources-card {
+      margin-top: 56px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .sources-card .section-label { margin-bottom: 4px; }
+
+    .sources-card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .sources-card a {
+      color: var(--navy-light);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .sources-card a:hover { color: var(--navy); }
+
+    .sources-card strong { color: var(--ink-soft); }
+
+    /* ── Responsive ── */
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      .countdown-card { min-height: auto; }
+      .practice-layout { grid-template-columns: 1fr; }
+      .sidebar-card { position: static; }
+      .chips {
+        flex-direction: row;
+        flex-wrap: wrap;
       }
+      .chip { width: auto; }
+      .priority-grid { grid-template-columns: repeat(2, 1fr); }
+      .plan-grid { grid-template-columns: repeat(4, 1fr); }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .page { padding: 20px 16px 48px; }
+      .header-inner { padding: 0 16px; }
+      .nav a { padding: 6px 10px; font-size: 12px; }
+      .countdown-number { font-size: 72px; }
+      .answers { grid-template-columns: 1fr; }
+      .priority-grid { grid-template-columns: 1fr; }
+      .plan-grid { grid-template-columns: repeat(2, 1fr); }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .question-card { padding: 20px; }
+      .dashboard-card { padding: 20px; }
+      .section-head { align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
+  <header class="site-header">
+    <div class="header-inner">
       <div class="brand">
-        <div class="kicker">Brevet 2026</div>
-        <h1>Sprint de révision</h1>
+        <div class="brand-mark" aria-hidden="true">26</div>
+        <div class="brand-text">
+          <div class="brand-kicker">Brevet 2026</div>
+          <h1>Sprint de révision</h1>
+        </div>
       </div>
       <nav class="nav" aria-label="Navigation">
         <a href="#entrainement">Questions</a>
-        <a href="#priorites">Probables</a>
+        <a href="#priorites">Priorités</a>
         <a href="#planning">Planning</a>
         <a href="#sources">Sources</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
+  <div class="page">
     <main>
-      <section class="hero" aria-label="Tableau de bord">
-        <div class="panel countdown">
+      <!-- Hero -->
+      <section class="section hero" aria-label="Tableau de bord">
+        <div class="countdown-card">
           <div>
-            <div class="kicker">Échéance AEFE Maroc</div>
-            <div class="days" id="daysLeft">7</div>
-            <div class="pill-row">
-              <span class="pill" id="daysLabel">jours restants</span>
-              <span class="pill">Jeudi 18 juin 2026</span>
-            </div>
+            <div class="countdown-kicker">Échéance AEFE Maroc</div>
+            <div class="countdown-number" id="daysLeft">7</div>
           </div>
-          <div class="source-note">Date adaptée à ton centre d’examen.</div>
+          <div class="countdown-meta">
+            <span class="countdown-pill" id="daysLabel">jours restants</span>
+            <span class="countdown-pill">Jeudi 18 juin 2026</span>
+            <div class="countdown-note">Date adaptée à ton centre d'examen.</div>
+          </div>
         </div>
 
-        <div class="panel panel-main">
-          <div>
-            <div class="kicker" id="todayLabel">Jeudi 11 juin 2026</div>
+        <div class="dashboard-card">
+          <div class="dashboard-top">
+            <div class="date-line" id="todayLabel">Jeudi 11 juin 2026</div>
             <h2>Un vrai moteur de questions, pas une petite liste répétée.</h2>
             <p class="lead">Les maths et les sciences génèrent des valeurs nouvelles, les réponses sont mélangées, et les questions déjà vues sont évitées pendant la session. Le site reste un simple HTML, donc facile à mettre sur GitHub puis Vercel.</p>
           </div>
-
           <div class="metrics">
             <div class="metric">
               <div class="metric-value" id="scoreValue">0%</div>
@@ -523,72 +1005,77 @@
         </div>
       </section>
 
-      <section id="entrainement">
+      <!-- Training -->
+      <section class="section" id="entrainement">
         <div class="section-head">
           <div>
-            <div class="kicker">Entraînement</div>
-            <h2>Question aléatoire intelligente</h2>
-            <p>Choisis une matière ou laisse le mode mixte travailler les priorités.</p>
+            <div class="section-label">Entraînement</div>
+            <h2 class="section-title">Question aléatoire intelligente</h2>
+            <p class="section-desc">Choisis une matière ou laisse le mode mixte travailler les priorités.</p>
           </div>
           <button class="btn ghost" id="resetStats" type="button">Remettre le score</button>
         </div>
 
-        <div class="practice">
-          <aside class="card">
-            <div class="kicker">Matière</div>
+        <div class="practice-layout">
+          <aside class="sidebar-card">
+            <h3>Matière</h3>
             <div class="chips" id="subjectChips"></div>
-            <div style="height: 16px"></div>
-            <div class="kicker">À viser cette semaine</div>
-            <p class="lead">Automatismes de maths, lecture de documents, repères en histoire-géo, rédaction courte, et vocabulaire EMC. Les probabilités affichées sont des priorités de révision, pas des promesses de sujet.</p>
+            <div class="sidebar-tip">
+              <h3>À viser cette semaine</h3>
+              <p>Automatismes de maths, lecture de documents, repères en histoire-géo, rédaction courte, et vocabulaire EMC. Les probabilités affichées sont des priorités de révision, pas des promesses de sujet.</p>
+            </div>
           </aside>
 
-          <article class="question">
-            <div class="question-top">
-              <div class="pill-row">
-                <span class="pill" id="questionSubject">Mix</span>
-                <span class="pill" id="questionTopic">Sujet</span>
+          <article class="question-card">
+            <div class="question-header">
+              <div class="question-badges">
+                <span class="badge badge-subject" id="questionSubject">Mix</span>
+                <span class="badge badge-topic" id="questionTopic">Sujet</span>
               </div>
-              <span class="tiny" id="questionId">Variante</span>
+              <span class="badge-variant" id="questionId">Variante</span>
             </div>
             <h3 class="question-text" id="questionText">Question</h3>
             <div class="answers" id="answers"></div>
             <div class="feedback" id="feedback">Lance une question pour commencer.</div>
-            <div class="question-actions">
-              <span class="pill" id="engineStatus">Prêt</span>
-              <button class="btn primary" id="nextQuestion" type="button">Nouvelle question</button>
+            <div class="question-footer">
+              <span class="status-pill" id="engineStatus">Prêt</span>
+              <button class="btn primary" id="nextQuestion" type="button">Nouvelle question →</button>
             </div>
           </article>
         </div>
       </section>
 
-      <section id="priorites">
+      <!-- Priorities -->
+      <section class="section" id="priorites">
         <div class="section-head">
           <div>
-            <div class="kicker">Probabilités de révision</div>
-            <h2>Ce qui mérite le plus de temps</h2>
-            <p>Classement construit à partir du format 2026, des sujets zéro/annales et des thèmes qui reviennent souvent dans les entraînements DNB.</p>
+            <div class="section-label">Probabilités de révision</div>
+            <h2 class="section-title">Ce qui mérite le plus de temps</h2>
+            <p class="section-desc">Classement construit à partir du format 2026, des sujets zéro/annales et des thèmes qui reviennent souvent dans les entraînements DNB.</p>
           </div>
         </div>
         <div class="priority-grid" id="priorityGrid"></div>
       </section>
 
-      <section id="planning">
+      <!-- Planning -->
+      <section class="section" id="planning">
         <div class="section-head">
           <div>
-            <div class="kicker">Dernière ligne droite</div>
-            <h2>Planning jusqu’au 18</h2>
+            <div class="section-label">Dernière ligne droite</div>
+            <h2 class="section-title">Planning jusqu'au 18</h2>
           </div>
-          <span class="pill">Mode efficace : court, régulier, corrigé</span>
+          <span class="plan-banner">Mode efficace : court, régulier, corrigé</span>
         </div>
-        <div class="plan" id="planGrid"></div>
+        <div class="plan-grid" id="planGrid"></div>
       </section>
 
-      <section class="sources" id="sources">
-        <div class="kicker">Sources et nuance</div>
-        <div>Cette version est calée sur ton centre AEFE au Maroc : <strong>début du brevet le jeudi 18 juin 2026</strong>. Les dates peuvent différer de la session organisée en France.</div>
-        <div>Format 2026, coefficients, automatismes maths et nouvelles modalités du DNB : <a href="https://www.education.gouv.fr/le-diplome-national-du-brevet-10613" target="_blank" rel="noreferrer">Ministère de l’Éducation nationale</a>.</div>
-        <div>Annales et sujets zéro pour préparer le DNB : <a href="https://eduscol.education.gouv.fr/5202/preparer-le-diplome-national-du-brevet-dnb-avec-les-sujets-des-annales" target="_blank" rel="noreferrer">Éduscol</a>.</div>
-      </section>
+      <!-- Sources -->
+      <footer class="sources-card" id="sources">
+        <div class="section-label">Sources et nuance</div>
+        <p>Cette version est calée sur ton centre AEFE au Maroc : <strong>début du brevet le jeudi 18 juin 2026</strong>. Les dates peuvent différer de la session organisée en France.</p>
+        <p>Format 2026, coefficients, automatismes maths et nouvelles modalités du DNB : <a href="https://www.education.gouv.fr/le-diplome-national-du-brevet-10613" target="_blank" rel="noreferrer">Ministère de l'Éducation nationale</a>.</p>
+        <p>Annales et sujets zéro pour préparer le DNB : <a href="https://eduscol.education.gouv.fr/5202/preparer-le-diplome-national-du-brevet-dnb-avec-les-sujets-des-annales" target="_blank" rel="noreferrer">Éduscol</a>.</p>
+      </footer>
     </main>
   </div>
 
@@ -596,6 +1083,7 @@
     const EXAM_DATE = new Date(2026, 5, 18, 8, 0, 0);
     const DAY = 24 * 60 * 60 * 1000;
     const STORAGE_KEY = "brevet2026-engine-state";
+    const LETTERS = ["A", "B", "C", "D"];
 
     const subjects = [
       { id: "mix", label: "Mix" },
@@ -607,16 +1095,16 @@
     ];
 
     const priorities = [
-      { subject: "Maths", topic: "Automatismes 2026", score: 96, color: "var(--blue)", why: "Partie dédiée de 20 minutes : calcul mental, fractions, pourcentages, puissances, géométrie rapide." },
-      { subject: "Français", topic: "Compréhension + grammaire", score: 92, color: "var(--red)", why: "Toujours central : lecture précise, réécriture, accords, valeurs des temps, justification." },
-      { subject: "Histoire", topic: "WW2 / Guerre froide", score: 88, color: "var(--amber)", why: "Repères chronologiques très rentables et développement construit possible." },
-      { subject: "Géographie", topic: "France productive et aménagée", score: 84, color: "var(--green)", why: "Espaces productifs, aires urbaines, mobilités, aménagement du territoire, croquis simple." },
-      { subject: "EMC", topic: "Citoyenneté / laïcité", score: 80, color: "var(--violet)", why: "Situation pratique fréquente : droits, devoirs, valeurs, engagement, institutions." },
-      { subject: "Sciences", topic: "Données, unités, formules", score: 78, color: "var(--green)", why: "Le plus rentable : savoir extraire une donnée, appliquer une formule et conclure avec unité." }
+      { subject: "Maths", topic: "Automatismes 2026", score: 96, color: "var(--maths)", why: "Partie dédiée de 20 minutes : calcul mental, fractions, pourcentages, puissances, géométrie rapide." },
+      { subject: "Français", topic: "Compréhension + grammaire", score: 92, color: "var(--francais)", why: "Toujours central : lecture précise, réécriture, accords, valeurs des temps, justification." },
+      { subject: "Histoire", topic: "WW2 / Guerre froide", score: 88, color: "var(--histoire)", why: "Repères chronologiques très rentables et développement construit possible." },
+      { subject: "Géographie", topic: "France productive et aménagée", score: 84, color: "var(--sciences)", why: "Espaces productifs, aires urbaines, mobilités, aménagement du territoire, croquis simple." },
+      { subject: "EMC", topic: "Citoyenneté / laïcité", score: 80, color: "var(--emc)", why: "Situation pratique fréquente : droits, devoirs, valeurs, engagement, institutions." },
+      { subject: "Sciences", topic: "Données, unités, formules", score: 78, color: "var(--sciences)", why: "Le plus rentable : savoir extraire une donnée, appliquer une formule et conclure avec unité." }
     ];
 
     const plan = [
-      { date: "11", label: "Aujourd’hui", work: "Maths auto + WW2", tone: "normal" },
+      { date: "11", label: "Aujourd'hui", work: "Maths auto + WW2", tone: "normal" },
       { date: "12", label: "Vendredi", work: "Français + EMC", tone: "normal" },
       { date: "13", label: "Samedi", work: "Géo France + sciences", tone: "normal" },
       { date: "14", label: "Dimanche", work: "Annales courtes", tone: "normal" },
@@ -627,15 +1115,15 @@
     ];
 
     const historyFacts = [
-      ["1er septembre 1939", "Invasion de la Pologne par l’Allemagne : début de la Seconde Guerre mondiale en Europe."],
+      ["1er septembre 1939", "Invasion de la Pologne par l'Allemagne : début de la Seconde Guerre mondiale en Europe."],
       ["18 juin 1940", "Appel du général de Gaulle depuis Londres."],
       ["22 juin 1940", "Armistice franco-allemand et installation du régime de Vichy."],
       ["6 juin 1944", "Débarquement allié en Normandie."],
-      ["8 mai 1945", "Capitulation de l’Allemagne nazie en Europe."],
+      ["8 mai 1945", "Capitulation de l'Allemagne nazie en Europe."],
       ["1947", "Doctrine Truman, plan Marshall et début de la Guerre froide."],
       ["1948-1949", "Blocus de Berlin."],
       ["1961", "Construction du mur de Berlin."],
-      ["1962", "Crise des missiles de Cuba et indépendance de l’Algérie."],
+      ["1962", "Crise des missiles de Cuba et indépendance de l'Algérie."],
       ["9 novembre 1989", "Chute du mur de Berlin."]
     ];
 
@@ -644,26 +1132,26 @@
       ["aire urbaine", "Ensemble formé par un pôle urbain et sa couronne périurbaine."],
       ["métropolisation", "Concentration des populations, activités et pouvoirs dans les grandes villes."],
       ["aménagement du territoire", "Action visant à réduire les inégalités et organiser les espaces."],
-      ["DROM", "Territoires ultramarins français avec contraintes d’éloignement et atouts stratégiques."],
+      ["DROM", "Territoires ultramarins français avec contraintes d'éloignement et atouts stratégiques."],
       ["mobilités", "Déplacements de personnes, quotidiens ou à plus longue distance."]
     ];
 
     const emcFacts = [
-      ["laïcité", "Neutralité de l’État et liberté de conscience."],
+      ["laïcité", "Neutralité de l'État et liberté de conscience."],
       ["citoyen", "Personne qui possède des droits politiques et participe à la vie démocratique."],
       ["démocratie", "Régime où la souveraineté appartient au peuple."],
       ["discrimination", "Traitement défavorable interdit par la loi sur un critère précis."],
-      ["liberté d’expression", "Droit d’exprimer ses idées dans les limites fixées par la loi."],
+      ["liberté d'expression", "Droit d'exprimer ses idées dans les limites fixées par la loi."],
       ["Constitution", "Texte qui organise les pouvoirs et garantit les droits fondamentaux."]
     ];
 
     const frenchItems = [
-      { topic: "Homophones", q: "Complète : il ___ révisé ses formules.", answers: ["a", "à", "as", "ha"], correct: "a", explain: "On peut remplacer par “avait” : il avait révisé." },
-      { topic: "Accords", q: "Quelle phrase est correctement accordée ?", answers: ["Les copies sont corrigé.", "Les copies sont corrigées.", "Les copies est corrigées.", "Les copie sont corrigées."], correct: "Les copies sont corrigées.", explain: "Le participe passé employé avec être s’accorde avec le sujet “copies”." },
-      { topic: "Valeurs des temps", q: "Dans “Il marchait quand l’orage éclata”, l’imparfait exprime...", answers: ["une action de premier plan", "une action d’arrière-plan", "un ordre", "une hypothèse"], correct: "une action d’arrière-plan", explain: "L’imparfait installe le décor ; le passé simple marque l’événement." },
-      { topic: "Réécriture", q: "Transforme au pluriel : “Ce cheval rapide franchit l’obstacle.”", answers: ["Ces chevaux rapides franchissent l’obstacle.", "Ces cheval rapides franchit l’obstacle.", "Ce chevaux rapide franchissent l’obstacle.", "Ces chevaux rapide franchit l’obstacle."], correct: "Ces chevaux rapides franchissent l’obstacle.", explain: "Ce devient ces, cheval devient chevaux, rapide s’accorde, franchit devient franchissent." },
-      { topic: "Argumentation", q: "Dans un paragraphe argumenté, l’exemple sert surtout à...", answers: ["décorer la copie", "prouver et préciser l’idée", "remplacer la thèse", "allonger sans raison"], correct: "prouver et préciser l’idée", explain: "Une idée solide s’appuie sur un exemple précis." },
-      { topic: "Compréhension", q: "Pour justifier une réponse sur un texte, il faut d’abord...", answers: ["citer ou reformuler un indice précis", "donner son avis seulement", "écrire plus long", "changer de sujet"], correct: "citer ou reformuler un indice précis", explain: "La justification doit venir du texte ou de l’image." }
+      { topic: "Homophones", q: "Complète : il ___ révisé ses formules.", answers: ["a", "à", "as", "ha"], correct: "a", explain: "On peut remplacer par \u201Cavait\u201D : il avait révisé." },
+      { topic: "Accords", q: "Quelle phrase est correctement accordée ?", answers: ["Les copies sont corrigé.", "Les copies sont corrigées.", "Les copies est corrigées.", "Les copie sont corrigées."], correct: "Les copies sont corrigées.", explain: "Le participe passé employé avec être s\u2019accorde avec le sujet \u201Ccopies\u201D." },
+      { topic: "Valeurs des temps", q: "Dans \u201CIl marchait quand l\u2019orage éclata\u201D, l\u2019imparfait exprime...", answers: ["une action de premier plan", "une action d\u2019arrière-plan", "un ordre", "une hypothèse"], correct: "une action d\u2019arrière-plan", explain: "L\u2019imparfait installe le décor ; le passé simple marque l\u2019événement." },
+      { topic: "Réécriture", q: "Transforme au pluriel : \u201CCe cheval rapide franchit l\u2019obstacle.\u201D", answers: ["Ces chevaux rapides franchissent l\u2019obstacle.", "Ces cheval rapides franchit l\u2019obstacle.", "Ce chevaux rapide franchissent l\u2019obstacle.", "Ces chevaux rapide franchit l\u2019obstacle."], correct: "Ces chevaux rapides franchissent l\u2019obstacle.", explain: "Ce devient ces, cheval devient chevaux, rapide s\u2019accorde, franchit devient franchissent." },
+      { topic: "Argumentation", q: "Dans un paragraphe argumenté, l'exemple sert surtout à...", answers: ["décorer la copie", "prouver et préciser l'idée", "remplacer la thèse", "allonger sans raison"], correct: "prouver et préciser l'idée", explain: "Une idée solide s'appuie sur un exemple précis." },
+      { topic: "Compréhension", q: "Pour justifier une réponse sur un texte, il faut d'abord...", answers: ["citer ou reformuler un indice précis", "donner son avis seulement", "écrire plus long", "changer de sujet"], correct: "citer ou reformuler un indice précis", explain: "La justification doit venir du texte ou de l'image." }
     ];
 
     const state = loadState();
@@ -724,10 +1212,6 @@
 
     function gcd(a, b) {
       return b === 0 ? Math.abs(a) : gcd(b, a % b);
-    }
-
-    function formatPercent(n) {
-      return `${n} %`;
     }
 
     const factories = [
@@ -795,7 +1279,7 @@
         make() {
           const triples = [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [7, 24, 25]];
           const [a, b, c] = choice(triples);
-          return q("Maths", "Pythagore", `Un triangle rectangle a pour côtés de l’angle droit ${a} cm et ${b} cm. Longueur de l’hypoténuse ?`, `${c} cm`, [`${a + b} cm`, `${c - 1} cm`, `${Math.abs(b - a)} cm`, `${c + 2} cm`], `c² = ${a}² + ${b}² = ${a * a + b * b}, donc c = ${c} cm.`);
+          return q("Maths", "Pythagore", `Un triangle rectangle a pour côtés de l'angle droit ${a} cm et ${b} cm. Longueur de l'hypoténuse ?`, `${c} cm`, [`${a + b} cm`, `${c - 1} cm`, `${Math.abs(b - a)} cm`, `${c + 2} cm`], `c² = ${a}² + ${b}² = ${a * a + b * b}, donc c = ${c} cm.`);
         }
       },
       {
@@ -817,7 +1301,7 @@
           const r = choice([5, 10, 20, 25, 50]);
           const i = choice([0.2, 0.4, 0.5, 0.8, 1]);
           const u = Number((r * i).toFixed(1));
-          return q("Sciences", "Électricité", `Avec R = ${r} Ω et I = ${i} A, quelle est la tension U ?`, `${u} V`, [`${r + i} V`, `${r / i} V`, `${Math.max(1, u - 2)} V`, `${u + 5} V`], `Loi d’Ohm : U = R × I = ${r} × ${i} = ${u} V.`);
+          return q("Sciences", "Électricité", `Avec R = ${r} Ω et I = ${i} A, quelle est la tension U ?`, `${u} V`, [`${r + i} V`, `${r / i} V`, `${Math.max(1, u - 2)} V`, `${u + 5} V`], `Loi d'Ohm : U = R × I = ${r} × ${i} = ${u} V.`);
         }
       },
       {
@@ -826,8 +1310,8 @@
         weight: 7,
         make() {
           const items = [
-            ["Quel organe assure principalement les échanges gazeux avec le sang ?", "Les poumons", ["Le foie", "L’estomac", "Le rein"], "Les alvéoles pulmonaires permettent les échanges entre l’air et le sang."],
-            ["Quel support porte l’information génétique dans le noyau ?", "L’ADN", ["Le plasma", "Le dioxygène", "Le glucose"], "L’ADN porte l’information génétique sous forme de gènes."],
+            ["Quel organe assure principalement les échanges gazeux avec le sang ?", "Les poumons", ["Le foie", "L'estomac", "Le rein"], "Les alvéoles pulmonaires permettent les échanges entre l'air et le sang."],
+            ["Quel support porte l'information génétique dans le noyau ?", "L'ADN", ["Le plasma", "Le dioxygène", "Le glucose"], "L'ADN porte l'information génétique sous forme de gènes."],
             ["Dans une chaîne alimentaire, un producteur primaire est souvent...", "un végétal chlorophyllien", ["un prédateur", "un parasite", "un décomposeur uniquement"], "Les végétaux produisent de la matière organique grâce à la photosynthèse."]
           ];
           const item = choice(items);
@@ -911,7 +1395,9 @@
 
     function renderSubjects() {
       const wrap = document.getElementById("subjectChips");
-      wrap.innerHTML = subjects.map(s => `<button class="chip ${s.id === activeSubject ? "active" : ""}" type="button" data-subject="${s.id}">${s.label}</button>`).join("");
+      wrap.innerHTML = subjects.map(s =>
+        `<button class="chip ${s.id === activeSubject ? "active" : ""}" type="button" data-subject="${s.id}">${s.label}</button>`
+      ).join("");
       wrap.querySelectorAll("button").forEach(button => {
         button.addEventListener("click", () => {
           activeSubject = button.dataset.subject;
@@ -923,11 +1409,13 @@
 
     function renderPriorities() {
       document.getElementById("priorityGrid").innerHTML = priorities.map(item => `
-        <article class="priority" style="--accent:${item.color};--w:${item.score}%">
-          <div class="tag">${item.subject}</div>
+        <article class="priority-card" style="--accent:${item.color};--w:${item.score}%">
+          <div class="priority-subject">${item.subject}</div>
           <h3>${item.topic}</h3>
-          <div class="bar"><span></span></div>
-          <span class="pill">${item.score}% priorité</span>
+          <div class="priority-score-row">
+            <span class="priority-score">${item.score}%</span>
+            <div class="bar-track"><span class="bar-fill"></span></div>
+          </div>
           <p>${item.why}</p>
         </article>
       `).join("");
@@ -935,10 +1423,10 @@
 
     function renderPlan() {
       document.getElementById("planGrid").innerHTML = plan.map(day => `
-        <article class="day ${day.tone === "exam" ? "exam" : ""}">
-          <div class="tag">${day.label}</div>
-          <strong>${day.date}</strong>
-          <span>${day.work}</span>
+        <article class="day-card ${day.tone === "exam" ? "exam" : ""}">
+          <div class="day-label">${day.label}</div>
+          <div class="day-date">${day.date}</div>
+          <div class="day-work">${day.work}</div>
         </article>
       `).join("");
     }
@@ -990,7 +1478,7 @@
       document.getElementById("feedback").className = "feedback";
       document.getElementById("engineStatus").textContent = "Sans répétition récente";
       document.getElementById("answers").innerHTML = currentQuestion.choices.map((choiceItem, index) => `
-        <button class="answer" type="button" data-index="${index}">${choiceItem.text}</button>
+        <button class="answer" type="button" data-index="${index}" data-letter="${LETTERS[index]}">${choiceItem.text}</button>
       `).join("");
 
       document.querySelectorAll(".answer").forEach(button => {
