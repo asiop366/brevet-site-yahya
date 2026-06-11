@@ -69,15 +69,17 @@
     },
     {
       id: "sciences",
-      subject: "Sciences",
-      tag: "78 % probabilité",
+      subject: "SVT & Physique",
+      tag: "Épreuve 2026",
       cards: [
-        { title: "Vitesse", front: "Formule de la vitesse moyenne ?", back: "v = d / t (distance ÷ temps). Unité SI : m/s. Toujours conclure avec l'unité au brevet." },
-        { title: "Électricité", front: "Loi d'Ohm ?", back: "U = R × I (tension = résistance × intensité). Unités : volts (V), ohms (Ω), ampères (A)." },
-        { title: "Respiration", front: "Où se font les échanges gazeux ?", back: "Dans les alvéoles pulmonaires : O₂ passe dans le sang, CO₂ en sort. Les poumons = organe principal." },
-        { title: "Génétique", front: "Où se trouve l'information génétique ?", back: "Dans l'ADN, au niveau des gènes dans le noyau des cellules. Chaque gène porte une information." },
-        { title: "Chaîne alimentaire", front: "Rôle d'un producteur primaire ?", back: "Végétal chlorophyllien qui produit de la matière organique par photosynthèse — base de la chaîne." },
-        { title: "Énergie", front: "Énergie cinétique — de quoi dépend-elle ?", back: "Masse de l'objet et carré de sa vitesse. Plus c'est lourd et rapide, plus l'énergie cinétique est grande." }
+        { title: "SVT — Climat", front: "L'effet de serre est lié à quoi ?", back: "Accumulation de gaz à effet de serre (CO₂, CH₄…) qui retiennent une partie du rayonnement. Thème très fréquent 2021-2025." },
+        { title: "SVT — Immunité", front: "À quoi sert un vaccin ?", back: "Stimuler le système immunitaire pour produire des anticorps sans tomber gravement malade. Thème 2026 probable." },
+        { title: "SVT — Génétique", front: "Où se trouve l'information génétique ?", back: "Dans l'ADN, organisé en gènes sur les chromosomes, dans le noyau des cellules." },
+        { title: "Physique — Vitesse", front: "Formule v = ?", back: "v = d / t. Distance en mètres, temps en secondes → m/s. Toujours conclure avec l'unité." },
+        { title: "Physique — Électricité", front: "Loi d'Ohm ?", back: "U = R × I. Puissance : P = U × I (en watts). Très classique aux annales." },
+        { title: "Physique — Énergie", front: "Énergie potentielle de pesanteur ?", back: "Ep = m × g × h (J). Énergie cinétique : Ec = ½ m v²." },
+        { title: "Physique — Chimie", front: "Conservation de la masse ?", back: "Lors d'une transformation chimique, la masse totale des produits = masse totale des réactifs." },
+        { title: "SVT — Pathogènes", front: "Un antibiotique agit contre… ?", back: "Certaines bactéries (pas les virus). Se préserver des micro-organismes pathogènes : au programme 2026." }
       ]
     }
   ];
@@ -106,7 +108,11 @@
     ficheState.index = 0;
     ficheState.flipped = false;
     document.getElementById("app").classList.add("app--fiche");
-    document.getElementById("ficheSession").hidden = false;
+    const session = document.getElementById("ficheSession");
+    session.hidden = false;
+    session.classList.remove("fiche-session--in");
+    void session.offsetWidth;
+    session.classList.add("fiche-session--in");
     renderFicheCard();
   }
 
@@ -121,13 +127,17 @@
     if (!deck) return;
     const card = deck.cards[index];
     const total = deck.cards.length;
+    const flipEl = document.getElementById("ficheFlip");
 
     document.getElementById("ficheSubject").textContent = deck.subject;
     document.getElementById("ficheProgress").textContent = `${index + 1} / ${total}`;
     document.getElementById("ficheTitle").textContent = card.title;
     document.getElementById("ficheFront").textContent = card.front;
     document.getElementById("ficheBack").textContent = card.back;
-    document.getElementById("ficheFlip").classList.toggle("fiche-flip--revealed", flipped);
+    flipEl.classList.remove("fiche-flip--revealed", "fiche-flip--slide");
+    void flipEl.offsetWidth;
+    flipEl.classList.add("fiche-flip--slide");
+    if (flipped) flipEl.classList.add("fiche-flip--revealed");
     document.getElementById("ficheHint").textContent = flipped ? "Appuie pour revoir la question" : "Appuie pour révéler la réponse";
 
     document.getElementById("fichePrev").disabled = index === 0;

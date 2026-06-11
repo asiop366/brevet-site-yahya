@@ -671,6 +671,8 @@ a { color: var(--text-2); text-decoration: underline; text-underline-offset: 2px
 .quiz-subject-banner--geo { color: var(--geo); border-color: color-mix(in srgb, var(--geo) 30%, transparent); }
 .quiz-subject-banner--emc { color: var(--emc); border-color: color-mix(in srgb, var(--emc) 30%, transparent); }
 .quiz-subject-banner--sciences { color: var(--sciences); border-color: color-mix(in srgb, var(--sciences) 30%, transparent); }
+.quiz-subject-banner--physique { color: #a5b4fc; border-color: color-mix(in srgb, #a5b4fc 30%, transparent); }
+.quiz-subject-banner--svt { color: var(--sciences); border-color: color-mix(in srgb, var(--sciences) 30%, transparent); }
 .quiz-subject-banner--mix { color: var(--text-2); }
 
 .quiz-tags {
@@ -778,11 +780,6 @@ a { color: var(--text-2); text-decoration: underline; text-underline-offset: 2px
   background: var(--error-bg);
   color: var(--error);
   border: 1px solid color-mix(in srgb, var(--error) 25%, transparent);
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .quiz-footer {
@@ -974,3 +971,206 @@ a { color: var(--text-2); text-decoration: underline; text-underline-offset: 2px
 
 .app--quiz .tabbar,
 .app--fiche .tabbar { display: none; }
+
+/* ══════════════════════════════════════
+   Animations
+   ══════════════════════════════════════ */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+@keyframes progressGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* View transitions */
+.view--enter {
+  animation: fadeUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.view--enter.view--entered .home-hero,
+.view--enter.view--entered .mode-card,
+.view--enter.view--entered .stats-row,
+.view--enter.view--entered .btn-secondary,
+.view--enter.view--entered .view-header,
+.view--enter.view--entered .fiche-intro,
+.view--enter.view--entered .subject-grid > *,
+.view--enter.view--entered .fiche-grid > *,
+.view--enter.view--entered .timeline-item,
+.view--enter.view--entered .priority-item {
+  animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.view--enter.view--entered .home-hero { animation-delay: 0ms; }
+.view--enter.view--entered .mode-card--daily { animation-delay: 50ms; }
+.view--enter.view--entered .mode-card--ultimate { animation-delay: 100ms; }
+.view--enter.view--entered .stats-row { animation-delay: 150ms; }
+.view--enter.view--entered .btn-secondary { animation-delay: 200ms; }
+
+.view--enter.view--entered .subject-grid > *:nth-child(1) { animation-delay: 0ms; }
+.view--enter.view--entered .subject-grid > *:nth-child(2) { animation-delay: 40ms; }
+.view--enter.view--entered .subject-grid > *:nth-child(3) { animation-delay: 80ms; }
+.view--enter.view--entered .subject-grid > *:nth-child(4) { animation-delay: 120ms; }
+.view--enter.view--entered .subject-grid > *:nth-child(5) { animation-delay: 160ms; }
+.view--enter.view--entered .subject-grid > *:nth-child(6) { animation-delay: 200ms; }
+
+.view--enter.view--entered .fiche-grid > *:nth-child(1) { animation-delay: 0ms; }
+.view--enter.view--entered .fiche-grid > *:nth-child(2) { animation-delay: 35ms; }
+.view--enter.view--entered .fiche-grid > *:nth-child(3) { animation-delay: 70ms; }
+.view--enter.view--entered .fiche-grid > *:nth-child(4) { animation-delay: 105ms; }
+.view--enter.view--entered .fiche-grid > *:nth-child(5) { animation-delay: 140ms; }
+.view--enter.view--entered .fiche-grid > *:nth-child(6) { animation-delay: 175ms; }
+
+.view--enter.view--entered .timeline-item:nth-child(1) { animation-delay: 0ms; }
+.view--enter.view--entered .timeline-item:nth-child(2) { animation-delay: 50ms; }
+.view--enter.view--entered .timeline-item:nth-child(3) { animation-delay: 100ms; }
+.view--enter.view--entered .timeline-item:nth-child(4) { animation-delay: 150ms; }
+.view--enter.view--entered .timeline-item:nth-child(5) { animation-delay: 200ms; }
+.view--enter.view--entered .timeline-item:nth-child(6) { animation-delay: 250ms; }
+.view--enter.view--entered .timeline-item:nth-child(7) { animation-delay: 300ms; }
+.view--enter.view--entered .timeline-item:nth-child(8) { animation-delay: 350ms; }
+
+/* Countdown */
+.ring-fill {
+  animation: ringPulse 3s ease-in-out infinite;
+}
+
+.countdown-num {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Quiz session */
+.quiz-session--in {
+  animation: scaleIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.quiz-content--in .quiz-subject-banner {
+  animation: slideInRight 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.quiz-content--in .quiz-question {
+  animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.quiz-answer--enter {
+  animation: fadeUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.quiz-answer--correct {
+  animation: pop 0.35s ease;
+}
+
+.quiz-answer--wrong {
+  animation: shake 0.4s ease;
+}
+
+.quiz-progress-fill {
+  transform-origin: left center;
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Fiche session */
+.fiche-session--in {
+  animation: scaleIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fiche-flip--slide {
+  animation: fadeUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fiche-flip-inner {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fiche-dot {
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.fiche-dot--active {
+  transform: scale(1.35);
+}
+
+/* Buttons & cards */
+.mode-btn,
+.btn-primary,
+.btn-secondary {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.mode-btn:active,
+.btn-primary:active:not(:disabled),
+.btn-secondary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.subject-card,
+.fiche-card,
+.stat-chip,
+.mode-card {
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.tab {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.tab--active {
+  transform: translateY(-1px);
+}
+
+.tab svg {
+  transition: stroke-width 0.15s ease, transform 0.2s ease;
+}
+
+.tab--active svg {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .ring-fill { animation: none; }
+}

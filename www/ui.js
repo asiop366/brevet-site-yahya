@@ -9,9 +9,12 @@
 
   window.showView = function (name) {
     Object.values(viewMap).forEach((id) => {
-      document.getElementById(id).classList.remove("view--active");
+      const el = document.getElementById(id);
+      el.classList.remove("view--active", "view--enter");
     });
-    document.getElementById(viewMap[name]).classList.add("view--active");
+    const next = document.getElementById(viewMap[name]);
+    next.classList.add("view--active", "view--enter");
+    requestAnimationFrame(() => next.classList.add("view--entered"));
     document.querySelectorAll(".tab").forEach((tab) => {
       tab.classList.toggle("tab--active", tab.dataset.view === name);
     });
@@ -44,4 +47,8 @@
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
+
+  requestAnimationFrame(() => {
+    document.getElementById("view-home")?.classList.add("view--entered");
+  });
 })();

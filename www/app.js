@@ -18,7 +18,7 @@
       { subject: "Histoire", topic: "WW2 / Guerre froide", score: 88, color: "var(--histoire)", why: "Repères chronologiques très rentables et développement construit possible." },
       { subject: "Géographie", topic: "France productive et aménagée", score: 84, color: "var(--sciences)", why: "Espaces productifs, aires urbaines, mobilités, aménagement du territoire, croquis simple." },
       { subject: "EMC", topic: "Citoyenneté / laïcité", score: 80, color: "var(--emc)", why: "Situation pratique fréquente : droits, devoirs, valeurs, engagement, institutions." },
-      { subject: "Sciences", topic: "Données, unités, formules", score: 78, color: "var(--sciences)", why: "Le plus rentable : savoir extraire une donnée, appliquer une formule et conclure avec unité." }
+      { subject: "Sciences", topic: "SVT + Physique 2026", score: 85, color: "var(--sciences)", why: "Épreuve 2026 : SVT et physique-chimie (30 min chacune). Climat, immunité, génétique · énergie, électricité, mouvements." }
     ];
 
     const DAILY_QUESTION_COUNT = 45;
@@ -68,12 +68,35 @@
     ];
 
     const frenchItems = [
-      { topic: "Homophones", q: "Complète : il ___ révisé ses formules.", answers: ["a", "à", "as", "ha"], correct: "a", explain: "On peut remplacer par \u201Cavait\u201D : il avait révisé." },
-      { topic: "Accords", q: "Quelle phrase est correctement accordée ?", answers: ["Les copies sont corrigé.", "Les copies sont corrigées.", "Les copies est corrigées.", "Les copie sont corrigées."], correct: "Les copies sont corrigées.", explain: "Le participe passé employé avec être s\u2019accorde avec le sujet \u201Ccopies\u201D." },
-      { topic: "Valeurs des temps", q: "Dans \u201CIl marchait quand l\u2019orage éclata\u201D, l\u2019imparfait exprime...", answers: ["une action de premier plan", "une action d\u2019arrière-plan", "un ordre", "une hypothèse"], correct: "une action d\u2019arrière-plan", explain: "L\u2019imparfait installe le décor ; le passé simple marque l\u2019événement." },
-      { topic: "Réécriture", q: "Transforme au pluriel : \u201CCe cheval rapide franchit l\u2019obstacle.\u201D", answers: ["Ces chevaux rapides franchissent l\u2019obstacle.", "Ces cheval rapides franchit l\u2019obstacle.", "Ce chevaux rapide franchissent l\u2019obstacle.", "Ces chevaux rapide franchit l\u2019obstacle."], correct: "Ces chevaux rapides franchissent l\u2019obstacle.", explain: "Ce devient ces, cheval devient chevaux, rapide s\u2019accorde, franchit devient franchissent." },
+      { topic: "Homophones", q: "Complète : il ___ révisé ses formules.", answers: ["a", "à", "as", "ha"], correct: "a", explain: "On peut remplacer par « avait » : il avait révisé." },
+      { topic: "Accords", q: "Quelle phrase est correctement accordée ?", answers: ["Les copies sont corrigé.", "Les copies sont corrigées.", "Les copies est corrigées.", "Les copie sont corrigées."], correct: "Les copies sont corrigées.", explain: "Le participe passé employé avec être s'accorde avec le sujet « copies »." },
+      { topic: "Valeurs des temps", q: "Dans « Il marchait quand l'orage éclata », l'imparfait exprime...", answers: ["une action de premier plan", "une action d'arrière-plan", "un ordre", "une hypothèse"], correct: "une action d'arrière-plan", explain: "L'imparfait installe le décor ; le passé simple marque l'événement." },
+      { topic: "Réécriture", q: "Transforme au pluriel : « Ce cheval rapide franchit l'obstacle. »", answers: ["Ces chevaux rapides franchissent l'obstacle.", "Ces cheval rapides franchit l'obstacle.", "Ce chevaux rapide franchissent l'obstacle.", "Ces chevaux rapide franchit l'obstacle."], correct: "Ces chevaux rapides franchissent l'obstacle.", explain: "Ce → ces, cheval → chevaux, rapide → rapides, franchit → franchissent." },
       { topic: "Argumentation", q: "Dans un paragraphe argumenté, l'exemple sert surtout à...", answers: ["décorer la copie", "prouver et préciser l'idée", "remplacer la thèse", "allonger sans raison"], correct: "prouver et préciser l'idée", explain: "Une idée solide s'appuie sur un exemple précis." },
-      { topic: "Compréhension", q: "Pour justifier une réponse sur un texte, il faut d'abord...", answers: ["citer ou reformuler un indice précis", "donner son avis seulement", "écrire plus long", "changer de sujet"], correct: "citer ou reformuler un indice précis", explain: "La justification doit venir du texte ou de l'image." }
+      { topic: "Compréhension", q: "Pour justifier une réponse sur un texte, il faut d'abord...", answers: ["citer ou reformuler un indice précis", "donner son avis seulement", "écrire plus long", "changer de sujet"], correct: "citer ou reformuler un indice précis", explain: "La justification doit venir du texte ou de l'image." },
+      { topic: "Connecteurs", q: "Quel connecteur exprime une opposition ?", answers: ["car", "cependant", "donc", "puis"], correct: "cependant", explain: "« Cependant » introduit une idée qui s'oppose à la précédente." },
+      { topic: "Pluriel", q: "Le pluriel de « journal » est...", answers: ["journaus", "journaux", "journalx", "journale"], correct: "journaux", explain: "Les mots en -al font souvent leur pluriel en -aux." }
+    ];
+
+    const physicsItems = [
+      ["Un cycliste parcourt 150 m en 30 s. Sa vitesse moyenne est...", "5 m/s", ["150 m/s", "0,2 m/s", "180 m/s", "50 m/s"], "v = d/t = 150/30 = 5 m/s. Thème très fréquent 2021-2025."],
+      ["Avec R = 12 Ω et I = 0,5 A, la tension U vaut...", "6 V", ["6,5 V", "24 V", "0,04 V", "18 V"], "Loi d'Ohm : U = R × I = 12 × 0,5 = 6 V."],
+      ["Un objet de masse 2 kg est soulevé à 3 m. Son énergie potentielle (g = 10 N/kg) vaut...", "60 J", ["6 J", "20 J", "5 J", "30 J"], "Ep = m × g × h = 2 × 10 × 3 = 60 J."],
+      ["La puissance électrique vaut P = U × I. Si U = 230 V et I = 2 A, P = ?", "460 W", ["115 W", "232 W", "228 W", "4600 W"], "P = 230 × 2 = 460 W. Énergie et consommation : thème récurrent au brevet."],
+      ["Lors d'une réaction chimique, la masse totale des produits est...", "égale à la masse totale des réactifs", ["supérieure aux réactifs", "nulle", "toujours doublée", "imprévisible"], "Conservation de la masse : rien ne se perd, rien ne se crée."],
+      ["Un objet en chute libre (sans frottements) subit une force...", "le poids, dirigé vers le centre de la Terre", ["nulle", "perpendiculaire au sol uniquement", "vers le haut", "identique à la poussée d'Archimède"], "Le poids P = m × g. Mouvements et interactions : au programme 2026."],
+      ["Convertir 3,6 km/h en m/s donne...", "1 m/s", ["3,6 m/s", "10 m/s", "0,36 m/s", "36 m/s"], "3,6 km/h = 3600 m / 3600 s = 1 m/s."]
+    ];
+
+    const svtItems = [
+      ["Où se font les échanges de O₂ et CO₂ entre l'air et le sang ?", "Dans les alvéoles pulmonaires", ["Dans la trachée", "Dans le cœur", "Dans l'estomac"], "Les poumons assurent les échanges gazeux via les alvéoles."],
+      ["Quel support porte l'information génétique dans le noyau ?", "L'ADN", ["Le glucose", "L'hémoglobine", "Le dioxygène"], "La génétique (ADN, gènes, chromosomes) revient très souvent aux annales."],
+      ["Un vaccin stimule surtout...", "le système immunitaire", ["la digestion", "la respiration", "la reproduction"], "Immunité et micro-organismes pathogènes : thème 2026 très probable."],
+      ["Dans une chaîne alimentaire, le producteur primaire est...", "un végétal chlorophyllien", ["un prédateur", "un champignon décomposeur seul", "un herbivore"], "Les végétaux produisent la matière organique par photosynthèse."],
+      ["L'effet de serre est lié surtout à l'accumulation de...", "gaz à effet de serre (CO₂, CH₄…)", ["azote pur", "oxygène seul", "eau liquide", "sel marin"], "Climat et activité humaine : thème récurrent 2021-2025."],
+      ["Dans le tube digestif, l'absorption des nutriments se fait surtout...", "dans l'intestin grêle", ["dans la bouche", "dans l'œsophage", "dans la trachée"], "Digestion et nutrition : classique au brevet."],
+      ["Un antibiotique agit principalement contre...", "certaines bactéries", ["les virus", "tous les microbes sans distinction", "les allergies"], "Se préserver des micro-organismes pathogènes : au programme 2026."],
+      ["Deux individus avec le même génotype pour un caractère auront...", "le même allèle pour ce gène", ["forcément des yeux identiques", "des chromosomes différents", "un nombre de gènes différent"], "Génétique : génotype = ensemble des allèles d'un individu."]
     ];
 
     const SUBJECT_ICONS = { mix: "🎯", maths: "📐", francais: "📖", histoire: "🌍", emc: "⚖️", sciences: "🔬" };
@@ -83,7 +106,7 @@
       francais: "Grammaire & lecture",
       histoire: "Repères & géo",
       emc: "Citoyenneté",
-      sciences: "Formules & SVT"
+      sciences: "SVT & Physique 2026"
     };
 
     const state = loadState();
@@ -224,38 +247,54 @@
         }
       },
       {
-        subject: "sciences",
-        topic: "Vitesse",
+        subject: "maths",
+        topic: "Thalès",
+        weight: 10,
+        make() {
+          const k = choice([2, 2.5, 3, 4]);
+          const small = rand(2, 6);
+          const large = Number((small * k).toFixed(1));
+          return q("Maths", "Thalès", `Deux droites parallèles découpent des transversales. Sur l'une, un segment vaut ${small} cm ; sur l'autre, le segment correspondant vaut ${large} cm. Le rapport est...`, String(k), [String(k + 1), String(k / 2), String(small + large), String(large - small)], `Rapport = ${large}/${small} = ${k}. Thalès revient souvent aux annales.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Statistiques",
         weight: 9,
         make() {
-          const speed = choice([4, 5, 6, 8, 10, 12]);
-          const time = choice([3, 4, 5, 6]);
-          const distance = speed * time;
-          return q("Sciences", "Vitesse", `Un objet parcourt ${distance} m en ${time} s. Sa vitesse est...`, `${speed} m/s`, [`${distance + time} m/s`, `${time / distance} m/s`, `${distance * time} m/s`, `${speed + 2} m/s`], `v = d / t = ${distance} / ${time} = ${speed} m/s.`);
+          const a = rand(4, 12);
+          const b = rand(8, 16);
+          const c = rand(10, 20);
+          const mean = Math.round((a + b + c) / 3 * 10) / 10;
+          return q("Maths", "Statistiques", `Moyenne de ${a}, ${b} et ${c} ?`, String(mean), [String(mean + 2), String(a + b), String(c - a), String(mean - 1)], `Moyenne = (${a}+${b}+${c})/3 = ${mean}.`);
+        }
+      },
+      {
+        subject: "maths",
+        topic: "Puissances",
+        weight: 9,
+        make() {
+          const base = choice([2, 3, 5]);
+          const exp = choice([2, 3, 4]);
+          const result = base ** exp;
+          return q("Maths", "Automatismes", `Combien vaut ${base}${exp === 2 ? "²" : exp === 3 ? "³" : "⁴"} ?`, String(result), [String(result + base), String(base * exp), String(result - 1), String(base + exp)], `${base}^${exp} = ${result}.`);
         }
       },
       {
         subject: "sciences",
-        topic: "Électricité",
-        weight: 8,
+        topic: "Physique",
+        weight: 10,
         make() {
-          const r = choice([5, 10, 20, 25, 50]);
-          const i = choice([0.2, 0.4, 0.5, 0.8, 1]);
-          const u = Number((r * i).toFixed(1));
-          return q("Sciences", "Électricité", `Avec R = ${r} Ω et I = ${i} A, quelle est la tension U ?`, `${u} V`, [`${r + i} V`, `${r / i} V`, `${Math.max(1, u - 2)} V`, `${u + 5} V`], `Loi d'Ohm : U = R × I = ${r} × ${i} = ${u} V.`);
+          const item = choice(physicsItems);
+          return q("Sciences", "Physique", item[0], item[1], item[2], item[3]);
         }
       },
       {
         subject: "sciences",
         topic: "SVT",
-        weight: 7,
+        weight: 10,
         make() {
-          const items = [
-            ["Quel organe assure principalement les échanges gazeux avec le sang ?", "Les poumons", ["Le foie", "L'estomac", "Le rein"], "Les alvéoles pulmonaires permettent les échanges entre l'air et le sang."],
-            ["Quel support porte l'information génétique dans le noyau ?", "L'ADN", ["Le plasma", "Le dioxygène", "Le glucose"], "L'ADN porte l'information génétique sous forme de gènes."],
-            ["Dans une chaîne alimentaire, un producteur primaire est souvent...", "un végétal chlorophyllien", ["un prédateur", "un parasite", "un décomposeur uniquement"], "Les végétaux produisent de la matière organique grâce à la photosynthèse."]
-          ];
-          const item = choice(items);
+          const item = choice(svtItems);
           return q("Sciences", "SVT", item[0], item[1], item[2], item[3]);
         }
       },
@@ -329,6 +368,8 @@
 
     function getSubjectDisplayName(question) {
       if (question.topic === "Géographie") return "Géographie";
+      if (question.topic === "Physique") return "Physique";
+      if (question.topic === "SVT") return "SVT";
       const map = {
         Maths: "Maths",
         Français: "Français",
@@ -341,6 +382,8 @@
 
     function getSubjectBannerClass(question) {
       if (question.topic === "Géographie") return "quiz-subject-banner--geo";
+      if (question.topic === "Physique") return "quiz-subject-banner--physique";
+      if (question.topic === "SVT") return "quiz-subject-banner--svt";
       const map = {
         Maths: "quiz-subject-banner--maths",
         Français: "quiz-subject-banner--francais",
@@ -410,6 +453,9 @@
 
       document.getElementById("app").classList.add("app--quiz");
       document.getElementById("quizSession").hidden = false;
+      document.getElementById("quizSession").classList.remove("quiz-session--in");
+      void document.getElementById("quizSession").offsetWidth;
+      document.getElementById("quizSession").classList.add("quiz-session--in");
       document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
       document.getElementById("nextQuestion").textContent = "Suivant";
       showQueuedQuestion();
@@ -525,6 +571,9 @@
       sessionCount = 0;
       document.getElementById("app").classList.add("app--quiz");
       document.getElementById("quizSession").hidden = false;
+      document.getElementById("quizSession").classList.remove("quiz-session--in");
+      void document.getElementById("quizSession").offsetWidth;
+      document.getElementById("quizSession").classList.add("quiz-session--in");
       document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
       document.getElementById("nextQuestion").textContent = "Suivant";
       drawQuestion();
@@ -647,8 +696,16 @@
         ? ((queueIndex + 1) / queueTotal) * 100
         : Math.min(100, sessionCount * 10);
       document.getElementById("quizProgressBar").style.width = `${progress}%`;
+
+      const quizContent = document.querySelector(".quiz-content");
+      if (quizContent) {
+        quizContent.classList.remove("quiz-content--in");
+        void quizContent.offsetWidth;
+        quizContent.classList.add("quiz-content--in");
+      }
+
       document.getElementById("answers").innerHTML = currentQuestion.choices.map((choiceItem, index) => `
-        <button class="quiz-answer" type="button" data-index="${index}">
+        <button class="quiz-answer quiz-answer--enter" type="button" data-index="${index}" style="animation-delay:${index * 45}ms">
           <span class="quiz-answer-letter">${LETTERS[index]}</span>
           <span>${choiceItem.text}</span>
         </button>
