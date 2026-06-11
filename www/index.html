@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <meta name="theme-color" content="#06080b">
+  <meta name="theme-color" content="#050608">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Brevet 2026">
@@ -11,712 +11,135 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #06080b;
-      --surface: #0d1016;
-      --surface-2: #12161e;
-      --ink: #c8cdd8;
-      --ink-soft: #8b919e;
-      --muted: #555b68;
-      --line: #181c24;
-      --line-strong: #222830;
-      --navy: #4a6a94;
-      --navy-light: #5c7ea8;
-      --gold: #a89060;
-      --gold-soft: rgba(168, 144, 96, 0.08);
-      --gold-border: rgba(168, 144, 96, 0.18);
-      --gold-text: #b8a070;
-      --maths: #6a8eb8;
-      --francais: #b87070;
-      --histoire: #b89058;
-      --emc: #8a7ab0;
-      --sciences: #5a9a80;
-      --mix: #6e7480;
-      --success: #5a9a72;
-      --success-bg: rgba(90, 154, 114, 0.08);
-      --success-text: #7aaa8e;
-      --error: #b07070;
-      --error-bg: rgba(176, 112, 112, 0.08);
-      --error-text: #c08888;
-      --exam: #b07080;
-      --exam-bg: rgba(176, 112, 128, 0.08);
-      --exam-border: rgba(176, 112, 128, 0.2);
-      --exam-text: #c08898;
-      --radius: 12px;
-      --radius-lg: 16px;
-      --font: "Inter", system-ui, -apple-system, sans-serif;
-      --tab-h: 56px;
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      height: 100%;
-      overflow: hidden;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--font);
-      font-size: 14px;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-    a { color: var(--navy-light); }
-
-    .app {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      height: 100dvh;
-    }
-
-    .app-header {
-      flex-shrink: 0;
-      padding: calc(12px + var(--safe-top)) 20px 12px;
-      border-bottom: 1px solid var(--line);
-      background: var(--bg);
-    }
-
-    .app-header h1 {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    .app-header .sub {
-      margin-top: 2px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .screens {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .screen {
-      position: absolute;
-      inset: 0;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 16px 16px calc(16px + var(--tab-h) + var(--safe-bottom));
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.15s ease;
-    }
-
-    .screen.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .tab-bar {
-      flex-shrink: 0;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      height: calc(var(--tab-h) + var(--safe-bottom));
-      padding-bottom: var(--safe-bottom);
-      border-top: 1px solid var(--line);
-      background: var(--surface);
-    }
-
-    .tab-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      min-height: 44px;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--muted);
-      transition: color 0.15s;
-    }
-
-    .tab-btn svg {
-      width: 22px;
-      height: 22px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .tab-btn.active { color: var(--ink); }
-
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-    }
-
-    .countdown-block {
-      text-align: center;
-      padding: 24px 18px;
-      margin-bottom: 14px;
-    }
-
-    .countdown-kicker {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .countdown-number {
-      font-size: 56px;
-      font-weight: 700;
-      line-height: 1;
-      margin: 8px 0;
-      letter-spacing: -0.02em;
-    }
-
-    .countdown-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: center;
-    }
-
-    .pill {
-      padding: 4px 10px;
-      border-radius: 6px;
-      background: var(--surface-2);
-      border: 1px solid var(--line);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--ink-soft);
-    }
-
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .metric {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-    }
-
-    .metric-value {
-      font-size: 22px;
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    .metric-label {
-      margin-top: 4px;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      min-height: 48px;
-      padding: 0 18px;
-      border-radius: var(--radius);
-      border: 1px solid var(--line-strong);
-      background: var(--surface-2);
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
-    .btn.primary {
-      background: var(--surface-2);
-      border-color: var(--line-strong);
-    }
-
-    .btn.ghost {
-      background: transparent;
-      border-color: transparent;
-      color: var(--muted);
-      min-height: 40px;
-      width: auto;
-      font-size: 13px;
-    }
-
-    .section-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .screen-title {
-      margin: 0 0 4px;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .screen-desc {
-      margin: 0 0 16px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .chips-scroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      margin-bottom: 14px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-
-    .chips-scroll::-webkit-scrollbar { display: none; }
-
-    .chip {
-      flex-shrink: 0;
-      min-height: 40px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: var(--surface-2);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--ink-soft);
-      white-space: nowrap;
-    }
-
-    .chip.active {
-      background: var(--line-strong);
-      border-color: var(--line-strong);
-      color: var(--ink);
-    }
-
-    .question-card {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      min-height: 0;
-    }
-
-    .question-badges {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      background: var(--surface-2);
-      border: 1px solid var(--line);
-      color: var(--ink-soft);
-    }
-
-    .badge-variant {
-      margin-left: auto;
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .question-text {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 500;
-      line-height: 1.45;
-    }
-
-    .answers {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .answer {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      min-height: 48px;
-      padding: 12px 14px;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
-      background: var(--surface-2);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--ink-soft);
-      text-align: left;
-      white-space: normal;
-      line-height: 1.4;
-    }
-
-    .answer::before {
-      content: attr(data-letter);
-      flex-shrink: 0;
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-
-    .answer.correct {
-      border-color: var(--success);
-      background: var(--success-bg);
-      color: var(--success-text);
-    }
-
-    .answer.correct::before {
-      background: var(--success);
-      border-color: var(--success);
-      color: #fff;
-    }
-
-    .answer.wrong {
-      border-color: var(--error);
-      background: var(--error-bg);
-      color: var(--error-text);
-    }
-
-    .answer.wrong::before {
-      background: var(--error);
-      border-color: var(--error);
-      color: #fff;
-    }
-
-    .feedback {
-      padding: 12px 14px;
-      border-radius: var(--radius);
-      background: var(--surface-2);
-      border-left: 2px solid var(--line-strong);
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-      min-height: 44px;
-    }
-
-    .feedback.ok {
-      background: var(--success-bg);
-      border-color: var(--success);
-      color: var(--success-text);
-    }
-
-    .feedback.no {
-      background: var(--error-bg);
-      border-color: var(--error);
-      color: var(--error-text);
-    }
-
-    .quiz-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .status-pill {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .plan-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .day-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-    }
-
-    .day-card.exam {
-      background: var(--exam-bg);
-      border-color: var(--exam-border);
-    }
-
-    .day-label {
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .day-card.exam .day-label { color: var(--exam); }
-
-    .day-date {
-      font-size: 22px;
-      font-weight: 600;
-      line-height: 1;
-      margin: 4px 0;
-    }
-
-    .day-work {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .day-card.exam .day-work {
-      color: var(--exam-text);
-      font-weight: 600;
-    }
-
-    .priority-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .priority-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-
-    .priority-subject {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--accent, var(--muted));
-    }
-
-    .priority-card h3 {
-      margin: 4px 0 8px;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .priority-score-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .priority-score {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--ink-soft);
-    }
-
-    .bar-track {
-      flex: 1;
-      height: 4px;
-      border-radius: 999px;
-      background: var(--line);
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      display: block;
-      height: 100%;
-      width: var(--w);
-      background: var(--accent, var(--navy));
-      border-radius: 999px;
-    }
-
-    .priority-card p {
-      margin: 0;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .info-block {
-      margin-bottom: 20px;
-    }
-
-    .info-block p {
-      margin: 0 0 10px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .info-block a {
-      font-weight: 500;
-    }
-
-    .date-line {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--gold-text);
-      margin-bottom: 14px;
-    }
-
-    .quiz-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-  </style>
+  <link rel="stylesheet" href="app.css">
 </head>
 <body>
-  <div class="app">
-    <header class="app-header">
-      <div class="sub">Brevet 2026</div>
-      <h1 id="headerTitle">Accueil</h1>
-    </header>
+  <div class="app" id="app">
 
-    <div class="screens">
-      <!-- Accueil -->
-      <section class="screen active" id="screen-home" data-title="Accueil">
-        <div class="date-line" id="todayLabel">—</div>
-        <div class="card countdown-block">
-          <div class="countdown-kicker">Échéance AEFE Maroc</div>
-          <div class="countdown-number" id="daysLeft">—</div>
-          <div class="countdown-pills">
-            <span class="pill" id="daysLabel">jours restants</span>
-            <span class="pill">18 juin 2026</span>
+    <!-- ═══ ACCUEIL ═══ -->
+    <section class="view view--active" id="view-home" data-view="home">
+      <div class="home-hero">
+        <p class="home-greeting" id="todayLabel">Bonjour</p>
+        <h1 class="home-title">Prêt pour<br>le brevet ?</h1>
+        <div class="countdown-ring-wrap">
+          <svg class="countdown-ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="ring-fill" id="countdownRing" cx="60" cy="60" r="52"/>
+          </svg>
+          <div class="countdown-center">
+            <span class="countdown-num" id="daysLeft">—</span>
+            <span class="countdown-unit" id="daysLabel">jours</span>
           </div>
         </div>
-        <div class="metrics">
-          <div class="metric">
-            <div class="metric-value" id="scoreValue">0%</div>
-            <div class="metric-label">Score</div>
-          </div>
-          <div class="metric">
-            <div class="metric-value" id="answeredValue">0</div>
-            <div class="metric-label">Questions</div>
-          </div>
-          <div class="metric">
-            <div class="metric-value" id="streakValue">0</div>
-            <div class="metric-label">Série</div>
-          </div>
-          <div class="metric">
-            <div class="metric-value" id="seenValue">0</div>
-            <div class="metric-label">Variantes</div>
-          </div>
-        </div>
-        <button class="btn primary" type="button" id="startQuiz">Lancer un quiz</button>
-        <div style="height:12px"></div>
-        <button class="btn ghost" type="button" id="resetStats">Remettre le score à zéro</button>
-      </section>
+        <p class="countdown-date">Brevet · 18 juin 2026 · AEFE Maroc</p>
+      </div>
 
-      <!-- Quiz -->
-      <section class="screen" id="screen-quiz" data-title="Quiz">
-        <div class="quiz-header-row">
-          <p class="screen-desc" style="margin:0">Choisis une matière ou laisse le mode mixte.</p>
+      <div class="stats-row">
+        <div class="stat-chip">
+          <span class="stat-val" id="scoreValue">0%</span>
+          <span class="stat-lbl">Score</span>
         </div>
-        <div class="chips-scroll" id="subjectChips"></div>
-        <div class="card question-card">
-          <div class="question-badges">
-            <span class="badge" id="questionSubject">Mix</span>
-            <span class="badge" id="questionTopic">Sujet</span>
-            <span class="badge-variant" id="questionId">—</span>
-          </div>
-          <h2 class="question-text" id="questionText">Chargement…</h2>
-          <div class="answers" id="answers"></div>
-          <div class="feedback" id="feedback">Choisis une réponse.</div>
-          <div class="quiz-actions">
-            <span class="status-pill" id="engineStatus">Prêt</span>
-            <button class="btn primary" type="button" id="nextQuestion" style="width:auto;min-width:140px">Suivant</button>
-          </div>
+        <div class="stat-chip">
+          <span class="stat-val" id="answeredValue">0</span>
+          <span class="stat-lbl">Réponses</span>
         </div>
-      </section>
+        <div class="stat-chip">
+          <span class="stat-val" id="streakValue">0</span>
+          <span class="stat-lbl">Série</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-val" id="seenValue">0</span>
+          <span class="stat-lbl">Vues</span>
+        </div>
+      </div>
 
-      <!-- Planning -->
-      <section class="screen" id="screen-planning" data-title="Planning">
-        <h2 class="screen-title">Jusqu'au 18 juin</h2>
-        <p class="screen-desc">Court, régulier, corrigé.</p>
-        <div class="plan-grid" id="planGrid"></div>
-      </section>
+      <button class="cta-main" type="button" id="startQuiz">
+        <span>Commencer à réviser</span>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <button class="cta-ghost" type="button" id="resetStats">Remettre les stats à zéro</button>
+    </section>
 
-      <!-- Infos -->
-      <section class="screen" id="screen-info" data-title="Infos">
-        <div class="info-block">
-          <div class="section-label">Priorités de révision</div>
-          <div class="priority-list" id="priorityGrid"></div>
+    <!-- ═══ QUIZ — choix matière ═══ -->
+    <section class="view" id="view-quiz" data-view="quiz">
+      <header class="view-header">
+        <h2>Réviser</h2>
+        <p>Choisis une matière pour lancer une session</p>
+      </header>
+      <div class="subject-grid" id="subjectGrid"></div>
+    </section>
+
+    <!-- ═══ QUIZ — session plein écran ═══ -->
+    <div class="quiz-session" id="quizSession" hidden>
+      <header class="quiz-bar">
+        <button class="quiz-back" type="button" id="quizBack" aria-label="Retour">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="quiz-progress-track">
+          <div class="quiz-progress-fill" id="quizProgressBar"></div>
         </div>
-        <div class="info-block card">
-          <div class="section-label">Sources</div>
-          <p>Calé sur le centre AEFE au Maroc : <strong style="color:var(--ink-soft)">brevet le jeudi 18 juin 2026</strong>.</p>
-          <p>Format 2026 et modalités DNB : <a href="https://www.education.gouv.fr/le-diplome-national-du-brevet-10613" target="_blank" rel="noreferrer">Éducation nationale</a>.</p>
-          <p>Annales et sujets zéro : <a href="https://eduscol.education.gouv.fr/5202/preparer-le-diplome-national-du-brevet-dnb-avec-les-sujets-des-annales" target="_blank" rel="noreferrer">Éduscol</a>.</p>
+        <span class="quiz-counter" id="questionId">Q1</span>
+      </header>
+
+      <div class="quiz-content">
+        <div class="quiz-tags">
+          <span class="quiz-tag" id="questionSubject">Maths</span>
+          <span class="quiz-tag quiz-tag--muted" id="questionTopic">Sujet</span>
         </div>
-      </section>
+        <h2 class="quiz-question" id="questionText">…</h2>
+        <div class="quiz-answers" id="answers"></div>
+        <div class="quiz-feedback" id="feedback" hidden></div>
+      </div>
+
+      <footer class="quiz-footer">
+        <button class="cta-main cta-main--compact" type="button" id="nextQuestion" disabled>Suivant</button>
+      </footer>
     </div>
 
-    <nav class="tab-bar" aria-label="Navigation">
-      <button class="tab-btn active" type="button" data-screen="screen-home" aria-label="Accueil">
+    <!-- ═══ PLANNING ═══ -->
+    <section class="view" id="view-plan" data-view="plan">
+      <header class="view-header">
+        <h2>Planning</h2>
+        <p>Dernière ligne droite · 11 → 18 juin</p>
+      </header>
+      <div class="timeline" id="planGrid"></div>
+    </section>
+
+    <!-- ═══ INFOS ═══ -->
+    <section class="view" id="view-info" data-view="info">
+      <header class="view-header">
+        <h2>Priorités</h2>
+        <p>Ce qui mérite le plus de temps cette semaine</p>
+      </header>
+      <div class="priority-list" id="priorityGrid"></div>
+      <div class="sources-block">
+        <p>Session AEFE Maroc · brevet le <strong>18 juin 2026</strong>.</p>
+        <p><a href="https://www.education.gouv.fr/le-diplome-national-du-brevet-10613" target="_blank" rel="noreferrer">Format DNB 2026</a> · <a href="https://eduscol.education.gouv.fr/5202/preparer-le-diplome-national-du-brevet-dnb-avec-les-sujets-des-annales" target="_blank" rel="noreferrer">Annales Éduscol</a></p>
+      </div>
+    </section>
+
+    <!-- Tab bar -->
+    <nav class="tabbar" id="tabbar" aria-label="Navigation">
+      <button class="tab tab--active" type="button" data-view="home">
         <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
-        Accueil
+        <span>Accueil</span>
       </button>
-      <button class="tab-btn" type="button" data-screen="screen-quiz" aria-label="Quiz">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7V14"/><circle cx="12" cy="17" r=".8" fill="currentColor" stroke="none"/></svg>
-        Quiz
+      <button class="tab" type="button" data-view="quiz">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/></svg>
+        <span>Réviser</span>
       </button>
-      <button class="tab-btn" type="button" data-screen="screen-planning" aria-label="Planning">
+      <button class="tab" type="button" data-view="plan">
         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
-        Planning
+        <span>Planning</span>
       </button>
-      <button class="tab-btn" type="button" data-screen="screen-info" aria-label="Infos">
+      <button class="tab" type="button" data-view="info">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></svg>
-        Infos
+        <span>Infos</span>
       </button>
     </nav>
   </div>
 
   <script src="app.js"></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js").catch(() => {});
-    }
-
-    const titles = { "screen-home": "Accueil", "screen-quiz": "Quiz", "screen-planning": "Planning", "screen-info": "Infos" };
-
-    function showScreen(id) {
-      document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.screen === id));
-      document.getElementById("headerTitle").textContent = titles[id] || "Brevet 2026";
-    }
-
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => showScreen(btn.dataset.screen));
-    });
-
-    document.getElementById("startQuiz").addEventListener("click", () => showScreen("screen-quiz"));
-  </script>
+  <script src="ui.js"></script>
 </body>
 </html>
