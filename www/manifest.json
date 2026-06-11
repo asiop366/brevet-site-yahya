@@ -1,0 +1,26 @@
+{
+  "name": "Brevet 2026 — Révisions",
+  "short_name": "Brevet 2026",
+  "description": "Quiz et planning pour préparer le brevet des collèges 2026",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06080b",
+  "theme_color": "#06080b",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
