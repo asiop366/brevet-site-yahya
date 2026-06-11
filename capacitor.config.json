@@ -7,17 +7,20 @@
   },
   "ios": {
     "contentInset": "automatic",
-    "backgroundColor": "#06080b"
+    "backgroundColor": "#09090b",
+    "scrollEnabled": false,
+    "preferredContentMode": "mobile"
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 1200,
-      "backgroundColor": "#06080b",
+      "launchShowDuration": 800,
+      "launchAutoHide": true,
+      "backgroundColor": "#09090b",
       "showSpinner": false
     },
     "StatusBar": {
       "style": "DARK",
-      "backgroundColor": "#06080b"
+      "backgroundColor": "#09090b"
     }
   }
 }

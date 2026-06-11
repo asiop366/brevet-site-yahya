@@ -736,11 +736,13 @@
         feedback.className = "quiz-feedback quiz-feedback--ok";
         feedback.textContent = `✓ ${currentQuestion.explanation}`;
         if (navigator.vibrate) navigator.vibrate(10);
+        if (typeof window.nativeHaptic === "function") window.nativeHaptic("success");
       } else {
         state.streak = 0;
         feedback.className = "quiz-feedback quiz-feedback--no";
         feedback.textContent = `Réponse : ${currentQuestion.answer}. ${currentQuestion.explanation}`;
         if (navigator.vibrate) navigator.vibrate([20, 40, 20]);
+        if (typeof window.nativeHaptic === "function") window.nativeHaptic("error");
       }
       document.getElementById("nextQuestion").disabled = false;
       updateStats();

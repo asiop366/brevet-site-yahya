@@ -972,6 +972,84 @@ a { color: var(--text-2); text-decoration: underline; text-underline-offset: 2px
 .app--quiz .tabbar,
 .app--fiche .tabbar { display: none; }
 
+/* ── iPhone natif (Capacitor / IPA) ── */
+.is-native {
+  --tab-h: 64px;
+}
+
+.is-native html,
+.is-native body {
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+.is-native .app {
+  background: var(--bg);
+}
+
+.is-native .tabbar {
+  background: rgba(9, 9, 11, 0.72);
+  backdrop-filter: saturate(180%) blur(28px);
+  -webkit-backdrop-filter: saturate(180%) blur(28px);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.is-native .tab {
+  font-size: 10px;
+  gap: 5px;
+  padding-top: 4px;
+}
+
+.is-native .tab svg {
+  width: 26px;
+  height: 26px;
+}
+
+.is-native .view {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.is-native .home-title {
+  font-size: 32px;
+}
+
+.is-native .mode-btn,
+.is-native .quiz-answer,
+.is-native .btn-primary {
+  min-height: 56px;
+}
+
+.is-native .mode-card {
+  border-radius: 20px;
+}
+
+.is-native .quiz-session,
+.is-native .fiche-session {
+  padding-top: max(var(--safe-t), 8px);
+}
+
+.is-native .quiz-bar,
+.is-native .fiche-bar {
+  padding-top: 6px;
+}
+
+.is-native .countdown-ring-wrap {
+  width: 158px;
+  height: 158px;
+}
+
+.is-native .stat-chip {
+  border-radius: 12px;
+}
+
+.is-native .subject-card,
+.is-native .fiche-card {
+  border-radius: 16px;
+}
+
 /* ══════════════════════════════════════
    Animations
    ══════════════════════════════════════ */
