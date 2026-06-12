@@ -12,7 +12,8 @@
     {
       id: "maths",
       subject: "Maths",
-      tag: "96 % probabilité",
+      probability: 96,
+      likely: "Automatismes 2026, Pythagore, Thalès, trigonométrie, pourcentages, fractions, fonctions, probabilités",
       cards: [
         { title: "Automatismes 2026", front: "Quelle partie du contrôle maths dure 20 minutes sans calculatrice ?", back: "Les automatismes : calcul mental, fractions, pourcentages, puissances et petits problèmes rapides. Présents chaque année depuis 2021." },
         { title: "Pourcentages", front: "Comment calcule-t-on 15 % de 240 ?", back: "240 × 15 ÷ 100 = 36. Astuce brevet : repérer 10 % (24) puis ajouter la moitié de 10 % pour 15 %." },
@@ -26,7 +27,8 @@
     {
       id: "francais",
       subject: "Français",
-      tag: "92 % probabilité",
+      probability: 92,
+      likely: "Compréhension de texte, homophones, accords, valeurs des temps, réécriture, argumentation, conjugaison",
       cards: [
         { title: "Compréhension", front: "Comment justifier une réponse au brevet ?", back: "Citer ou reformuler un indice précis du texte, puis l'expliquer. Jamais d'avis personnel sans appui sur le texte." },
         { title: "Homophones", front: "Il ___ révisé (a / à / as) ?", back: "« a » — on peut le remplacer par « avait » : il avait révisé. « à » = préposition, « as » = verbe avoir." },
@@ -39,7 +41,8 @@
     {
       id: "histoire",
       subject: "Histoire",
-      tag: "88 % probabilité",
+      probability: 88,
+      likely: "WW2 (1939–45), 18 juin 1940, débarquement, 8 mai 1945, Vichy, guerre froide, mur de Berlin",
       cards: [
         { title: "WW2 — début", front: "Quelle date marque le début de la guerre en Europe ?", back: "1er septembre 1939 : invasion de la Pologne par l'Allemagne nazie." },
         { title: "Appel du 18 juin", front: "Que fit de Gaulle le 18 juin 1940 ?", back: "Appel depuis Londres à résister : refus de l'armistice, naissance de la France libre." },
@@ -53,7 +56,8 @@
     {
       id: "geo",
       subject: "Géographie",
-      tag: "84 % probabilité",
+      probability: 84,
+      likely: "Espaces productifs, aires urbaines, métropolisation, aménagement du territoire, mobilités, DROM, croquis",
       cards: [
         { title: "Espace productif", front: "Qu'est-ce qu'un espace productif ?", back: "Territoire organisé pour produire des richesses : agriculture, industrie ou services selon ses ressources." },
         { title: "Aire urbaine", front: "Définition d'une aire urbaine ?", back: "Pôle urbain (ville-centre) + couronne périurbaine où les habitants travaillent ou consomment dans le pôle." },
@@ -66,7 +70,8 @@
     {
       id: "emc",
       subject: "EMC",
-      tag: "80 % probabilité",
+      probability: 80,
+      likely: "Laïcité, citoyenneté, démocratie, droits & devoirs, discrimination, institutions, valeurs républicaines",
       cards: [
         { title: "Laïcité", front: "Que garantit la laïcité à l'école ?", back: "Neutralité de l'État + liberté de conscience. L'école accueille tous les élèves sans imposer de croyance." },
         { title: "Citoyen", front: "Qu'est-ce qu'un citoyen ?", back: "Personne avec des droits politiques (vote, éligibilité) et des devoirs (respect des lois, impôts, défense)." },
@@ -79,7 +84,8 @@
     {
       id: "sciences",
       subject: "SVT & Physique",
-      tag: "Épreuve 2026",
+      probability: 85,
+      likely: "SVT : climat, immunité & vaccins, génétique, pathogènes · Physique : vitesse, Ohm, énergie, chimie",
       cards: [
         { title: "SVT — Climat", front: "L'effet de serre est lié à quoi ?", back: "Accumulation de gaz à effet de serre (CO₂, CH₄…) qui retiennent une partie du rayonnement. Thème très fréquent 2021-2025." },
         { title: "SVT — Immunité", front: "À quoi sert un vaccin ?", back: "Stimuler le système immunitaire pour produire des anticorps sans tomber gravement malade. Thème 2026 probable." },
@@ -115,7 +121,8 @@
                 <span class="fiche-tile-badge">${f.cards.length}</span>
               </div>
               <h3 class="fiche-tile-title">${f.subject}</h3>
-              <p class="fiche-tile-tag">${f.tag}</p>
+              <p class="fiche-tile-prob">${f.probability} % de probabilité</p>
+              <p class="fiche-tile-likely"><span>Peut tomber :</span> ${f.likely}</p>
               <span class="fiche-tile-cta">Réviser →</span>
             </button>
           `;

@@ -13,12 +13,12 @@
     ];
 
     const priorities = [
-      { subject: "Maths", topic: "Automatismes 2026", score: 96, color: "var(--maths)", why: "Partie dédiée de 20 minutes : calcul mental, fractions, pourcentages, puissances, géométrie rapide." },
-      { subject: "Français", topic: "Compréhension + grammaire", score: 92, color: "var(--francais)", why: "Toujours central : lecture précise, réécriture, accords, valeurs des temps, justification." },
-      { subject: "Histoire", topic: "WW2 / Guerre froide", score: 88, color: "var(--histoire)", why: "Repères chronologiques très rentables et développement construit possible." },
-      { subject: "Géographie", topic: "France productive et aménagée", score: 84, color: "var(--sciences)", why: "Espaces productifs, aires urbaines, mobilités, aménagement du territoire, croquis simple." },
-      { subject: "EMC", topic: "Citoyenneté / laïcité", score: 80, color: "var(--emc)", why: "Situation pratique fréquente : droits, devoirs, valeurs, engagement, institutions." },
-      { subject: "Sciences", topic: "SVT + Physique 2026", score: 85, color: "var(--sciences)", why: "Épreuve 2026 : SVT et physique-chimie (30 min chacune). Climat, immunité, génétique · énergie, électricité, mouvements." }
+      { subject: "Maths", topic: "Automatismes 2026", score: 96, color: "var(--maths)", why: "Partie dédiée de 20 minutes sans calculatrice, présente chaque année depuis 2021.", likely: "Automatismes, Pythagore, Thalès, trigonométrie, pourcentages, fractions, fonctions, probabilités, statistiques" },
+      { subject: "Français", topic: "Compréhension + grammaire", score: 92, color: "var(--francais)", why: "Épreuve centrale du brevet : toujours un texte + questions de langue.", likely: "Compréhension, homophones, accords, valeurs des temps, réécriture, argumentation, conjugaison, figures de style" },
+      { subject: "Histoire", topic: "WW2 / Guerre froide", score: 88, color: "var(--histoire)", why: "Les repères chronologiques reviennent chaque année aux annales DNB.", likely: "WW2, 18 juin 1940, débarquement, 8 mai 1945, Vichy, guerre froide, mur de Berlin, chronologie" },
+      { subject: "Géographie", topic: "France productive et aménagée", score: 84, color: "var(--sciences)", why: "Thème récurrent : territoires français, inégalités, aménagement.", likely: "Espaces productifs, aires urbaines, métropolisation, aménagement, mobilités, DROM, croquis simple" },
+      { subject: "EMC", topic: "Citoyenneté / laïcité", score: 80, color: "var(--emc)", why: "Situation concrète à analyser avec les valeurs de la République.", likely: "Laïcité, citoyenneté, démocratie, droits & devoirs, discrimination, institutions, engagement" },
+      { subject: "Sciences", topic: "SVT + Physique 2026", score: 85, color: "var(--sciences)", why: "Épreuve 2026 : SVT et physique-chimie (30 min chacune).", likely: "SVT : climat, immunité, génétique, pathogènes · Physique : vitesse, Ohm, énergie, conservation de la masse" }
     ];
 
     const DAILY_QUESTION_COUNT = 45;
@@ -38,13 +38,20 @@
     ];
 
     const SUBJECT_ICONS = { mix: "🎯", maths: "📐", francais: "📖", histoire: "🌍", emc: "⚖️", sciences: "🔬" };
-    const SUBJECT_TOPICS = {
-      mix: "Toutes matières",
-      maths: "Thalès · Pythagore · Auto",
-      francais: "Grammaire · Conjugaison",
-      histoire: "Dates · Géographie",
-      emc: "Citoyenneté · Institutions",
-      sciences: "SVT · Physique 2026"
+    const SUBJECT_LIKELY = {
+      mix: "Toutes les matières du brevet",
+      maths: "Auto, Pythagore, Thalès, %, fractions, fonctions, probas",
+      francais: "Texte, homophones, accords, temps, réécriture, argumentation",
+      histoire: "WW2, dates clés, guerre froide, géo France & territoires",
+      emc: "Laïcité, citoyenneté, droits, institutions, situations",
+      sciences: "Climat, immunité, génétique · vitesse, Ohm, énergie"
+    };
+    const SUBJECT_PROB = {
+      maths: 96,
+      francais: 92,
+      histoire: 88,
+      emc: 80,
+      sciences: 85
     };
     const BANK_SIZE = window.QuestionBank?.BANK_SIZE || 500;
 
@@ -329,17 +336,18 @@
 
       const grid = subjects.filter((s) => s.id !== "mix").map((s) => {
         const { seen, total, pct } = getSubjectProgress(s.id);
+        const prob = SUBJECT_PROB[s.id];
         return `
           <button class="browse-tile browse-tile--${s.id}" type="button" data-subject="${s.id}">
             <div class="browse-tile-head">
               <span class="browse-tile-icon">${SUBJECT_ICONS[s.id]}</span>
-              <span class="browse-tile-count">${total}</span>
+              <span class="browse-tile-prob">${prob}%</span>
             </div>
             <h3 class="browse-tile-title">${s.label}</h3>
-            <p class="browse-tile-topic">${SUBJECT_TOPICS[s.id]}</p>
+            <p class="browse-tile-likely"><span>Peut tomber :</span> ${SUBJECT_LIKELY[s.id]}</p>
             <div class="browse-progress browse-progress--sm">
               <div class="browse-progress-track"><div class="browse-progress-fill" style="width:${pct}%"></div></div>
-              <span class="browse-progress-label">${seen} vues</span>
+              <span class="browse-progress-label">${seen} / ${total} vues</span>
             </div>
           </button>
         `;
@@ -390,6 +398,7 @@
           </div>
           <h3 class="prio-title">${item.topic}</h3>
           <p class="prio-why">${item.why}</p>
+          <p class="prio-likely"><span>Peut tomber :</span> ${item.likely}</p>
         </article>
       `).join("");
     }
