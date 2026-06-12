@@ -18,6 +18,9 @@
     document.querySelectorAll(".dock-item").forEach((item) => {
       item.classList.toggle("dock-item--active", item.dataset.view === name);
     });
+    if (name === "quiz" && typeof window.refreshQuizBrowse === "function") {
+      window.refreshQuizBrowse();
+    }
   };
 
   document.querySelectorAll(".dock-item").forEach((item) => {

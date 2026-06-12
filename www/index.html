@@ -86,20 +86,32 @@
 
     <!-- QUIZ -->
     <section class="view" id="view-quiz" data-view="quiz">
-      <header class="screen-top screen-top--compact">
-        <h1 class="screen-title">Quiz</h1>
-        <p class="screen-lead">40 questions par matière</p>
+      <header class="browse-header">
+        <div class="browse-header-text">
+          <h1 class="screen-title">Quiz</h1>
+          <p class="screen-lead">500 questions uniques par matière</p>
+        </div>
+        <div class="browse-stat-ring" aria-hidden="true">
+          <span class="browse-stat-num" id="quizBankTotal">2500</span>
+          <span class="browse-stat-lbl">Q total</span>
+        </div>
       </header>
-      <div class="subject-scroll" id="subjectGrid"></div>
+      <div id="subjectGrid"></div>
     </section>
 
     <!-- FICHES -->
     <section class="view" id="view-fiches" data-view="fiches">
-      <header class="screen-top screen-top--compact">
-        <h1 class="screen-title">Fiches</h1>
-        <p class="screen-lead">Annales 2021–2025 · SVT + Physique 2026</p>
+      <header class="browse-header browse-header--fiches">
+        <div class="browse-header-text">
+          <h1 class="screen-title">Fiches</h1>
+          <p class="screen-lead">Flashcards · annales 2021–2025</p>
+        </div>
+        <div class="browse-stat-ring browse-stat-ring--fiches" aria-hidden="true">
+          <span class="browse-stat-num" id="ficheCardTotal">40</span>
+          <span class="browse-stat-lbl">cartes</span>
+        </div>
       </header>
-      <div class="fiche-list" id="ficheGrid"></div>
+      <div id="ficheGrid"></div>
     </section>
 
     <!-- QUIZ SESSION -->
@@ -223,6 +235,7 @@
 
   <script src="themes.js"></script>
   <script src="native.js"></script>
+  <script src="question-bank.js"></script>
   <script src="app.js"></script>
   <script src="fiches.js"></script>
   <script src="ui.js"></script>

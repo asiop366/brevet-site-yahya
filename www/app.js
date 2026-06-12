@@ -37,83 +37,16 @@
       { date: "18", label: "Jeudi", work: "Brevet", tone: "exam", subjects: [] }
     ];
 
-    const historyFacts = [
-      ["1er septembre 1939", "Invasion de la Pologne par l'Allemagne : début de la Seconde Guerre mondiale en Europe."],
-      ["18 juin 1940", "Appel du général de Gaulle depuis Londres."],
-      ["22 juin 1940", "Armistice franco-allemand et installation du régime de Vichy."],
-      ["6 juin 1944", "Débarquement allié en Normandie."],
-      ["8 mai 1945", "Capitulation de l'Allemagne nazie en Europe."],
-      ["11 novembre 1918", "Armistice mettant fin à la Première Guerre mondiale."],
-      ["1947", "Doctrine Truman, plan Marshall et début de la Guerre froide."],
-      ["1948-1949", "Blocus de Berlin."],
-      ["1958", "Promulgation de la Constitution de la Ve République."],
-      ["1961", "Construction du mur de Berlin."],
-      ["1962", "Crise des missiles de Cuba et indépendance de l'Algérie."],
-      ["9 novembre 1989", "Chute du mur de Berlin."],
-      ["1789", "Prise de la Bastille, symbole de la Révolution française."],
-      ["1914-1918", "Dates de la Première Guerre mondiale."],
-      ["1939-1945", "Dates de la Seconde Guerre mondiale en Europe."]
-    ];
-
-    const geoFacts = [
-      ["espace productif", "Espace organisé pour produire des richesses : agriculture, industrie ou services."],
-      ["aire urbaine", "Ensemble formé par un pôle urbain et sa couronne périurbaine."],
-      ["métropolisation", "Concentration des populations, activités et pouvoirs dans les grandes villes."],
-      ["aménagement du territoire", "Action visant à réduire les inégalités et organiser les espaces."],
-      ["DROM", "Territoires ultramarins français avec contraintes d'éloignement et atouts stratégiques."],
-      ["mobilités", "Déplacements de personnes, quotidiens ou à plus longue distance."]
-    ];
-
-    const emcFacts = [
-      ["laïcité", "Neutralité de l'État et liberté de conscience."],
-      ["citoyen", "Personne qui possède des droits politiques et participe à la vie démocratique."],
-      ["démocratie", "Régime où la souveraineté appartient au peuple."],
-      ["discrimination", "Traitement défavorable interdit par la loi sur un critère précis."],
-      ["liberté d'expression", "Droit d'exprimer ses idées dans les limites fixées par la loi."],
-      ["Constitution", "Texte qui organise les pouvoirs et garantit les droits fondamentaux."]
-    ];
-
-    const frenchItems = [
-      { topic: "Homophones", q: "Complète : il ___ révisé ses formules.", answers: ["a", "à", "as", "ha"], correct: "a", explain: "On peut remplacer par « avait » : il avait révisé." },
-      { topic: "Accords", q: "Quelle phrase est correctement accordée ?", answers: ["Les copies sont corrigé.", "Les copies sont corrigées.", "Les copies est corrigées.", "Les copie sont corrigées."], correct: "Les copies sont corrigées.", explain: "Le participe passé employé avec être s'accorde avec le sujet « copies »." },
-      { topic: "Valeurs des temps", q: "Dans « Il marchait quand l'orage éclata », l'imparfait exprime...", answers: ["une action de premier plan", "une action d'arrière-plan", "un ordre", "une hypothèse"], correct: "une action d'arrière-plan", explain: "L'imparfait installe le décor ; le passé simple marque l'événement." },
-      { topic: "Réécriture", q: "Transforme au pluriel : « Ce cheval rapide franchit l'obstacle. »", answers: ["Ces chevaux rapides franchissent l'obstacle.", "Ces cheval rapides franchit l'obstacle.", "Ce chevaux rapide franchissent l'obstacle.", "Ces chevaux rapide franchit l'obstacle."], correct: "Ces chevaux rapides franchissent l'obstacle.", explain: "Ce → ces, cheval → chevaux, rapide → rapides, franchit → franchissent." },
-      { topic: "Argumentation", q: "Dans un paragraphe argumenté, l'exemple sert surtout à...", answers: ["décorer la copie", "prouver et préciser l'idée", "remplacer la thèse", "allonger sans raison"], correct: "prouver et préciser l'idée", explain: "Une idée solide s'appuie sur un exemple précis." },
-      { topic: "Compréhension", q: "Pour justifier une réponse sur un texte, il faut d'abord...", answers: ["citer ou reformuler un indice précis", "donner son avis seulement", "écrire plus long", "changer de sujet"], correct: "citer ou reformuler un indice précis", explain: "La justification doit venir du texte ou de l'image." },
-      { topic: "Connecteurs", q: "Quel connecteur exprime une opposition ?", answers: ["car", "cependant", "donc", "puis"], correct: "cependant", explain: "« Cependant » introduit une idée qui s'oppose à la précédente." },
-      { topic: "Pluriel", q: "Le pluriel de « journal » est...", answers: ["journaus", "journaux", "journalx", "journale"], correct: "journaux", explain: "Les mots en -al font souvent leur pluriel en -aux." }
-    ];
-
-    const physicsItems = [
-      ["Un cycliste parcourt 150 m en 30 s. Sa vitesse moyenne est...", "5 m/s", ["150 m/s", "0,2 m/s", "180 m/s", "50 m/s"], "v = d/t = 150/30 = 5 m/s. Thème très fréquent 2021-2025."],
-      ["Avec R = 12 Ω et I = 0,5 A, la tension U vaut...", "6 V", ["6,5 V", "24 V", "0,04 V", "18 V"], "Loi d'Ohm : U = R × I = 12 × 0,5 = 6 V."],
-      ["Un objet de masse 2 kg est soulevé à 3 m. Son énergie potentielle (g = 10 N/kg) vaut...", "60 J", ["6 J", "20 J", "5 J", "30 J"], "Ep = m × g × h = 2 × 10 × 3 = 60 J."],
-      ["La puissance électrique vaut P = U × I. Si U = 230 V et I = 2 A, P = ?", "460 W", ["115 W", "232 W", "228 W", "4600 W"], "P = 230 × 2 = 460 W. Énergie et consommation : thème récurrent au brevet."],
-      ["Lors d'une réaction chimique, la masse totale des produits est...", "égale à la masse totale des réactifs", ["supérieure aux réactifs", "nulle", "toujours doublée", "imprévisible"], "Conservation de la masse : rien ne se perd, rien ne se crée."],
-      ["Un objet en chute libre (sans frottements) subit une force...", "le poids, dirigé vers le centre de la Terre", ["nulle", "perpendiculaire au sol uniquement", "vers le haut", "identique à la poussée d'Archimède"], "Le poids P = m × g. Mouvements et interactions : au programme 2026."],
-      ["Convertir 3,6 km/h en m/s donne...", "1 m/s", ["3,6 m/s", "10 m/s", "0,36 m/s", "36 m/s"], "3,6 km/h = 3600 m / 3600 s = 1 m/s."]
-    ];
-
-    const svtItems = [
-      ["Où se font les échanges de O₂ et CO₂ entre l'air et le sang ?", "Dans les alvéoles pulmonaires", ["Dans la trachée", "Dans le cœur", "Dans l'estomac"], "Les poumons assurent les échanges gazeux via les alvéoles."],
-      ["Quel support porte l'information génétique dans le noyau ?", "L'ADN", ["Le glucose", "L'hémoglobine", "Le dioxygène"], "La génétique (ADN, gènes, chromosomes) revient très souvent aux annales."],
-      ["Un vaccin stimule surtout...", "le système immunitaire", ["la digestion", "la respiration", "la reproduction"], "Immunité et micro-organismes pathogènes : thème 2026 très probable."],
-      ["Dans une chaîne alimentaire, le producteur primaire est...", "un végétal chlorophyllien", ["un prédateur", "un champignon décomposeur seul", "un herbivore"], "Les végétaux produisent la matière organique par photosynthèse."],
-      ["L'effet de serre est lié surtout à l'accumulation de...", "gaz à effet de serre (CO₂, CH₄…)", ["azote pur", "oxygène seul", "eau liquide", "sel marin"], "Climat et activité humaine : thème récurrent 2021-2025."],
-      ["Dans le tube digestif, l'absorption des nutriments se fait surtout...", "dans l'intestin grêle", ["dans la bouche", "dans l'œsophage", "dans la trachée"], "Digestion et nutrition : classique au brevet."],
-      ["Un antibiotique agit principalement contre...", "certaines bactéries", ["les virus", "tous les microbes sans distinction", "les allergies"], "Se préserver des micro-organismes pathogènes : au programme 2026."],
-      ["Deux individus avec le même génotype pour un caractère auront...", "le même allèle pour ce gène", ["forcément des yeux identiques", "des chromosomes différents", "un nombre de gènes différent"], "Génétique : génotype = ensemble des allèles d'un individu."]
-    ];
-
     const SUBJECT_ICONS = { mix: "🎯", maths: "📐", francais: "📖", histoire: "🌍", emc: "⚖️", sciences: "🔬" };
-    const SUBJECT_DESC = {
-      mix: "40 questions · mix",
-      maths: "40 questions · Thalès & Pythagore",
-      francais: "40 questions · grammaire",
-      histoire: "40 questions · dates",
-      emc: "40 questions · citoyenneté",
-      sciences: "40 questions · SVT & PC"
+    const SUBJECT_TOPICS = {
+      mix: "Toutes matières",
+      maths: "Thalès · Pythagore · Auto",
+      francais: "Grammaire · Conjugaison",
+      histoire: "Dates · Géographie",
+      emc: "Citoyenneté · Institutions",
+      sciences: "SVT · Physique 2026"
     };
+    const BANK_SIZE = window.QuestionBank?.BANK_SIZE || 500;
 
     const state = loadState();
     let currentQuestion = null;
@@ -135,10 +68,11 @@
           answered: saved.answered || 0,
           correct: saved.correct || 0,
           streak: saved.streak || 0,
-          seen: Array.isArray(saved.seen) ? saved.seen.slice(-180) : []
+          seen: Array.isArray(saved.seen) ? saved.seen.slice(-4000) : [],
+          seenBySubject: saved.seenBySubject && typeof saved.seenBySubject === "object" ? saved.seenBySubject : {}
         };
       } catch {
-        return { answered: 0, correct: 0, streak: 0, seen: [] };
+        return { answered: 0, correct: 0, streak: 0, seen: [], seenBySubject: {} };
       }
     }
 
@@ -150,348 +84,8 @@
       }
     }
 
-    function rand(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function choice(items) {
-      return items[rand(0, items.length - 1)];
-    }
-
-    function shuffle(items) {
-      const copy = [...items];
-      for (let i = copy.length - 1; i > 0; i -= 1) {
-        const j = rand(0, i);
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    function unique(items) {
-      return [...new Set(items.map(String))];
-    }
-
-    function makeChoices(correct, distractors) {
-      const options = unique([correct, ...distractors]).slice(0, 4);
-      while (options.length < 4) {
-        const candidate = String(rand(2, 99));
-        if (!options.includes(candidate)) options.push(candidate);
-      }
-      return shuffle(options).map(text => ({ text, correct: text === String(correct) }));
-    }
-
-    function gcd(a, b) {
-      return b === 0 ? Math.abs(a) : gcd(b, a % b);
-    }
-
-    function parseYear(dateStr) {
-      const match = String(dateStr).match(/\d{4}/);
-      return match ? Number(match[0]) : 9999;
-    }
-
-    function pickWeightedFactory(pool) {
-      const total = pool.reduce((sum, factory) => sum + factory.weight, 0);
-      let pick = Math.random() * total;
-      for (const factory of pool) {
-        pick -= factory.weight;
-        if (pick <= 0) return factory;
-      }
-      return pool[pool.length - 1];
-    }
-
     function isQueuedMode() {
       return sessionMode === "daily" || sessionMode === "ultimate" || sessionMode === "subject";
-    }
-
-    const pythagoreanTriples = [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17], [7, 24, 25], [9, 12, 15], [12, 16, 20]];
-
-    const factories = [
-      {
-        subject: "maths",
-        topic: "Pythagore",
-        weight: 16,
-        make() {
-          const [a, b, c] = choice(pythagoreanTriples);
-          return q("Maths", "Pythagore", `Un triangle rectangle a pour côtés de l'angle droit ${a} cm et ${b} cm. Longueur de l'hypoténuse ?`, `${c} cm`, [`${a + b} cm`, `${c - 1} cm`, `${Math.abs(b - a)} cm`, `${c + 2} cm`], `c² = ${a}² + ${b}² = ${a * a + b * b}, donc c = ${c} cm.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Pythagore",
-        weight: 14,
-        make() {
-          const [a, b, c] = choice(pythagoreanTriples);
-          const known = choice([a, b]);
-          const missing = known === a ? b : a;
-          return q("Maths", "Pythagore", `Dans un triangle rectangle, l'hypoténuse mesure ${c} cm et un côté de l'angle droit mesure ${known} cm. L'autre côté mesure...`, `${missing} cm`, [`${c - known} cm`, `${known + 2} cm`, `${c + known} cm`, `${missing + 1} cm`], `${c}² − ${known}² = ${missing}², donc l'autre côté vaut ${missing} cm.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Pythagore",
-        weight: 12,
-        make() {
-          if (Math.random() > 0.35) {
-            const [a, b, c] = choice(pythagoreanTriples);
-            const sides = shuffle([`${a} cm`, `${b} cm`, `${c} cm`]);
-            return q("Maths", "Pythagore", `Un triangle a pour côtés ${sides[0]}, ${sides[1]} et ${sides[2]}. Est-il rectangle ?`, "Oui", ["Non", "On ne peut pas savoir", "Seulement s'il est isocèle"], `${a}² + ${b}² = ${c}² : la réciproque de Pythagore s'applique.`);
-          }
-          const a = rand(5, 9);
-          const b = rand(6, 10);
-          const c = a + b - rand(1, 3);
-          const sides = shuffle([`${a} cm`, `${b} cm`, `${c} cm`]);
-          return q("Maths", "Pythagore", `Un triangle a pour côtés ${sides[0]}, ${sides[1]} et ${sides[2]}. Est-il rectangle ?`, "Non", ["Oui", "On ne peut pas savoir", "Seulement s'il est isocèle"], `${a}² + ${b}² ≠ ${c}² : ce n'est pas un triangle rectangle.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Pythagore",
-        weight: 10,
-        make() {
-          const wrong = shuffle(["c = a + b", "c² = a × b", "a² = c² + b²"]).slice(0, 3);
-          return q("Maths", "Pythagore", "Dans un triangle rectangle, quelle relation lie les côtés a et b de l'angle droit et l'hypoténuse c ?", "c² = a² + b²", wrong, "Théorème de Pythagore : c² = a² + b², avec c le plus grand côté (face à l'angle droit).");
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Thalès",
-        weight: 14,
-        make() {
-          const k = choice([2, 2.5, 3, 4]);
-          const small = rand(2, 6);
-          const large = Number((small * k).toFixed(1));
-          return q("Maths", "Thalès", `Deux droites parallèles découpent des transversales. Sur l'une, un segment vaut ${small} cm ; sur l'autre, le segment correspondant vaut ${large} cm. Le rapport est...`, String(k), [String(k + 1), String(k / 2), String(small + large), String(large - small)], `Rapport = ${large}/${small} = ${k}.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Thalès",
-        weight: 14,
-        make() {
-          const k = choice([2, 3, 2.5, 4]);
-          const ab = rand(2, 7);
-          const bc = rand(2, 6);
-          const abPrime = Number((ab * k).toFixed(1));
-          const bcPrime = Number((bc * k).toFixed(1));
-          return q("Maths", "Thalès", `(AB) // (A'B'). On sait AB = ${ab} cm, A'B' = ${abPrime} cm et BC = ${bc} cm. Par Thalès, B'C' vaut...`, `${bcPrime} cm`, [`${bc + ab} cm`, `${bcPrime + 1} cm`, `${abPrime} cm`, `${bc / k} cm`], `Rapport ${k} : B'C' = ${bc} × ${k} = ${bcPrime} cm.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Thalès",
-        weight: 10,
-        make() {
-          const k = choice([2, 3, 4]);
-          const small = rand(3, 8);
-          const large = small * k;
-          return q("Maths", "Thalès", `Deux figures semblables (rapport ${k}). Un segment mesure ${large} cm sur la grande figure. Sur la petite, il mesure...`, `${small} cm`, [`${large + small} cm`, `${small + 1} cm`, `${large} cm`, `${large - small} cm`], `Rapport ${k} : longueur petite = ${large} ÷ ${k} = ${small} cm.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Thalès",
-        weight: 8,
-        make() {
-          return q("Maths", "Thalès", "Pour trouver une longueur inconnue avec des droites parallèles coupées par des sécantes, on utilise surtout...", "Le théorème de Thalès", ["Pythagore seul", "La moyenne des longueurs", "Le théorème des milieux uniquement"], "Thalès : dans une configuration de droites parallèles, les segments correspondants sont proportionnels.");
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Trigonométrie",
-        weight: 10,
-        make() {
-          const [a, b, c] = choice(pythagoreanTriples.slice(0, 4));
-          const useCos = Math.random() > 0.5;
-          const ratio = useCos ? `${b}/${c}` : `${a}/${c}`;
-          const label = useCos ? "cosinus" : "sinus";
-          const explain = useCos
-            ? `cos = côté adjacent / hypoténuse = ${b}/${c}.`
-            : `sin = côté opposé / hypoténuse = ${a}/${c}.`;
-          return q("Maths", "Trigonométrie", `Triangle rectangle (${a}, ${b}, ${c}). Le ${label} de l'angle opposé au côté ${a} cm vaut...`, ratio, [`${a}/${c}`, `${b}/${a}`, `${c}/${b}`], explain);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Automatismes",
-        weight: 4,
-        make() {
-          const n = rand(4, 15);
-          return q("Maths", "Automatismes", `Quel est le résultat de ${n}² ?`, String(n * n), [n * 2, n * 10, n * n + n, n * n - 1], `${n}² = ${n} × ${n} = ${n * n}.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Pourcentages",
-        weight: 3,
-        make() {
-          const base = choice([40, 50, 60, 80, 120, 150, 200, 240]);
-          const pct = choice([5, 10, 15, 20, 25, 30, 40]);
-          const result = base * pct / 100;
-          return q("Maths", "Pourcentages", `Combien vaut ${pct} % de ${base} ?`, String(result), [result + 5, result * 2, Math.max(1, result - 3), base - result], `${pct} % de ${base} = ${base} × ${pct} / 100 = ${result}.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Fractions",
-        weight: 3,
-        make() {
-          const den = choice([6, 8, 10, 12, 14, 16, 18]);
-          const num = choice([2, 4, 6, 8]);
-          const d = gcd(num, den);
-          const answer = `${num / d}/${den / d}`;
-          return q("Maths", "Fractions", `Simplifie la fraction ${num}/${den}.`, answer, [`${num}/${den / d}`, `${num / d}/${den}`, `${den / d}/${num / d}`, `${num + d}/${den}`], `On divise le numérateur et le dénominateur par ${d}.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Fonctions",
-        weight: 3,
-        make() {
-          const a = rand(2, 6);
-          const b = rand(-5, 9);
-          const x = rand(2, 9);
-          const value = a * x + b;
-          const sign = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
-          return q("Maths", "Fonctions", `Si f(x) = ${a}x ${sign}, combien vaut f(${x}) ?`, String(value), [value + a, value - b, a + x + b, value + 2], `On remplace x par ${x} : ${a} × ${x} ${sign} = ${value}.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Probabilités",
-        weight: 3,
-        make() {
-          const red = rand(2, 8);
-          const blue = rand(2, 8);
-          const total = red + blue;
-          const answer = `${red}/${total}`;
-          return q("Maths", "Probabilités", `Dans une urne, il y a ${red} boules rouges et ${blue} boules bleues. Probabilité de tirer une rouge ?`, answer, [`${blue}/${total}`, `${red}/${blue}`, `${total}/${red}`, `${red + 1}/${total}`], `Cas favorables : ${red}. Cas possibles : ${total}. Donc ${answer}.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Statistiques",
-        weight: 3,
-        make() {
-          const a = rand(4, 12);
-          const b = rand(8, 16);
-          const c = rand(10, 20);
-          const mean = Math.round((a + b + c) / 3 * 10) / 10;
-          return q("Maths", "Statistiques", `Moyenne de ${a}, ${b} et ${c} ?`, String(mean), [String(mean + 2), String(a + b), String(c - a), String(mean - 1)], `Moyenne = (${a}+${b}+${c})/3 = ${mean}.`);
-        }
-      },
-      {
-        subject: "maths",
-        topic: "Puissances",
-        weight: 3,
-        make() {
-          const base = choice([2, 3, 5]);
-          const exp = choice([2, 3, 4]);
-          const result = base ** exp;
-          return q("Maths", "Automatismes", `Combien vaut ${base}${exp === 2 ? "²" : exp === 3 ? "³" : "⁴"} ?`, String(result), [String(result + base), String(base * exp), String(result - 1), String(base + exp)], `${base}^${exp} = ${result}.`);
-        }
-      },
-      {
-        subject: "sciences",
-        topic: "Physique",
-        weight: 10,
-        make() {
-          const item = choice(physicsItems);
-          return q("Sciences", "Physique", item[0], item[1], item[2], item[3]);
-        }
-      },
-      {
-        subject: "sciences",
-        topic: "SVT",
-        weight: 10,
-        make() {
-          const item = choice(svtItems);
-          return q("Sciences", "SVT", item[0], item[1], item[2], item[3]);
-        }
-      },
-      {
-        subject: "francais",
-        topic: "Français",
-        weight: 13,
-        make() {
-          const item = choice(frenchItems);
-          return q("Français", item.topic, item.q, item.correct, item.answers.filter(a => a !== item.correct), item.explain);
-        }
-      },
-      {
-        subject: "histoire",
-        topic: "Repères",
-        weight: 18,
-        make() {
-          const [date, meaning] = choice(historyFacts);
-          const wrong = shuffle(historyFacts.filter(f => f[0] !== date).map(f => f[0])).slice(0, 3);
-          return q("Histoire-Géo", "Repères", `${meaning} Quelle date faut-il retenir ?`, date, wrong, `${date} : ${meaning}`);
-        }
-      },
-      {
-        subject: "histoire",
-        topic: "Repères",
-        weight: 16,
-        make() {
-          const [date, meaning] = choice(historyFacts);
-          const wrong = shuffle(historyFacts.filter(f => f[1] !== meaning).map(f => f[1])).slice(0, 3);
-          return q("Histoire-Géo", "Repères", `À quoi correspond la date ${date} ?`, meaning, wrong, `${date} : ${meaning}`);
-        }
-      },
-      {
-        subject: "histoire",
-        topic: "Chronologie",
-        weight: 10,
-        make() {
-          const sample = shuffle(historyFacts).slice(0, 4);
-          const sorted = [...sample].sort((a, b) => parseYear(a[0]) - parseYear(b[0]));
-          const oldest = sorted[0][0];
-          const wrong = sample.filter(f => f[0] !== oldest).map(f => f[0]);
-          return q("Histoire-Géo", "Repères", "Parmi ces dates, laquelle est la plus ancienne ?", oldest, wrong, `${oldest} est la date la plus ancienne de la proposition.`);
-        }
-      },
-      {
-        subject: "histoire",
-        topic: "Chronologie",
-        weight: 8,
-        make() {
-          const sample = shuffle(historyFacts).slice(0, 4);
-          const sorted = [...sample].sort((a, b) => parseYear(b[0]) - parseYear(a[0]));
-          const newest = sorted[0][0];
-          const wrong = sample.filter(f => f[0] !== newest).map(f => f[0]);
-          return q("Histoire-Géo", "Repères", "Parmi ces dates, laquelle est la plus récente ?", newest, wrong, `${newest} est la date la plus récente de la proposition.`);
-        }
-      },
-      {
-        subject: "histoire",
-        topic: "Géographie",
-        weight: 5,
-        make() {
-          const [term, def] = choice(geoFacts);
-          const wrong = shuffle(geoFacts.filter(f => f[0] !== term).map(f => f[0])).slice(0, 3);
-          return q("Histoire-Géo", "Géographie", `${def} Quel est le bon terme ?`, term, wrong, `${term} : ${def}`);
-        }
-      },
-      {
-        subject: "emc",
-        topic: "Citoyenneté",
-        weight: 9,
-        make() {
-          const [term, def] = choice(emcFacts);
-          const wrong = shuffle(emcFacts.filter(f => f[0] !== term).map(f => f[0])).slice(0, 3);
-          return q("EMC", "Citoyenneté", `${def} Quel mot correspond ?`, term, wrong, `${term} : ${def}`);
-        }
-      }
-    ];
-
-    function q(subject, topic, prompt, correct, distractors, explanation) {
-      return {
-        subject,
-        topic,
-        prompt,
-        choices: makeChoices(correct, distractors),
-        answer: String(correct),
-        explanation
-      };
     }
 
     function getTodayPlan() {
@@ -565,23 +159,34 @@
 
     function buildQueue(count, subjectIds) {
       const ids = subjectIds?.length ? subjectIds : ALL_SUBJECTS;
-      const pool = factories.filter(f => ids.includes(f.subject));
-      const list = pool.length ? pool : factories;
-      const items = [];
+      const exclude = new Set(state.seen);
+      const items = window.QuestionBank.pickQuestions(ids, count, exclude);
       const sessionSeen = new Set();
 
-      for (let i = 0; i < count; i += 1) {
-        let question = null;
-        let sig = "";
-        for (let tries = 0; tries < 150; tries += 1) {
-          question = pickWeightedFactory(list).make();
-          sig = signature(question);
-          if (!sessionSeen.has(sig)) break;
+      items.forEach((question) => {
+        sessionSeen.add(question.id);
+        if (!state.seen.includes(question.id)) {
+          state.seen.push(question.id);
         }
-        sessionSeen.add(sig);
-        items.push(question);
-      }
+        const subj = question.bankSubject || subjectIdFromQuestion(question);
+        if (!state.seenBySubject[subj]) state.seenBySubject[subj] = [];
+        if (!state.seenBySubject[subj].includes(question.id)) {
+          state.seenBySubject[subj].push(question.id);
+        }
+      });
+
+      state.seen = state.seen.slice(-4000);
+      Object.keys(state.seenBySubject).forEach((key) => {
+        state.seenBySubject[key] = state.seenBySubject[key].slice(-BANK_SIZE);
+      });
+      saveState();
       return items;
+    }
+
+    function getSubjectProgress(subjectId) {
+      const seen = state.seenBySubject[subjectId]?.length || 0;
+      const total = window.QuestionBank?.banks?.[subjectId]?.length || BANK_SIZE;
+      return { seen, total, pct: total ? Math.round(seen / total * 100) : 0 };
     }
 
     function enterQueuedSession(mode, subjectIds, count, returnView, summaryTitle) {
@@ -694,14 +299,54 @@
 
     function renderSubjects() {
       const wrap = document.getElementById("subjectGrid");
-      wrap.innerHTML = subjects.map(s => `
-        <button class="subject-card subject-card--${s.id}" type="button" data-subject="${s.id}">
-          <span class="subject-icon">${SUBJECT_ICONS[s.id]}</span>
-          <span class="subject-name">${s.label}</span>
-          <span class="subject-desc">${SUBJECT_DESC[s.id]}</span>
+      if (!wrap) return;
+
+      const bankTotalEl = document.getElementById("quizBankTotal");
+      if (bankTotalEl && window.QuestionBank) {
+        const counts = window.QuestionBank.countBySubject();
+        bankTotalEl.textContent = String(Object.values(counts).reduce((a, b) => a + b, 0));
+      }
+
+      const mixProgress = ALL_SUBJECTS.reduce((sum, id) => sum + (state.seenBySubject[id]?.length || 0), 0);
+      const mixTotal = BANK_SIZE * ALL_SUBJECTS.length;
+      const mixPct = mixTotal ? Math.round(mixProgress / mixTotal * 100) : 0;
+
+      const mixCard = `
+        <button class="browse-hero browse-hero--mix subject-card--mix" type="button" data-subject="mix">
+          <div class="browse-hero-top">
+            <span class="browse-hero-icon">${SUBJECT_ICONS.mix}</span>
+            <span class="browse-badge">${BANK_SIZE * ALL_SUBJECTS.length} Q</span>
+          </div>
+          <h2 class="browse-hero-title">Mix toutes matières</h2>
+          <p class="browse-hero-sub">40 questions · annales DNB 2021–2025</p>
+          <div class="browse-progress">
+            <div class="browse-progress-track"><div class="browse-progress-fill" style="width:${mixPct}%"></div></div>
+            <span class="browse-progress-label">${mixProgress} / ${mixTotal} vues</span>
+          </div>
+          <span class="browse-cta">Lancer →</span>
         </button>
-      `).join("");
-      wrap.querySelectorAll("button").forEach(button => {
+      `;
+
+      const grid = subjects.filter((s) => s.id !== "mix").map((s) => {
+        const { seen, total, pct } = getSubjectProgress(s.id);
+        return `
+          <button class="browse-tile browse-tile--${s.id}" type="button" data-subject="${s.id}">
+            <div class="browse-tile-head">
+              <span class="browse-tile-icon">${SUBJECT_ICONS[s.id]}</span>
+              <span class="browse-tile-count">${total}</span>
+            </div>
+            <h3 class="browse-tile-title">${s.label}</h3>
+            <p class="browse-tile-topic">${SUBJECT_TOPICS[s.id]}</p>
+            <div class="browse-progress browse-progress--sm">
+              <div class="browse-progress-track"><div class="browse-progress-fill" style="width:${pct}%"></div></div>
+              <span class="browse-progress-label">${seen} vues</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+
+      wrap.innerHTML = `<div class="quiz-browse">${mixCard}<div class="browse-grid">${grid}</div></div>`;
+      wrap.querySelectorAll("button[data-subject]").forEach((button) => {
         button.addEventListener("click", () => {
           activeSubject = button.dataset.subject;
           enterQuizSession();
@@ -725,6 +370,7 @@
       document.querySelectorAll(".view").forEach(v => v.classList.remove("view--active"));
       document.getElementById(sessionReturnView).classList.add("view--active");
       document.getElementById("nextQuestion").textContent = "Suivant";
+      if (sessionReturnView === "view-quiz") renderSubjects();
     };
 
     function renderPriorities() {
@@ -767,44 +413,6 @@
           </article>
         `;
       }).join("");
-    }
-
-    function filteredFactories() {
-      if (activeSubject === "mix") return factories;
-      return factories.filter(factory => factory.subject === activeSubject);
-    }
-
-    function weightedFactory() {
-      const list = filteredFactories();
-      const total = list.reduce((sum, factory) => sum + factory.weight, 0);
-      let pick = Math.random() * total;
-      for (const factory of list) {
-        pick -= factory.weight;
-        if (pick <= 0) return factory;
-      }
-      return list[list.length - 1];
-    }
-
-    function signature(question) {
-      return `${question.subject}|${question.topic}|${question.prompt}|${question.answer}`.toLowerCase();
-    }
-
-    function drawQuestion() {
-      let question = null;
-      let sig = "";
-
-      for (let tries = 0; tries < 80; tries += 1) {
-        question = weightedFactory().make();
-        sig = signature(question);
-        if (!state.seen.includes(sig)) break;
-        if (tries === 60) state.seen = state.seen.slice(-50);
-      }
-
-      currentQuestion = question;
-      state.seen.push(sig);
-      state.seen = state.seen.slice(-180);
-      renderQuestion();
-      updateStats();
     }
 
     function renderQuestion() {
@@ -892,17 +500,20 @@
       state.correct = 0;
       state.streak = 0;
       state.seen = [];
+      state.seenBySubject = {};
       sessionCount = 0;
       updateStats();
+      renderSubjects();
     }
 
     document.getElementById("nextQuestion").addEventListener("click", () => {
       if (isQueuedMode()) advanceQueuedQuestion();
-      else drawQuestion();
     });
     document.getElementById("resetStats").addEventListener("click", resetStats);
     document.getElementById("startDaily").addEventListener("click", enterDailySession);
     document.getElementById("startUltimate").addEventListener("click", enterUltimateSession);
+
+    window.refreshQuizBrowse = renderSubjects;
 
     updateCountdown();
     renderSubjects();

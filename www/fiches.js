@@ -1,4 +1,13 @@
 (function () {
+  const FICHE_META = {
+    maths: { icon: "📐", color: "maths", cards: 7 },
+    francais: { icon: "📖", color: "francais", cards: 6 },
+    histoire: { icon: "🕐", color: "histoire", cards: 7 },
+    geo: { icon: "🗺️", color: "geo", cards: 6 },
+    emc: { icon: "⚖️", color: "emc", cards: 6 },
+    sciences: { icon: "🔬", color: "sciences", cards: 8 }
+  };
+
   const FICHES = [
     {
       id: "maths",
@@ -89,14 +98,31 @@
   function renderFicheList() {
     const wrap = document.getElementById("ficheGrid");
     if (!wrap) return;
-    wrap.innerHTML = FICHES.map(f => `
-      <button class="fiche-card fiche-card--${f.id}" type="button" data-fiche="${f.id}">
-        <span class="fiche-card-subject">${f.subject}</span>
-        <span class="fiche-card-tag">${f.tag} · ${f.cards.length} cartes</span>
-        <span class="fiche-card-count">›</span>
-      </button>
-    `).join("");
-    wrap.querySelectorAll("button").forEach(btn => {
+
+    const totalCards = FICHES.reduce((sum, f) => sum + f.cards.length, 0);
+    const totalEl = document.getElementById("ficheCardTotal");
+    if (totalEl) totalEl.textContent = String(totalCards);
+
+    wrap.innerHTML = `
+      <div class="fiche-browse">
+        ${FICHES.map((f) => {
+          const meta = FICHE_META[f.id] || { icon: "📋", color: f.id };
+          return `
+            <button class="fiche-tile fiche-tile--${meta.color}" type="button" data-fiche="${f.id}">
+              <div class="fiche-tile-glow"></div>
+              <div class="fiche-tile-top">
+                <span class="fiche-tile-icon">${meta.icon}</span>
+                <span class="fiche-tile-badge">${f.cards.length}</span>
+              </div>
+              <h3 class="fiche-tile-title">${f.subject}</h3>
+              <p class="fiche-tile-tag">${f.tag}</p>
+              <span class="fiche-tile-cta">Réviser →</span>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    `;
+    wrap.querySelectorAll("button[data-fiche]").forEach((btn) => {
       btn.addEventListener("click", () => openFicheDeck(btn.dataset.fiche));
     });
   }
