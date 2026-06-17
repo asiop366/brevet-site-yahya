@@ -32,6 +32,122 @@
     return match ? Number(match[0]) : 9999;
   }
 
+  function seededRandom(seed) {
+    let s = Math.abs(seed) % 2147483647 || 1;
+    return () => {
+      s = (s * 16807) % 2147483647;
+      return (s - 1) / 2147483646;
+    };
+  }
+
+  function seededShuffle(items, seed) {
+    const rng = seededRandom(seed);
+    const copy = [...items];
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(rng() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  function seededSample(items, count, seed) {
+    return seededShuffle(items, seed).slice(0, count);
+  }
+
+  function isQualityQuestion(question) {
+    const p = question.prompt.toLowerCase();
+    if (question.topic === "Calcul") return false;
+    if (p.includes("plus ancienne")) return false;
+    if (p.includes("plus récente")) return false;
+    if (p.includes("remets dans l'ordre")) return false;
+    if (p.includes("se situe surtout au") && p.includes("siècle")) return false;
+    if (question.topic === "Chronologie") return false;
+    if (question.answer && question.answer.length > 120) return false;
+    if (p.length < 15) return false;
+    return true;
+  }
+
+  function normalizePrompt(prompt) {
+    let p = String(prompt).trim().replace(/\s+/g, " ");
+    if (!p || p.includes("___")) return p;
+    if (p.endsWith("...")) return p.slice(0, -3).trim() + " ?";
+    if (p.endsWith(":")) return `${p.slice(0, -1).trim()} ?`;
+    if (!/[?!…]$/.test(p)) {
+      if (p.endsWith(".")) return `${p.slice(0, -1).trim()} ?`;
+      return `${p} ?`;
+    }
+    return p;
+  }
+
+  function assignDifficulty(question) {
+    const { topic, prompt } = question;
+    const p = prompt.toLowerCase();
+    let difficulty = 2;
+
+    if (topic === "Calcul") difficulty = 1;
+    if (/^quel est \d+ [+\-×x*] \d+/.test(p)) difficulty = 1;
+    if (topic === "Homophones" && p.length < 45) difficulty = 1;
+
+    const hardTopics = [
+      "Pythagore", "Thalès", "Trigonométrie", "Situations", "Institutions",
+      "WW2", "Guerre froide", "Réécriture", "Argumentation", "Automatismes"
+    ];
+    if (hardTopics.includes(topic)) difficulty = 3;
+
+    if (topic === "Physique" && (p.includes("ohm") || p.includes("énergie") || p.includes("vitesse"))) difficulty = 3;
+    if (topic === "SVT" && (p.includes("immunit") || p.includes("génét") || p.includes("climat"))) difficulty = 3;
+    if (topic === "Géographie" || topic === "Conjugaison") difficulty = 2;
+
+    return { ...question, difficulty };
+  }
+
+  function questionVarietyKey(q) {
+    return `${q.bankSubject || q.subject}|${q.topic}|${q.prompt.slice(0, 60)}`.toLowerCase();
+  }
+
+  function pickDiverseFromPool(available, count, seed, options) {
+    const shuffled = seededShuffle(available, seed);
+    const picked = [];
+    const usedVariety = new Set();
+    const topicCounts = {};
+    const maxPerTopic = options?.maxPerTopic || 2;
+
+    for (const q of shuffled) {
+      if (picked.length >= count) break;
+      const vKey = questionVarietyKey(q);
+      if (usedVariety.has(vKey)) continue;
+      const tKey = `${q.bankSubject}|${q.topic}`;
+      if ((topicCounts[tKey] || 0) >= maxPerTopic) continue;
+      usedVariety.add(vKey);
+      topicCounts[tKey] = (topicCounts[tKey] || 0) + 1;
+      picked.push(q);
+    }
+
+    if (picked.length < count) {
+      for (const q of shuffled) {
+        if (picked.length >= count) break;
+        if (!picked.some((p) => p.id === q.id)) picked.push(q);
+      }
+    }
+    return picked;
+  }
+
+  function diversifyQueue(items, seed) {
+    if (items.length <= 1) return items;
+    const result = [];
+    const remaining = seededShuffle([...items], seed);
+    while (remaining.length) {
+      let idx = 0;
+      if (result.length) {
+        const prevKey = `${result[result.length - 1].bankSubject}|${result[result.length - 1].topic}`;
+        const alt = remaining.findIndex((q) => `${q.bankSubject}|${q.topic}` !== prevKey);
+        if (alt >= 0) idx = alt;
+      }
+      result.push(remaining.splice(idx, 1)[0]);
+    }
+    return result;
+  }
+
   function makeChoices(correct, distractors) {
     const options = unique([correct, ...distractors]).slice(0, 4);
     while (options.length < 4) {
@@ -43,12 +159,13 @@
 
   function q(subject, topic, prompt, correct, distractors, explanation) {
     const answer = String(correct);
-    const id = `${subject}|${topic}|${prompt}|${answer}`.toLowerCase();
+    const normalizedPrompt = normalizePrompt(prompt);
+    const id = `${subject}|${topic}|${normalizedPrompt}|${answer}`.toLowerCase();
     return {
       id,
       subject,
       topic,
-      prompt,
+      prompt: normalizedPrompt,
       choices: makeChoices(correct, distractors),
       answer,
       explanation
@@ -99,7 +216,7 @@
     ["1941", "Attaque de Pearl Harbor : les États-Unis entrent en guerre."],
     ["1942", "Rafle du Vélodrome d'Hiver (Vel d'Hiv) à Paris."],
     ["1943", "Armistice en Italie et bataille de Stalingrad."],
-    ["1945", "Bombardements atomiques sur Hiroshima et Nagasaki."],
+    ["6 et 9 août 1945", "Bombardements atomiques sur Hiroshima et Nagasaki."],
     ["1950", "Début de la guerre de Corée."],
     ["1969", "Premier pas de l'homme sur la Lune."],
     ["1974", "Démission du président Nixon aux États-Unis."],
@@ -144,6 +261,66 @@
     ["échelle", "Rapport entre une distance sur la carte et la distance réelle."],
     ["flux migratoire", "Mouvement de population d'un territoire vers un autre."],
     ["pendulaire", "Personne qui habite loin de son lieu de travail et fait la navette."]
+  ];
+
+  const historyCurated = [
+    { topic: "WW2", prompt: "Quel événement marque le début de la Seconde Guerre mondiale en Europe ?", correct: "L'invasion de la Pologne par l'Allemagne", wrong: ["Le débarquement en Normandie", "L'armistice de 1918", "La chute du mur de Berlin"], explain: "1er septembre 1939 : l'Allemagne envahit la Pologne." },
+    { topic: "WW2", prompt: "Que fit le général de Gaulle le 18 juin 1940 ?", correct: "Il appela à résister depuis Londres", wrong: ["Il signa l'armistice", "Il organisa le débarquement", "Il proclama la IVe République"], explain: "Appel du 18 juin 1940 : refus de l'armistice, naissance de la France libre." },
+    { topic: "WW2", prompt: "Où et quand a lieu le débarquement allié en France ?", correct: "6 juin 1944 en Normandie", wrong: ["8 mai 1945 à Paris", "22 juin 1940 à Vichy", "11 novembre 1918 en Picardie"], explain: "Opération Overlord : tournant de la guerre en Europe occidentale." },
+    { topic: "WW2", prompt: "Que commémore-t-on le 8 mai ?", correct: "La capitulation de l'Allemagne nazie en Europe", wrong: ["Le début de la guerre", "La prise de la Bastille", "La chute du mur de Berlin"], explain: "8 mai 1945 : fin de la Seconde Guerre mondiale en Europe." },
+    { topic: "WW2", prompt: "Qu'est-ce que le régime de Vichy ?", correct: "L'État français dirigé par Pétain après l'armistice de 1940", wrong: ["Le gouvernement de la France libre", "L'occupation militaire directe de Paris", "La République après 1945"], explain: "22 juin 1940 : armistice et collaboration avec l'Allemagne." },
+    { topic: "WW2", prompt: "Quelle organisation naît en 1945 pour maintenir la paix ?", correct: "L'ONU", wrong: ["L'OTAN", "La CEE", "L'URSS"], explain: "24 octobre 1945 : création des Nations unies." },
+    { topic: "Guerre froide", prompt: "Quels événements marquent le début de la Guerre froide (1947) ?", correct: "Doctrine Truman et plan Marshall", wrong: ["Chute du mur de Berlin", "Débarquement en Normandie", "Crise des missiles de Cuba"], explain: "Division du monde en deux blocs Est/Ouest." },
+    { topic: "Guerre froide", prompt: "À quoi correspond la date du 9 novembre 1989 ?", correct: "La chute du mur de Berlin", wrong: ["La construction du mur", "La fin de la Seconde Guerre mondiale", "Le début de la Guerre froide"], explain: "Symbole de la fin de la Guerre froide en Europe." },
+    { topic: "Guerre froide", prompt: "Qu'est-ce que le rideau de fer ?", correct: "La séparation entre l'Europe capitaliste et l'Europe communiste", wrong: ["Un mur autour de Paris", "Une alliance militaire américaine", "Un traité de paix de 1918"], explain: "Expression de Churchill (1946) : division de l'Europe." },
+    { topic: "Guerre froide", prompt: "Quel événement de 1962 a failli provoquer une guerre nucléaire ?", correct: "La crise des missiles de Cuba", wrong: ["Le blocus de Berlin", "La guerre du Vietnam", "Mai 68"], explain: "Affrontement États-Unis / URSS au plus fort de la Guerre froide." },
+    { topic: "Repères", prompt: "Que commémore-t-on le 11 novembre ?", correct: "L'armistice de 1918 mettant fin à la Première Guerre mondiale", wrong: ["Le début de la Seconde Guerre mondiale", "La Révolution française", "La chute du mur de Berlin"], explain: "11 novembre 1918 : fin des combats de la Première Guerre mondiale." },
+    { topic: "Repères", prompt: "Quelle date symbolise le début de la Révolution française ?", correct: "14 juillet 1789", wrong: ["4 août 1914", "18 juin 1940", "9 novembre 1989"], explain: "Prise de la Bastille." },
+    { topic: "Repères", prompt: "En quelle année la Constitution de la Ve République est-elle promulguée ?", correct: "1958", wrong: ["1945", "1789", "1989"], explain: "1958 : début de la Ve République sous de Gaulle." },
+    { topic: "Repères", prompt: "Quel traité crée la Communauté économique européenne en 1957 ?", correct: "Le traité de Rome", wrong: ["Le traité de Versailles", "Le plan Marshall", "Le traité de Maastricht"], explain: "1957 : début de la construction européenne." },
+    { topic: "WW2", prompt: "Quelle est la « rafle du Vel d'Hiv » (1942) ?", correct: "L'arrestation de milliers de juifs à Paris par la police", wrong: ["Le débarquement allié", "La Libération de Paris", "L'appel du 18 juin"], explain: "Exemple de persécution des juifs sous l'Occupation." },
+    { topic: "WW2", prompt: "Qui dirigeait l'Allemagne nazie pendant la Seconde Guerre mondiale ?", correct: "Adolf Hitler", wrong: ["Benito Mussolini", "Joseph Staline", "Charles de Gaulle"], explain: "Hitler chancelier en 1933, déclencheur de la guerre." },
+    { topic: "WW2", prompt: "Quel pays attaque Pearl Harbor en 1941 ?", correct: "Le Japon", wrong: ["L'Allemagne", "L'Italie", "L'URSS"], explain: "Les États-Unis entrent en guerre après cette attaque." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'une aire urbaine au brevet ?", correct: "Un pôle urbain et sa couronne périurbaine liés", wrong: ["Une seule ville sans banlieue", "Un espace uniquement agricole", "Un territoire d'outre-mer"], explain: "Ville-centre + communes périphériques qui gravitent autour." },
+    { topic: "Géographie", prompt: "Que désigne la métropolisation ?", correct: "La concentration des activités dans les grandes villes", wrong: ["L'extension des campagnes", "La disparition des ports", "L'isolement des DROM"], explain: "Les métropoles concentrent emplois, population et décisions." },
+    { topic: "Géographie", prompt: "Quel est l'objectif principal de l'aménagement du territoire ?", correct: "Réduire les inégalités entre les territoires", wrong: ["Augmenter uniquement le tourisme", "Fermer les espaces ruraux", "Supprimer les transports"], explain: "Organiser le territoire pour corriger les déséquilibres." },
+    { topic: "Géographie", prompt: "Quelle contrainte majeure rencontrent les DROM ?", correct: "L'éloignement et l'insularité", wrong: ["L'absence de population", "Le manque de mer", "L'isolement climatique uniquement"], explain: "DROM : territoires ultramarins avec atouts et contraintes." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'un espace productif ?", correct: "Un territoire organisé pour produire des richesses", wrong: ["Une zone sans activité humaine", "Un parc naturel protégé", "Un quartier résidentiel seul"], explain: "Agriculture, industrie ou services selon les ressources." },
+    { topic: "Géographie", prompt: "Pourquoi étudie-t-on les mobilités au brevet ?", correct: "Pour comprendre les déplacements et leurs effets sur les territoires", wrong: ["Pour calculer des probabilités", "Pour apprendre l'allemand", "Pour étudier la physique"], explain: "Navettes domicile-travail, migrations, transports." },
+    { topic: "WW2", prompt: "Quand la France est-elle libérée de l'occupation nazie ?", correct: "En 1944", wrong: ["En 1939", "En 1958", "En 1989"], explain: "Libération de Paris (août 1944) et avancée alliée." },
+    { topic: "Guerre froide", prompt: "Qu'est-ce que le plan Marshall (1947) ?", correct: "Une aide économique américaine pour reconstruire l'Europe", wrong: ["Un plan d'invasion de l'URSS", "Un accord de paix avec l'Allemagne", "La création de l'euro"], explain: "Aide massive pour relancer l'Europe de l'Ouest." },
+    { topic: "Guerre froide", prompt: "Quel mur symbolise la division de Berlin pendant la Guerre froide ?", correct: "Le mur de Berlin", wrong: ["La ligne Maginot", "Le mur des Lamentations", "Le rideau de fer physique"], explain: "Construit en 1961, tombé le 9 novembre 1989." },
+    { topic: "Repères", prompt: "Quand l'Algérie devient-elle indépendante ?", correct: "1962", wrong: ["1954", "1945", "1989"], explain: "1962 : fin de la guerre d'Algérie et indépendance." },
+    { topic: "Repères", prompt: "Quelle loi française de 1905 est importante en EMC et en histoire ?", correct: "La loi de séparation des Églises et de l'État", wrong: ["La loi sur le vote des femmes", "La Constitution de 1958", "Le code civil de 1804"], explain: "Fondement de la laïcité à l'école." },
+    { topic: "WW2", prompt: "Quel terme désigne la résistance française depuis Londres ?", correct: "La France libre", wrong: ["Le régime de Vichy", "L'Occupation", "La IIIe République"], explain: "De Gaulle dirige la France libre à partir de 1940." },
+    { topic: "WW2", prompt: "Quelle bataille de 1943 marque un tournant à l'Est en Europe ?", correct: "La bataille de Stalingrad", wrong: ["La bataille de Verdun", "La bataille de Marignan", "Waterloo"], explain: "Défaite majeure de l'Allemagne face à l'URSS." },
+    { topic: "WW2", prompt: "Pourquoi les États-Unis entrent-ils en guerre en 1941 ?", correct: "À cause de l'attaque japonaise sur Pearl Harbor", wrong: ["À cause du débarquement en Normandie", "À cause de l'invasion de la Pologne", "À cause de la chute de Berlin"], explain: "Le Japon attaque la base américaine de Pearl Harbor." },
+    { topic: "WW2", prompt: "Que signifie « Collaboration » pendant l'Occupation ?", correct: "La coopération du régime de Vichy avec l'Allemagne nazie", wrong: ["L'aide des Alliés à la France", "La Résistance intérieure", "Le plan Marshall"], explain: "Politique de Pétain avec l'occupant nazi." },
+    { topic: "WW2", prompt: "Quel événement est célébré chaque 14 juillet ?", correct: "La prise de la Bastille en 1789", wrong: ["L'armistice de 1918", "Le débarquement de 1944", "La chute du mur de Berlin"], explain: "Fête nationale française." },
+    { topic: "Guerre froide", prompt: "Quels pays dominent les deux blocs de la Guerre froide ?", correct: "Les États-Unis et l'URSS", wrong: ["La France et l'Allemagne", "Le Royaume-Uni et le Japon", "La Chine et l'Inde"], explain: "Bipolarisation du monde après 1945." },
+    { topic: "Guerre froide", prompt: "Qu'est-ce que l'OTAN créée en 1949 ?", correct: "Une alliance militaire occidentale", wrong: ["Un plan d'aide économique", "Un accord commercial", "L'armée française seule"], explain: "Organisation du traité de l'Atlantique Nord." },
+    { topic: "Guerre froide", prompt: "Quel conflit oppose les États-Unis et l'URSS par pays interposés en Corée ?", correct: "La guerre de Corée (1950-1953)", wrong: ["La guerre du Golfe", "La guerre de Crimée seule", "La guerre d'Algérie"], explain: "Premier grand conflit armé de la Guerre froide." },
+    { topic: "Guerre froide", prompt: "Qu'est-ce que le bloc de l'Est ?", correct: "Les pays européens sous influence soviétique", wrong: ["Les démocraties occidentales", "Les colonies africaines françaises", "Les États-Unis"], explain: "Europe de l'Est communiste après 1945." },
+    { topic: "Repères", prompt: "Quand débute la Première Guerre mondiale pour la France ?", correct: "4 août 1914", wrong: ["11 novembre 1918", "1er septembre 1939", "18 juin 1940"], explain: "La France entre en guerre après la mobilisation." },
+    { topic: "Repères", prompt: "Quel traité met fin à la Première Guerre mondiale en 1919 ?", correct: "Le traité de Versailles", wrong: ["Le traité de Rome", "Le traité de Yalta", "Le traité de Paris de 1947"], explain: "Paix signée avec l'Allemagne vaincue." },
+    { topic: "Repères", prompt: "Quelle république française est proclamée en 1871 ?", correct: "La IIIe République", wrong: ["La Ve République", "La IVe République", "La monarchie"], explain: "Régime qui dure jusqu'en 1940." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'un croquis au brevet de géographie ?", correct: "Un schéma simplifié pour localiser des informations", wrong: ["Un tableau de données", "Une rédaction longue", "Un exercice de maths"], explain: "Légendé, orienté, avec une échelle." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'une fracture territoriale en France ?", correct: "De fortes inégalités entre territoires dynamiques et en difficulté", wrong: ["Un tremblement de terre", "Une frontière avec l'Allemagne", "Un mur entre deux villes"], explain: "Ex : métropoles riches vs espaces ruraux fragiles." },
+    { topic: "Géographie", prompt: "Qu'est-ce que la périurbanisation ?", correct: "L'installation de populations en périphérie des villes", wrong: ["La fermeture des villes", "La disparition des transports", "L'urbanisation du Sahara"], explain: "Habitat en couronne autour des métropoles." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'un flux migratoire ?", correct: "Un déplacement de population d'un territoire vers un autre", wrong: ["Un courant électrique", "Un fleuve", "Un type de vent"], explain: "Migrations liées au travail, aux études, etc." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'un pendulaire ?", correct: "Une personne qui habite loin de son lieu de travail", wrong: ["Un migrant international", "Un retraité", "Un agriculteur"], explain: "Navette quotidienne domicile-travail." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'un littoral en géographie ?", correct: "La bande de terre en bord de mer", wrong: ["Un sommet montagneux", "Un désert", "Une forêt"], explain: "Espace souvent très urbanisé et touristique." },
+    { topic: "WW2", prompt: "Quelle ville française est libérée en août 1944 ?", correct: "Paris", wrong: ["Berlin", "Londres", "Moscou"], explain: "Libération de Paris le 25 août 1944." },
+    { topic: "WW2", prompt: "Quel dictateur italien s'allie à Hitler ?", correct: "Benito Mussolini", wrong: ["Staline", "Churchill", "Roosevelt"], explain: "L'Italie fasciste alliée de l'Allemagne nazie." },
+    { topic: "Guerre froide", prompt: "Qu'est-ce que la doctrine Truman (1947) ?", correct: "Une politique d'endiguement du communisme", wrong: ["Un plan d'aide européen", "La construction du mur de Berlin", "La création de l'ONU"], explain: "Les États-Unis cherchent à limiter l'expansion soviétique." },
+    { topic: "Guerre froide", prompt: "Quand l'URSS disparaît-elle ?", correct: "1991", wrong: ["1989", "1945", "2001"], explain: "Fin officielle de l'Union soviétique." },
+    { topic: "Repères", prompt: "Quel événement de Mai 68 se déroule en France ?", correct: "Un mouvement social et étudiant majeur", wrong: ["Le débarquement en Normandie", "La chute du mur", "La guerre d'Algérie"], explain: "Crise politique et sociale en France." },
+    { topic: "Repères", prompt: "Quelle catastrophe nucléaire a lieu en 1986 ?", correct: "Tchernobyl", wrong: ["Fukushima seule", "Hiroshima en guerre", "Three Mile Island uniquement"], explain: "Catastrophe en Ukraine (URSS)." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'une ZAC ?", correct: "Une zone d'aménagement concerté", wrong: ["Une zone agricole protégée", "Une zone sans habitants", "Un parc national"], explain: "Projet pour restructurer un quartier ou territoire." },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'un espace productif agricole ?", correct: "Un territoire organisé pour produire des récoltes ou élevage", wrong: ["Une zone sans agriculture", "Un centre commercial", "Un stade"], explain: "Grandes cultures, élevage, viticulture…" },
+    { topic: "Géographie", prompt: "Qu'est-ce qu'une mégalopole ?", correct: "Un ensemble de métropoles reliées", wrong: ["Un petit village", "Une seule ferme", "Un océan"], explain: "Ex : dorsale européenne London-Paris-Rhin." },
+    { topic: "WW2", prompt: "Que fut l'Holocauste pendant la Shoah ?", correct: "L'extermination systématique des juifs par le nazisme", wrong: ["Une bataille navale", "Un traité de paix", "Une réforme scolaire"], explain: "Crime contre l'humanité pendant la WW2." },
+    { topic: "WW2", prompt: "Quel pays est occupé par l'Allemagne en 1940 ?", correct: "La France", wrong: ["Les États-Unis", "Le Royaume-Uni", "Le Japon"], explain: "Occupation du nord et de l'ouest de la France." }
   ];
 
   const emcFacts = [
@@ -255,7 +432,7 @@
       { topic: "Pluriel", q: "Le pluriel de « journal » est...", answers: ["journaus", "journaux", "journalx", "journale"], correct: "journaux", explain: "Les mots en -al font souvent leur pluriel en -aux." }
     ];
 
-    const homophoneVerbs = ["révisé", "terminé", "compris", "fini", "lu", "écrit", "appris", "travaillé", "réussi", "oublié", "cherché", "trouvé", "attendu", "répondu", "demandé", "expliqué", "préparé", "commencé", "continué", "progressé"];
+    const homophoneVerbs = ["révisé", "terminé", "compris", "fini", "lu", "écrit", "appris", "travaillé", "réussi", "préparé"];
     homophoneVerbs.forEach((verb) => {
       base.push({
         topic: "Homophones",
@@ -422,7 +599,7 @@
       ["partir", "ils", "partent", ["partons", "partez", "parte"]]
     ];
     const [verb, pers, correct, wrong] = choice(groups);
-    return q("Français", "Conjugaison", `Conjugue « ${verb} » à la forme : ${pers}`, correct, wrong, `${pers} + ${verb} → ${correct}.`);
+    return q("Français", "Conjugaison", `Quelle est la bonne conjugaison de « ${verb} » à la forme « ${pers} » ?`, correct, wrong, `${pers} + ${verb} → ${correct}.`);
   }
 
   function makeFrenchReecriture() {
@@ -442,7 +619,7 @@
       p.replace("écoutent", "écoute").replace("Ces", "Ce"),
       p.replace("attentifs", "attentif")
     ].filter((w) => w !== p);
-    return q("Français", "Réécriture", `Mets au pluriel : « ${s} »`, p, wrong.slice(0, 3), `Pluriel : ${p}`);
+    return q("Français", "Réécriture", `Quelle phrase est la version correcte au pluriel de « ${s} » ?`, p, wrong.slice(0, 3), `Pluriel : ${p}`);
   }
 
   function makeFrenchNatureMot() {
@@ -524,7 +701,7 @@
         const wrong = shuffle(forms.filter((f) => f !== correct)).slice(0, 3);
         table.push({
           topic: "Conjugaison",
-          q: `Conjugue « ${inf} » (${persons[i]}) :`,
+          q: `Quelle est la bonne conjugaison de « ${inf} » à la forme « ${persons[i]} » ?`,
           correct,
           answers: [correct, ...wrong],
           explain: `${persons[i]} + ${inf} → ${correct}.`
@@ -708,19 +885,23 @@
         return q("Maths", "Puissances", `Combien vaut ${base}^${exp} ?`, String(result), [String(result + base), String(base * exp), String(result - 1), String(base + exp)], `${base}^${exp} = ${result}.`);
       },
       () => {
-        const a = rand(10, 99);
-        const b = rand(10, 99);
-        return q("Maths", "Calcul", `Quel est ${a} + ${b} ?`, String(a + b), [String(a + b + 1), String(a + b - 2), String(a * b), String(Math.abs(a - b))], `${a} + ${b} = ${a + b}.`);
+        const a = rand(2, 9);
+        const b = rand(2, 9);
+        const c = rand(2, 6);
+        const result = a + b * c;
+        return q("Maths", "Automatismes", `Calcule sans calculatrice : ${a} + ${b} × ${c}`, String(result), [String(a + b + c), String(a * b + c), String((a + b) * c), String(result + 1)], `Priorité des opérations : ${b} × ${c} = ${b * c}, puis ${a} + ${b * c} = ${result}.`);
       },
       () => {
-        const a = rand(20, 99);
-        const b = rand(5, 19);
-        return q("Maths", "Calcul", `Quel est ${a} − ${b} ?`, String(a - b), [String(a - b + 3), String(a + b), String(b - a), String(a - b - 2)], `${a} − ${b} = ${a - b}.`);
+        const n = rand(11, 89);
+        const complement = 100 - n;
+        return q("Maths", "Automatismes", `Quel nombre faut-il ajouter à ${n} pour obtenir 100 ?`, String(complement), [String(complement + 5), String(complement - 3), String(n - complement), String(100 - complement + 10)], `${n} + ${complement} = 100.`);
       },
       () => {
-        const a = rand(3, 15);
-        const b = rand(3, 12);
-        return q("Maths", "Calcul", `Quel est ${a} × ${b} ?`, String(a * b), [String(a * b + a), String(a + b), String(a * b - b), String(a * (b + 1))], `${a} × ${b} = ${a * b}.`);
+        const den = choice([4, 5, 8, 10, 20]);
+        const num = choice([1, 3, 7, 9, 15, 25, 35]);
+        const decimal = num / den;
+        const answer = Number.isInteger(decimal) ? String(decimal) : decimal.toFixed(1);
+        return q("Maths", "Automatismes", `Quelle est l'écriture décimale de ${num}/${den} ?`, answer, [String(num / den + 0.5), String(num * den), String(den / num), String((num + 1) / den)], `${num} ÷ ${den} = ${answer}.`);
       }
     ];
   }
@@ -746,9 +927,13 @@
   function histoireFactories() {
     return [
       () => {
+        const item = choice(historyCurated);
+        return q("Histoire-Géo", item.topic, item.prompt, item.correct, item.wrong, item.explain);
+      },
+      () => {
         const [date, meaning] = choice(historyFacts);
         const wrong = shuffle(historyFacts.filter((f) => f[0] !== date).map((f) => f[0])).slice(0, 3);
-        return q("Histoire-Géo", "Repères", `${meaning} Quelle date faut-il retenir ?`, date, wrong, `${date} : ${meaning}`);
+        return q("Histoire-Géo", "Repères", `Quelle date faut-il retenir pour : « ${meaning.replace(/\.$/, "")} » ?`, date, wrong, `${date} : ${meaning}`);
       },
       () => {
         const [date, meaning] = choice(historyFacts);
@@ -756,48 +941,14 @@
         return q("Histoire-Géo", "Repères", `À quoi correspond la date ${date} ?`, meaning, wrong, `${date} : ${meaning}`);
       },
       () => {
-        const sample = shuffle(historyFacts).slice(0, 4);
-        const sorted = [...sample].sort((a, b) => parseYear(a[0]) - parseYear(b[0]));
-        const oldest = sorted[0][0];
-        const wrong = sample.filter((f) => f[0] !== oldest).map((f) => f[0]);
-        return q("Histoire-Géo", "Repères", "Parmi ces dates, laquelle est la plus ancienne ?", oldest, wrong, `${oldest} est la date la plus ancienne de la proposition.`);
-      },
-      () => {
-        const sample = shuffle(historyFacts).slice(0, 4);
-        const sorted = [...sample].sort((a, b) => parseYear(b[0]) - parseYear(a[0]));
-        const newest = sorted[0][0];
-        const wrong = sample.filter((f) => f[0] !== newest).map((f) => f[0]);
-        return q("Histoire-Géo", "Repères", "Parmi ces dates, laquelle est la plus récente ?", newest, wrong, `${newest} est la date la plus récente de la proposition.`);
-      },
-      () => {
         const [term, def] = choice(geoFacts);
         const wrong = shuffle(geoFacts.filter((f) => f[0] !== term).map((f) => f[0])).slice(0, 3);
-        return q("Histoire-Géo", "Géographie", `${def} Quel est le bon terme ?`, term, wrong, `${term} : ${def}`);
+        return q("Histoire-Géo", "Géographie", `Quel terme de géographie correspond à : « ${def.replace(/\.$/, "")} » ?`, term, wrong, `${term} : ${def}`);
       },
       () => {
         const [term, def] = choice(geoFacts);
         const wrong = shuffle(geoFacts.filter((f) => f[1] !== def).map((f) => f[1])).slice(0, 3);
         return q("Histoire-Géo", "Géographie", `Que signifie le terme « ${term} » ?`, def, wrong, `${term} : ${def}`);
-      },
-      () => {
-        const sample = shuffle(historyFacts).slice(0, 3);
-        const ordered = [...sample].sort((a, b) => parseYear(a[0]) - parseYear(b[0]));
-        const events = ordered.map((f) => f[1].slice(0, 50));
-        const correct = events.join(" → ");
-        const wrong = [
-          shuffle(events).join(" → "),
-          [...events].reverse().join(" → "),
-          shuffle(sample.map((f) => f[1].slice(0, 50))).join(" → ")
-        ].filter((w) => w !== correct);
-        return q("Histoire-Géo", "Chronologie", `Remets dans l'ordre chronologique : ${sample.map((f) => f[0]).join(", ")}`, correct, wrong.slice(0, 3), `Ordre : ${ordered.map((f) => f[0]).join(" → ")}.`);
-      },
-      () => {
-        const [date, meaning] = choice(historyFacts);
-        const decade = parseYear(date);
-        const century = Math.floor(decade / 100) + 1;
-        const correct = `${century}e siècle`;
-        const wrong = [`${century + 1}e siècle`, `${century - 1}e siècle`, `${century}e millénaire`];
-        return q("Histoire-Géo", "Repères", `La date ${date} se situe surtout au...`, correct, wrong, `${date} : ${meaning}`);
       }
     ];
   }
@@ -817,7 +968,7 @@
       () => {
         const [term, def] = choice(emcFacts);
         const wrong = shuffle(emcFacts.filter((f) => f[0] !== term).map((f) => f[0])).slice(0, 3);
-        return q("EMC", "Citoyenneté", `${def} Quel mot correspond ?`, term, wrong, `${term} : ${def}`);
+        return q("EMC", "Citoyenneté", `Quel mot d'EMC correspond à : « ${def.replace(/\.$/, "")} » ?`, term, wrong, `${term} : ${def}`);
       },
       () => {
         const [term, def] = choice(emcFacts);
@@ -843,7 +994,7 @@
           ["Conseil constitutionnel", "vérifie la conformité des lois à la Constitution", ["vote le budget", "dirige la police", "remplace l'Assemblée"]]
         ];
         const [inst, correct, wrong] = choice(institutions);
-        return q("EMC", "Institutions", `Quel est le rôle principal de l'${inst} ?`, correct, wrong, `${inst} : ${correct}.`);
+        return q("EMC", "Institutions", `Quel est le rôle principal de : ${inst} ?`, correct, wrong, `${inst} : ${correct}.`);
       },
       () => {
         const valeurs = [
@@ -964,19 +1115,104 @@
     sciences: sciencesFactories()
   };
 
+  function buildStaticHistoryBank() {
+    const bank = [];
+    const seen = new Set();
+
+    function add(question) {
+      if (!seen.has(question.id)) {
+        seen.add(question.id);
+        bank.push({ ...question, bankSubject: "histoire" });
+      }
+    }
+
+    historyCurated.forEach((item) => {
+      add(q("Histoire-Géo", item.topic, item.prompt, item.correct, item.wrong, item.explain));
+    });
+
+    historyFacts.forEach((fact, index) => {
+      const [date, meaning] = fact;
+      const otherDates = historyFacts.filter((_, i) => i !== index).map((f) => f[0]);
+      const otherMeanings = historyFacts.filter((_, i) => i !== index).map((f) => f[1]);
+
+      [0, 1, 2].forEach((variant) => {
+        add(q(
+          "Histoire-Géo",
+          "Repères",
+          `Quelle date faut-il retenir pour : « ${meaning.replace(/\.$/, "")} » ?`,
+          date,
+          seededShuffle(otherDates, index * 7 + variant).slice(0, 3),
+          `${date} : ${meaning}`
+        ));
+        add(q(
+          "Histoire-Géo",
+          "Repères",
+          `À quoi correspond la date ${date} ?`,
+          meaning,
+          seededShuffle(otherMeanings, index * 11 + variant).slice(0, 3),
+          `${date} : ${meaning}`
+        ));
+        add(q(
+          "Histoire-Géo",
+          "Repères",
+          `Quel événement est associé à la date ${date} ?`,
+          meaning,
+          seededShuffle(otherMeanings, index * 13 + variant).slice(0, 3),
+          `${date} : ${meaning}`
+        ));
+      });
+    });
+
+    geoFacts.forEach((fact, index) => {
+      const [term, def] = fact;
+      const otherTerms = geoFacts.filter((_, i) => i !== index).map((f) => f[0]);
+      const otherDefs = geoFacts.filter((_, i) => i !== index).map((f) => f[1]);
+
+      [0, 1].forEach((variant) => {
+        add(q(
+          "Histoire-Géo",
+          "Géographie",
+          `Quel terme de géographie correspond à : « ${def.replace(/\.$/, "")} » ?`,
+          term,
+          seededShuffle(otherTerms, index * 5 + variant).slice(0, 3),
+          `${term} : ${def}`
+        ));
+        add(q(
+          "Histoire-Géo",
+          "Géographie",
+          `Que signifie le terme « ${term} » ?`,
+          def,
+          seededShuffle(otherDefs, index * 9 + variant).slice(0, 3),
+          `${term} : ${def}`
+        ));
+      });
+    });
+
+    return bank;
+  }
+
   function generateBank(subject, target) {
     const makers = factoryMap[subject];
     const bank = [];
     const seen = new Set();
     let attempts = 0;
-    const maxAttempts = target * 80;
+    const maxAttempts = target * (subject === "histoire" ? 200 : 80);
+
+    if (subject === "histoire") {
+      buildStaticHistoryBank().forEach((question) => {
+        if (!seen.has(question.id)) {
+          seen.add(question.id);
+          bank.push(assignDifficulty({ ...question, bankSubject: subject }));
+        }
+      });
+    }
 
     while (bank.length < target && attempts < maxAttempts) {
       attempts += 1;
       const question = choice(makers)();
       if (!seen.has(question.id)) {
         seen.add(question.id);
-        bank.push({ ...question, bankSubject: subject });
+        bank.push(assignDifficulty({ ...question, bankSubject: subject }));
       }
     }
     return bank;
@@ -984,28 +1220,118 @@
 
   const banks = {};
   SUBJECTS.forEach((subject) => {
-    banks[subject] = generateBank(subject, BANK_SIZE);
+    banks[subject] = generateBank(subject, BANK_SIZE).filter(isQualityQuestion);
   });
 
-  function pickQuestions(subjectIds, count, excludeIds) {
+  function expandSubjectBank(subject, target) {
+    if (banks[subject].length >= target) return;
+    const extra = generateBank(subject, target * 2).filter((q) => isQualityQuestion(q) && !banks[subject].some((b) => b.id === q.id));
+    banks[subject] = [...banks[subject], ...extra].slice(0, target);
+  }
+  SUBJECTS.forEach((s) => expandSubjectBank(s, BANK_SIZE));
+  SUBJECTS.forEach((s) => {
+    banks[s] = banks[s].map(assignDifficulty);
+  });
+
+  function dateSeed(extra) {
+    const now = new Date();
+    const base = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    return base + (extra || 0);
+  }
+
+  function pickFromPool(pool, count, exclude, seed, options) {
+    const minD = options?.minDifficulty || 1;
+    let available = pool.filter(
+      (q) => isQualityQuestion(q) && !exclude.has(q.id) && (q.difficulty || 2) >= minD
+    );
+    if (available.length < count) {
+      available = pool.filter((q) => isQualityQuestion(q) && !exclude.has(q.id));
+    }
+    if (available.length < count) {
+      const qualityPool = pool.filter(isQualityQuestion);
+      const seenIds = new Set(available.map((q) => q.id));
+      const filler = seededShuffle(qualityPool.filter((q) => !seenIds.has(q.id)), seed + 99);
+      available = [...available, ...filler];
+    }
+    if (available.length < count) {
+      available = pool.filter(isQualityQuestion);
+    }
+    if (options?.diverse !== false) {
+      return pickDiverseFromPool(available, count, seed, options);
+    }
+    return seededSample(available, count, seed);
+  }
+
+  function pickStratified(subjectIds, count, exclude, seed, options) {
     const ids = subjectIds?.length ? subjectIds : SUBJECTS;
-    const pool = [];
-    ids.forEach((id) => {
-      if (id === "mix") {
-        SUBJECTS.forEach((s) => pool.push(...banks[s]));
-      } else if (banks[id]) {
-        pool.push(...banks[id]);
+    const picked = [];
+    const perSubject = Math.floor(count / ids.length);
+    let remainder = count % ids.length;
+
+    ids.forEach((id, index) => {
+      let n = perSubject + (remainder > 0 ? 1 : 0);
+      if (remainder > 0) remainder -= 1;
+      if (id === "sciences") {
+        const svtPool = banks.sciences.filter((q) => q.topic === "SVT");
+        const physPool = banks.sciences.filter((q) => q.topic === "Physique");
+        const half = Math.ceil(n / 2);
+        picked.push(...pickFromPool(svtPool, half, exclude, seed + index * 17, options));
+        picked.push(...pickFromPool(physPool, n - half, exclude, seed + index * 17 + 7, options));
+        return;
+      }
+      const pool = banks[id] || [];
+      picked.push(...pickFromPool(pool, n, exclude, seed + index * 31, options));
+    });
+
+    const unique = [];
+    const used = new Set();
+    picked.forEach((q) => {
+      if (!used.has(q.id)) {
+        used.add(q.id);
+        unique.push(q);
       }
     });
 
-    const exclude = excludeIds instanceof Set ? excludeIds : new Set(excludeIds || []);
-    let available = pool.filter((q) => !exclude.has(q.id));
-
-    if (available.length < count) {
-      available = [...pool];
+    if (unique.length < count) {
+      const allPool = [];
+      ids.forEach((id) => { if (banks[id]) allPool.push(...banks[id]); });
+      const extra = pickFromPool(allPool, count - unique.length, new Set([...exclude, ...used]), seed + 500, options);
+      extra.forEach((q) => {
+        if (!used.has(q.id)) {
+          used.add(q.id);
+          unique.push(q);
+        }
+      });
     }
 
-    return shuffle(available).slice(0, count);
+    const sliced = seededShuffle(unique, seed + 1000).slice(0, count);
+    return options?.diverse !== false ? diversifyQueue(sliced, seed + 2000) : sliced;
+  }
+
+  function pickQuestions(subjectIds, count, excludeIds, options) {
+    const exclude = excludeIds instanceof Set ? excludeIds : new Set(excludeIds || []);
+    const seed = options?.seed ?? Math.floor(Math.random() * 999999);
+    if (options?.stratify !== false && (subjectIds?.length || 0) !== 1) {
+      return pickStratified(subjectIds?.length ? subjectIds : SUBJECTS, count, exclude, seed, options);
+    }
+    const ids = subjectIds?.length ? subjectIds : SUBJECTS;
+    const pool = [];
+    ids.forEach((id) => {
+      if (id === "mix") SUBJECTS.forEach((s) => pool.push(...banks[s]));
+      else if (banks[id]) pool.push(...banks[id]);
+    });
+    const picked = pickFromPool(pool, count, exclude, seed, options);
+    return options?.diverse !== false ? diversifyQueue(picked, seed + 3000) : picked;
+  }
+
+  function pickDailyQuestions(subjectIds, count, excludeIds, options) {
+    return pickStratified(
+      subjectIds,
+      count,
+      excludeIds instanceof Set ? excludeIds : new Set(excludeIds || []),
+      dateSeed(42),
+      options
+    );
   }
 
   function countBySubject() {
@@ -1018,7 +1344,9 @@
     BANK_SIZE,
     banks,
     pickQuestions,
+    pickDailyQuestions,
     countBySubject,
-    subjects: SUBJECTS
+    subjects: SUBJECTS,
+    isQualityQuestion
   };
 })();

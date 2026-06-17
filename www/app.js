@@ -27,14 +27,24 @@
     const ALL_SUBJECTS = ["maths", "francais", "histoire", "emc", "sciences"];
 
     const plan = [
-      { date: "11", label: "Aujourd'hui", work: "Maths auto + WW2", tone: "normal", subjects: ["maths", "histoire"] },
+      { date: "11", label: "Jeudi", work: "Maths auto + WW2", tone: "normal", subjects: ["maths", "histoire"] },
       { date: "12", label: "Vendredi", work: "Français + EMC", tone: "normal", subjects: ["francais", "emc"] },
       { date: "13", label: "Samedi", work: "Géo France + sciences", tone: "normal", subjects: ["histoire", "sciences"] },
       { date: "14", label: "Dimanche", work: "Annales courtes", tone: "normal", subjects: ["maths", "francais", "histoire", "emc", "sciences"] },
       { date: "15", label: "Lundi", work: "Maths problèmes", tone: "normal", subjects: ["maths"] },
       { date: "16", label: "Mardi", work: "Rédaction + repères", tone: "normal", subjects: ["francais", "histoire"] },
-      { date: "17", label: "Mercredi", work: "Dates + matériel", tone: "normal", subjects: ["histoire"] },
-      { date: "18", label: "Jeudi", work: "Brevet", tone: "exam", subjects: [] }
+      { date: "17", label: "Mercredi", work: "Veille du brevet — révision intensive", tone: "eve", subjects: ALL_SUBJECTS, hard: true },
+      { date: "18", label: "Jeudi", work: "Brevet 2026", tone: "exam", subjects: [] }
+    ];
+
+    const WEEKLY_ROTATION = [
+      { label: "Lundi", work: "Maths + Histoire-Géo", subjects: ["maths", "histoire"] },
+      { label: "Mardi", work: "Français + EMC", subjects: ["francais", "emc"] },
+      { label: "Mercredi", work: "Sciences + Géographie", subjects: ["sciences", "histoire"] },
+      { label: "Jeudi", work: "Maths approfondi", subjects: ["maths"] },
+      { label: "Vendredi", work: "Français + Histoire", subjects: ["francais", "histoire"] },
+      { label: "Samedi", work: "Mix toutes matières", subjects: ALL_SUBJECTS },
+      { label: "Dimanche", work: "EMC + Sciences", subjects: ["emc", "sciences"] }
     ];
 
     const SUBJECT_ICONS = { mix: "🎯", maths: "📐", francais: "📖", histoire: "🌍", emc: "⚖️", sciences: "🔬" };
@@ -76,10 +86,11 @@
           correct: saved.correct || 0,
           streak: saved.streak || 0,
           seen: Array.isArray(saved.seen) ? saved.seen.slice(-4000) : [],
-          seenBySubject: saved.seenBySubject && typeof saved.seenBySubject === "object" ? saved.seenBySubject : {}
+          seenBySubject: saved.seenBySubject && typeof saved.seenBySubject === "object" ? saved.seenBySubject : {},
+          dailyHistory: saved.dailyHistory && typeof saved.dailyHistory === "object" ? saved.dailyHistory : {}
         };
       } catch {
-        return { answered: 0, correct: 0, streak: 0, seen: [], seenBySubject: {} };
+        return { answered: 0, correct: 0, streak: 0, seen: [], seenBySubject: {}, dailyHistory: {} };
       }
     }
 
@@ -95,9 +106,96 @@
       return sessionMode === "daily" || sessionMode === "ultimate" || sessionMode === "subject";
     }
 
+    function dailyKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    }
+
     function getTodayPlan() {
-      const today = new Date().getDate();
-      return plan.find(d => Number(d.date) === today) || plan.find(d => d.tone !== "exam") || plan[0];
+      const now = new Date();
+      const today = now.getDate();
+      if (now.getMonth() === 5) {
+        const examPlan = plan.find((d) => Number(d.date) === today);
+        if (examPlan) {
+          let label = examPlan.label;
+          if (examPlan.tone === "exam") label = "Brevet 2026";
+          else if (examPlan.tone === "eve") label = "Aujourd'hui — veille";
+          else label = "Aujourd'hui";
+          return { ...examPlan, label, date: String(today) };
+        }
+      }
+      const dayIndex = (now.getDay() + 6) % 7;
+      const rot = WEEKLY_ROTATION[dayIndex];
+      return {
+        date: String(today),
+        label: rot.label,
+        work: rot.work,
+        tone: "normal",
+        subjects: rot.subjects
+      };
+    }
+
+    function daysUntilExam() {
+      const now = new Date();
+      return Math.max(0, Math.ceil((startOfDay(EXAM_DATE) - startOfDay(now)) / DAY));
+    }
+
+    function queuePickOptions(mode) {
+      const todayPlan = getTodayPlan();
+      const days = daysUntilExam();
+      const hard = days <= 2 || todayPlan.hard || todayPlan.tone === "eve";
+      return {
+        minDifficulty: hard ? 2 : 1,
+        maxPerTopic: hard ? 1 : 2,
+        diverse: true,
+        stratify: true
+      };
+    }
+
+    function getExcludeSet(mode) {
+      const exclude = new Set(state.seen);
+      const history = state.dailyHistory || {};
+      const today = dailyKey();
+
+      Object.entries(history).forEach(([key, ids]) => {
+        if (key === today && mode !== "daily") return;
+        ids.forEach((id) => exclude.add(id));
+      });
+
+      if (mode === "daily") {
+        const recentKeys = Object.keys(history).sort().slice(-5);
+        recentKeys.forEach((key) => {
+          (history[key] || []).forEach((id) => exclude.add(id));
+        });
+      }
+      return exclude;
+    }
+
+    function markQuestionSeen(question) {
+      if (!question?.id) return;
+      if (!state.seen.includes(question.id)) state.seen.push(question.id);
+      const subj = question.bankSubject || subjectIdFromQuestion(question);
+      if (!state.seenBySubject[subj]) state.seenBySubject[subj] = [];
+      if (!state.seenBySubject[subj].includes(question.id)) {
+        state.seenBySubject[subj].push(question.id);
+      }
+      if (sessionMode === "daily") {
+        if (!state.dailyHistory) state.dailyHistory = {};
+        const key = dailyKey();
+        if (!state.dailyHistory[key]) state.dailyHistory[key] = [];
+        if (!state.dailyHistory[key].includes(question.id)) {
+          state.dailyHistory[key].push(question.id);
+        }
+        const keys = Object.keys(state.dailyHistory).sort();
+        if (keys.length > 14) {
+          keys.slice(0, keys.length - 14).forEach((k) => delete state.dailyHistory[k]);
+        }
+      }
+      state.seen = state.seen.slice(-4000);
+      Object.keys(state.seenBySubject).forEach((key) => {
+        state.seenBySubject[key] = state.seenBySubject[key].slice(-BANK_SIZE);
+      });
+      saveState();
     }
 
     function subjectIdFromQuestion(question) {
@@ -154,40 +252,33 @@
       const todayPlan = getTodayPlan();
       const card = document.getElementById("dailyCard");
       const btn = document.getElementById("startDaily");
+      const isEve = todayPlan.tone === "eve";
+      const questionCount = isEve ? 50 : DAILY_QUESTION_COUNT;
       document.getElementById("dailyPlanWork").textContent = todayPlan.work;
       document.getElementById("dailyPlanDate").textContent = `${todayPlan.date} juin · ${todayPlan.label}`;
-      const subjects = todayPlan.subjects?.length ? todayPlan.subjects : ["mix"];
+      const subjects = todayPlan.subjects?.length ? todayPlan.subjects : ALL_SUBJECTS;
       document.getElementById("dailySubjectList").textContent = formatSubjectList(subjects);
-      document.getElementById("dailyPlanMeta").textContent =
-        `${DAILY_QUESTION_COUNT} questions aléatoires · ${formatSubjectList(subjects)}`;
+      document.getElementById("dailyPlanMeta").textContent = isEve
+        ? `${questionCount} questions exigeantes · toutes matières · dernière révision`
+        : `${questionCount} questions · ${formatSubjectList(subjects)} · nouveau chaque jour`;
       card.classList.toggle("action-tile--exam", todayPlan.tone === "exam");
+      card.classList.toggle("action-tile--eve", isEve);
       btn.disabled = todayPlan.tone === "exam";
     }
 
-    function buildQueue(count, subjectIds) {
+    function buildQueue(count, subjectIds, mode) {
       const ids = subjectIds?.length ? subjectIds : ALL_SUBJECTS;
-      const exclude = new Set(state.seen);
-      const items = window.QuestionBank.pickQuestions(ids, count, exclude);
-      const sessionSeen = new Set();
+      const exclude = getExcludeSet(mode);
+      const bank = window.QuestionBank;
+      const options = queuePickOptions(mode);
 
-      items.forEach((question) => {
-        sessionSeen.add(question.id);
-        if (!state.seen.includes(question.id)) {
-          state.seen.push(question.id);
-        }
-        const subj = question.bankSubject || subjectIdFromQuestion(question);
-        if (!state.seenBySubject[subj]) state.seenBySubject[subj] = [];
-        if (!state.seenBySubject[subj].includes(question.id)) {
-          state.seenBySubject[subj].push(question.id);
-        }
-      });
-
-      state.seen = state.seen.slice(-4000);
-      Object.keys(state.seenBySubject).forEach((key) => {
-        state.seenBySubject[key] = state.seenBySubject[key].slice(-BANK_SIZE);
-      });
-      saveState();
-      return items;
+      if (mode === "daily" && bank.pickDailyQuestions) {
+        return bank.pickDailyQuestions(ids, count, exclude, options);
+      }
+      if (mode === "subject" && ids.length === 1) {
+        return bank.pickQuestions(ids, count, exclude, { ...options, seed: Date.now(), stratify: false });
+      }
+      return bank.pickQuestions(ids, count, exclude, { ...options, seed: Date.now(), stratify: true });
     }
 
     function getSubjectProgress(subjectId) {
@@ -199,7 +290,7 @@
     function enterQueuedSession(mode, subjectIds, count, returnView, summaryTitle) {
       sessionMode = mode;
       sessionReturnView = returnView;
-      queue = buildQueue(count, subjectIds);
+      queue = buildQueue(count, subjectIds, mode);
       queueIndex = 0;
       queueTotal = count;
       queueCorrect = 0;
@@ -220,7 +311,10 @@
     function enterDailySession() {
       const todayPlan = getTodayPlan();
       if (todayPlan.tone === "exam") return;
-      enterQueuedSession("daily", todayPlan.subjects, DAILY_QUESTION_COUNT, "view-home", "Bilan du jour");
+      const subjects = todayPlan.subjects?.length ? todayPlan.subjects : ALL_SUBJECTS;
+      const count = todayPlan.tone === "eve" ? 50 : DAILY_QUESTION_COUNT;
+      const title = todayPlan.tone === "eve" ? "Bilan veille du brevet" : "Bilan du jour";
+      enterQueuedSession("daily", subjects, count, "view-home", title);
     }
 
     function enterUltimateSession() {
@@ -281,15 +375,32 @@
 
     function updateCountdown() {
       const now = new Date();
-      const days = Math.max(0, Math.ceil((startOfDay(EXAM_DATE) - startOfDay(now)) / DAY));
+      const days = daysUntilExam();
       const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
       const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-      document.getElementById("daysLeft").textContent = days;
-      document.getElementById("daysLabel").textContent = days <= 1 ? "jour" : "jours";
+      const el = document.getElementById("daysLeft");
+      const labelEl = document.getElementById("daysLabel");
+      const countdownLabel = document.querySelector(".countdown-label");
+
+      if (days === 0) {
+        el.textContent = "🎯";
+        labelEl.textContent = "C'est aujourd'hui !";
+        if (countdownLabel) countdownLabel.textContent = "Bonne chance pour le brevet";
+      } else if (days === 1) {
+        el.textContent = "1";
+        labelEl.textContent = "jour — demain le brevet";
+        if (countdownLabel) countdownLabel.textContent = "Veille d'examen";
+      } else {
+        el.textContent = String(days);
+        labelEl.textContent = days === 1 ? "jour" : "jours";
+        if (countdownLabel) countdownLabel.textContent = "Avant l'examen";
+      }
+
       document.getElementById("todayLabel").textContent = `${dayNames[now.getDay()]} ${now.getDate()} ${monthNames[now.getMonth()]}`;
       const bar = document.getElementById("countdownBar");
       if (bar) {
-        const pct = Math.min(100, Math.max(0, (1 - days / 30) * 100));
+        const prepDays = 7;
+        const pct = days === 0 ? 100 : Math.min(100, Math.max(8, ((prepDays - days) / prepDays) * 100));
         bar.style.width = `${pct}%`;
       }
       updateHomeDaily();
@@ -408,7 +519,9 @@
       document.getElementById("planGrid").innerHTML = plan.map(day => {
         const isToday = Number(day.date) === today;
         const isExam = day.tone === "exam";
-        const cls = ["plan-card", isToday ? "plan-card--today" : "", isExam ? "plan-card--exam" : ""].filter(Boolean).join(" ");
+        const isEve = day.tone === "eve";
+        const label = isToday ? (isExam ? "Brevet" : isEve ? "Veille" : "Aujourd'hui") : day.label;
+        const cls = ["plan-card", isToday ? "plan-card--today" : "", isExam ? "plan-card--exam" : "", isEve ? "plan-card--eve" : ""].filter(Boolean).join(" ");
         return `
           <article class="${cls}">
             <div class="plan-date">
@@ -416,7 +529,7 @@
               <span class="plan-date-mon">juin</span>
             </div>
             <div class="plan-body">
-              <div class="plan-label">${day.label}</div>
+              <div class="plan-label">${label}</div>
               <div class="plan-work">${day.work}</div>
             </div>
           </article>
@@ -482,6 +595,7 @@
       });
 
       state.answered += 1;
+      markQuestionSeen(currentQuestion);
       const feedback = document.getElementById("feedback");
       feedback.hidden = false;
       if (selected.correct) {
@@ -510,6 +624,7 @@
       state.streak = 0;
       state.seen = [];
       state.seenBySubject = {};
+      state.dailyHistory = {};
       sessionCount = 0;
       updateStats();
       renderSubjects();

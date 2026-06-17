@@ -161,6 +161,14 @@ a { color: var(--accent); }
 
 .action-tile--exam { opacity: 0.5; pointer-events: none; }
 
+.action-tile--eve {
+  background: var(--tile-ultimate-bg);
+  border-color: var(--accent);
+}
+
+.plan-card--eve { border: 2px solid var(--accent); background: var(--plan-today-bg); }
+.plan-card--eve .plan-label { color: var(--accent); }
+
 .action-tile-icon { font-size: 32px; line-height: 1; flex-shrink: 0; }
 .action-tile-body { flex: 1; min-width: 0; }
 

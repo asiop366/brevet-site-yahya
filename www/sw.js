@@ -1,4 +1,4 @@
-const CACHE = "brevet2026-v10";
+const CACHE = "brevet2026-v13";
 const ASSETS = [
   "/",
   "/index.html",
