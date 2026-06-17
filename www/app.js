@@ -572,10 +572,13 @@
         quizContent.classList.add("quiz-content--in");
       }
 
-      document.getElementById("answers").innerHTML = currentQuestion.choices.map((choiceItem, index) => `
+      const longAnswers = currentQuestion.choices.some((c) => String(c.text).length > 36);
+      const answersEl = document.getElementById("answers");
+      answersEl.className = `quiz-answers quiz-answers--grid${longAnswers ? " quiz-answers--stack" : ""}`;
+      answersEl.innerHTML = currentQuestion.choices.map((choiceItem, index) => `
         <button class="quiz-answer quiz-answer--enter" type="button" data-index="${index}" style="animation-delay:${index * 45}ms">
           <span class="quiz-answer-letter">${LETTERS[index]}</span>
-          <span>${choiceItem.text}</span>
+          <span class="quiz-answer-text">${choiceItem.text}</span>
         </button>
       `).join("");
       document.querySelectorAll(".quiz-answer").forEach(button => {

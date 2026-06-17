@@ -1,4 +1,14 @@
 (function () {
+  function syncViewportHeight() {
+    const vh = window.visualViewport?.height ?? window.innerHeight;
+    document.documentElement.style.setProperty("--app-h", `${Math.round(vh)}px`);
+  }
+
+  syncViewportHeight();
+  window.addEventListener("resize", syncViewportHeight, { passive: true });
+  window.visualViewport?.addEventListener("resize", syncViewportHeight, { passive: true });
+  window.visualViewport?.addEventListener("scroll", syncViewportHeight, { passive: true });
+
   const viewMap = {
     home: "view-home",
     quiz: "view-quiz",
